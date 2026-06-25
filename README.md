@@ -1,4 +1,4 @@
-# 🌌 Nikhil Kaundal — Portfolio V3
+# 🌌 Nikhil Kaundal - Portfolio V3
 
 A premium, cinematic developer portfolio website showcasing professional work, selected projects, and full-stack developer skills. Designed with rich dark aesthetics, fluid routing animations, and smooth scrolling interactions.
 
