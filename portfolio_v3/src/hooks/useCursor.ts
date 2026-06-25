@@ -18,8 +18,8 @@ export function useCursor() {
         dotRef.current.style.top  = my + "px";
       }
       // Ring follows with smooth easing (lower = smoother)
-      rx += (mx - rx) * 0.09;
-      ry += (my - ry) * 0.09;
+      rx += (mx - rx) * 0.05;
+      ry += (my - ry) * 0.05;
       if (ringRef.current) {
         ringRef.current.style.left = rx + "px";
         ringRef.current.style.top  = ry + "px";
