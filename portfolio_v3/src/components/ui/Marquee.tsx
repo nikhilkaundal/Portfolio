@@ -21,11 +21,11 @@ const MarqueeRow: React.FC<{ items: string[]; reverse?: boolean; speed?: string;
         <React.Fragment key={i}>
           <span
             className={`font-display italic text-lg lg:text-xl font-light px-6 lg:px-8 tracking-wide transition-all duration-300
-              ${outline ? "text-stroke text-transparent" : "text-bark/25"}`}
+              ${outline ? "text-stroke text-transparent" : "text-bark/55"}`}
           >
             {item}
           </span>
-          <span className="text-amber/30 self-center text-xs">◆</span>
+          <span className="text-amber/55 self-center text-xs">◆</span>
         </React.Fragment>
       ))}
     </div>
