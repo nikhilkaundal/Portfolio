@@ -9,8 +9,8 @@ export function useCursor() {
   useEffect(() => {
     let mx = 0, my = 0; // Current mouse coords
     let rx = 0, ry = 0; // Current ring coords
-    let rw = 28, rh = 28; // Dynamic ring size (medium ~28px base)
-    let dotScale = 1; // Current dot scale
+    let rw = 20, rh = 20; // Base mercury blob size
+    let dotScale = 1; // Current dot scale (kept for compatibility, though hidden)
     
     // Interpolation helpers for rotation/stretching
     let currentSin = 0;
@@ -20,9 +20,10 @@ export function useCursor() {
 
     let hoveredEl: HTMLElement | null = null;
     let isHovering = false;
+    let wasHovering = false; // Track hover transition
     
     let targetX = 0, targetY = 0;
-    let targetW = 28, targetH = 28;
+    let targetW = 20, targetH = 20;
     let targetBr = "50%";
     
     let animId: number;
@@ -57,13 +58,23 @@ export function useCursor() {
     };
 
     const onMouseDown = () => {
-      targetClickScale = 0.75; // Squash size on click
+      targetClickScale = 0.72; // Squash size on click
+      // Click splash: spawn 1-2 droplets at current position
+      for (let k = 0; k < 2; k++) {
+        const drop = activeDroplets[nextDropletIndex];
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 2 + Math.random() * 3;
+        drop.x = rx + Math.cos(angle) * speed;
+        drop.y = ry + Math.sin(angle) * speed;
+        drop.life = 0.9;
+        nextDropletIndex = (nextDropletIndex + 1) % activeDroplets.length;
+      }
     };
 
     const onMouseUp = () => {
       targetClickScale = 1.0;
-      // Kick start spring wobble velocity
-      wobbleVelocity = 0.28;
+      // Kick start spring wobble velocity (elastic rebound)
+      wobbleVelocity = 0.35;
     };
 
     document.addEventListener("mousemove", onMove);
@@ -98,47 +109,50 @@ export function useCursor() {
       // 1. Determine target dimensions and positions
       if (hoveredEl) {
         const rect = hoveredEl.getBoundingClientRect();
-        const style = window.getComputedStyle(hoveredEl);
         
         // Center of hovered element
         const bx = rect.left + rect.width / 2;
         const by = rect.top + rect.height / 2;
         
-        // Magnetic pull: Snaps cursor close to center, but allows slight movement with mouse
-        targetX = bx + (mx - bx) * 0.18;
-        targetY = by + (my - by) * 0.18;
+        // Magnetic pull: Snaps cursor close to center, but allows resistance-based float
+        targetX = bx + (mx - bx) * 0.22; // 22% pull toward mouse
+        targetY = by + (my - by) * 0.22;
         
-        targetW = rect.width + 12; // Snapping bubble outline pad
-        targetH = rect.height + 12;
-        targetBr = style.borderRadius || "8px";
+        targetW = 30; // Enlarge slightly (1.5x of 20px)
+        targetH = 30;
+        targetBr = "50%"; // Keep circular blob form
         isHovering = true;
 
         if (ringRef.current && !ringRef.current.classList.contains("snapped")) {
           ringRef.current.classList.add("snapped");
         }
-        if (wrapperRef.current && !wrapperRef.current.classList.contains("no-goo")) {
-          wrapperRef.current.classList.add("no-goo");
-        }
 
-        // Clear droplet trail instantly on hover to avoid residue
-        activeDroplets.forEach(drop => { drop.life = 0; });
+        // Hover entry splash: trigger satellite droplets around the snap target
+        if (!wasHovering) {
+          for (let k = 0; k < 3; k++) {
+            const drop = activeDroplets[nextDropletIndex];
+            const angle = Math.random() * Math.PI * 2;
+            const dist = 12 + Math.random() * 12;
+            drop.x = rx + Math.cos(angle) * dist;
+            drop.y = ry + Math.sin(angle) * dist;
+            drop.life = 0.85; // shorter lifespan
+            nextDropletIndex = (nextDropletIndex + 1) % activeDroplets.length;
+          }
+        }
       } else {
         targetX = mx;
         targetY = my;
-        targetW = 28; // Default ring size
-        targetH = 28;
+        targetW = 20; // Default mercury size
+        targetH = 20;
         targetBr = "50%";
         isHovering = false;
 
         if (ringRef.current && ringRef.current.classList.contains("snapped")) {
           ringRef.current.classList.remove("snapped");
         }
-        if (wrapperRef.current && wrapperRef.current.classList.contains("no-goo")) {
-          wrapperRef.current.classList.remove("no-goo");
-        }
       }
 
-      // 2. Interpolate dot scale (shrinks to 0 on hover)
+      // 2. Interpolate dot scale (kept hidden in CSS but handles structure transition)
       const targetDotScale = isHovering ? 0 : 1;
       dotScale += (targetDotScale - dotScale) * 0.2;
       
@@ -147,11 +161,11 @@ export function useCursor() {
       }
 
       // 3. Interpolate ring position and dimensions
-      const easePos = isHovering ? 0.24 : 0.08;
+      const easePos = isHovering ? 0.22 : 0.08;
       rx += (targetX - rx) * easePos;
       ry += (targetY - ry) * easePos;
       
-      const easeSize = isHovering ? 0.24 : 0.12;
+      const easeSize = isHovering ? 0.22 : 0.12;
       rw += (targetW - rw) * easeSize;
       rh += (targetH - rh) * easeSize;
 
@@ -172,11 +186,11 @@ export function useCursor() {
           const stretchFactor = Math.min(distance * 0.012, 0.45);
           targetStretch = 1 + stretchFactor;
           targetSqueeze = 1 - stretchFactor * 0.4;
-          breathePhase = 0; // Reset breathe during movement
+          breathePhase = 0;
         } else {
-          // Idle Breathing Animation (slow pulsation)
+          // Idle breathing pulsation
           breathePhase += 0.035;
-          targetBreathe = Math.sin(breathePhase) * 0.06;
+          targetBreathe = Math.sin(breathePhase) * 0.05;
         }
 
         // Spawn droplets while moving based on threshold distance from last spawn
@@ -191,14 +205,18 @@ export function useCursor() {
           lastSpawnY = ry;
           nextDropletIndex = (nextDropletIndex + 1) % activeDroplets.length;
         }
+      } else {
+        // Subtle micro-breathing when hovering snapped
+        breathePhase += 0.02;
+        targetBreathe = Math.sin(breathePhase) * 0.03;
       }
 
       // Update and render droplets
       activeDroplets.forEach((drop, i) => {
         const el = dropletsRef.current[i];
         if (drop.life > 0) {
-          drop.life -= 0.035; // Decay life over time (~300ms)
-          drop.y += 0.2; // Gentle downward gravity drift
+          drop.life -= 0.035; // Decay life over time
+          drop.y += 0.2; // Gentle gravity drift
 
           if (el) {
             el.style.opacity = Math.max(0, drop.life).toString();
@@ -243,6 +261,7 @@ export function useCursor() {
         ringRef.current.style.transform = `translate3d(${rx}px, ${ry}px, 0) translate(-50%, -50%) rotate(${renderAngle}rad) scale(${finalScaleX}, ${finalScaleY})`;
       }
 
+      wasHovering = isHovering;
       animId = requestAnimationFrame(loop);
     };
 

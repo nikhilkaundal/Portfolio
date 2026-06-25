@@ -28,23 +28,16 @@ body::before {
 
 /* ── Custom cursor ─────────────────────────────────────── */
 .cursor-dot {
-  width: 5px; height: 5px;
-  background: #FF7A1A;
-  border-radius: 50%;
-  position: fixed;
-  top: 0; left: 0;
-  pointer-events: none;
-  z-index: 9999;
-  box-shadow: 0 0 10px rgba(255, 122, 26, 0.8), 0 0 20px rgba(255, 122, 26, 0.4);
-  will-change: transform;
+  display: none;
 }
 .cursor-wrapper {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 9998;
-  filter: url('#gooey-cursor') drop-shadow(0 0 6px rgba(255, 122, 26, 0.45));
-  opacity: 0.75;
+  z-index: 99999;
+  filter: url('#gooey-cursor') drop-shadow(0 0 4px rgba(255, 255, 255, 0.15));
+  mix-blend-mode: difference;
+  opacity: 0.8;
   transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .cursor-wrapper.no-goo {
@@ -55,25 +48,22 @@ body::before {
   position: fixed;
   top: 0; left: 0;
   pointer-events: none;
-  background: #FF7A1A;
+  background: radial-gradient(circle at 30% 30%, #ffffff 0%, #d5dadc 40%, #9ba1a3 70%, #686e70 100%);
   border-radius: 50%;
-  border: 0px solid transparent;
+  border: none;
   will-change: transform, width, height, border-radius;
   transition: 
     background-color 0.3s cubic-bezier(0.25, 1, 0.5, 1),
-    border-color 0.3s cubic-bezier(0.25, 1, 0.5, 1),
-    border-width 0.3s cubic-bezier(0.25, 1, 0.5, 1),
-    border-radius 0.35s cubic-bezier(0.25, 1, 0.5, 1),
-    box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    border-radius 0.35s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .cursor-ring.snapped {
-  background-color: rgba(255, 122, 26, 0.05) !important;
-  border: 1px solid rgba(255, 122, 26, 0.45) !important;
-  box-shadow: 0 4px 20px rgba(255, 122, 26, 0.12), inset 0 1.5px 0 rgba(255, 255, 255, 0.08) !important;
+  background: radial-gradient(circle at 30% 30%, #ffffff 0%, #d5dadc 40%, #9ba1a3 70%, #686e70 100%) !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 .cursor-droplet {
-  width: 16px; height: 16px;
-  background: #FF7A1A;
+  width: 14px; height: 14px;
+  background: radial-gradient(circle at 30% 30%, #ffffff 0%, #d5dadc 40%, #9ba1a3 70%, #686e70 100%);
   border-radius: 50%;
   position: absolute;
   top: 0; left: 0;
