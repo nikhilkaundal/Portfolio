@@ -205,7 +205,7 @@ const Projects: React.FC = () => {
               <a href={featured.github} target="_blank" rel="noreferrer"
                 className="font-mono text-[0.68rem] tracking-[0.12em] uppercase text-amber
                   inline-flex items-center gap-2 border-b border-amber/30 pb-0.5
-                  hover:gap-4 hover:border-amber transition-all duration-300">
+                  hover:gap-4 hover:border-amber transition-all duration-300 relative z-10">
                 View on GitHub <span>→</span>
               </a>
             </div>

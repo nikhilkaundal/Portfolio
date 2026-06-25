@@ -72,7 +72,7 @@ export function useCursor() {
 
     const handleMouseOver = (e: MouseEvent) => {
       const target = (e.target as HTMLElement).closest(
-        "a, button, .tilt-card, .skill-pill, .magnetic-btn, .project-card, [role='button'], input, textarea, .hover-magnetic"
+        "a, button, .skill-pill, .magnetic-btn, [role='button'], input, textarea, .hover-magnetic"
       );
       if (target) {
         hoveredEl = target as HTMLElement;
@@ -81,7 +81,7 @@ export function useCursor() {
 
     const handleMouseOut = (e: MouseEvent) => {
       const target = (e.target as HTMLElement).closest(
-        "a, button, .tilt-card, .skill-pill, .magnetic-btn, .project-card, [role='button'], input, textarea, .hover-magnetic"
+        "a, button, .skill-pill, .magnetic-btn, [role='button'], input, textarea, .hover-magnetic"
       );
       const relatedTarget = e.relatedTarget as HTMLElement | null;
       const isStillInSameTarget = relatedTarget && target && target.contains(relatedTarget);
