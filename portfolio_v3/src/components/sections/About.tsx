@@ -133,19 +133,19 @@ const About: React.FC = () => {
             <p className="font-body text-bark/45 leading-relaxed mb-4 text-[0.95rem] max-w-lg">
               I'm a final-year Computer Science student at{" "}
               <strong className="text-bark/70 font-medium">UIET, Panjab University</strong>.
-              Not the kind who builds only side projects — I've been shipping real,
+              Not the kind who builds only side projects, I've been shipping real,
               production B2B SaaS platforms with real users.
             </p>
             <p className="font-body text-bark/45 leading-relaxed mb-4 text-[0.95rem] max-w-lg">
               At{" "}
               <strong className="text-bark/70 font-medium">Dystinction Technology</strong>,
-              I engineered 5+ production modules for <em className="text-amber/60">OkQuoted</em> — a procurement
-              platform — across the full stack: Next.js 15, Supabase RLS, Turborepo
+              I engineered 5+ production modules for <em className="text-amber/60">OkQuoted</em> a procurement
+              platform across the full stack: Next.js 15, Supabase RLS, Turborepo
               monorepo, and role-based KPI dashboards.
             </p>
             <p className="font-body text-bark/45 leading-relaxed text-[0.95rem] max-w-lg">
               My core: <strong className="text-bark/70 font-medium">Next.js · React · TypeScript · Node.js · Supabase</strong>.
-              I care about the details — and I actually ship.
+              I care about the details and I actually ship.
             </p>
           </div>
 
