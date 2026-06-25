@@ -131,7 +131,7 @@ const About: React.FC = () => {
             </h2>
 
             <p className="font-body text-bark/45 leading-relaxed mb-4 text-[0.95rem] max-w-lg">
-              I'm a final-year Computer Science student at{" "}
+              I'm a final year Computer Science student at{" "}
               <strong className="text-bark/70 font-medium">UIET, Panjab University</strong>.
               Not the kind who builds only side projects, I've been shipping real,
               production B2B SaaS platforms with real users.
