@@ -233,7 +233,7 @@ const Hero: React.FC = () => {
       {/* Side decorations */}
       <div className="hero-side absolute right-8 lg:right-16 top-1/2 -translate-y-1/2 hidden lg:flex flex-col items-center gap-4" style={{ opacity: 0 }}>
         <span className="font-mono text-[0.55rem] tracking-[0.12em] text-bark/20 rotate-90 whitespace-nowrap origin-center" style={{ writingMode: "vertical-lr" }}>
-          // FULL STACK DEVELOPER
+          {"// FULL STACK DEVELOPER"}
         </span>
         <div className="w-px h-24 bg-gradient-to-b from-amber/30 to-transparent" />
         <span className="font-mono text-[0.55rem] text-bark/20">001</span>

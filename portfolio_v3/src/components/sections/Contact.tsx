@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 
 const SocialBtn: React.FC<{ href: string; label: string; icon: string }> = ({ href, label, icon }) => {
   const ref = useRef<HTMLAnchorElement>(null);
