@@ -9,7 +9,7 @@ export function useCursor() {
   useEffect(() => {
     let mx = 0, my = 0; // Current mouse coords
     let rx = 0, ry = 0; // Current ring coords
-    let rw = 24, rh = 24; // Current ring size (slightly larger default circular blob)
+    let rw = 28, rh = 28; // Dynamic ring size (medium ~28px base)
     let dotScale = 1; // Current dot scale
     
     // Interpolation helpers for rotation/stretching
@@ -22,10 +22,19 @@ export function useCursor() {
     let isHovering = false;
     
     let targetX = 0, targetY = 0;
-    let targetW = 24, targetH = 24;
+    let targetW = 28, targetH = 28;
     let targetBr = "50%";
     
     let animId: number;
+
+    // Elastic Jelly wobble and click squash physics
+    let clickScale = 1;
+    let targetClickScale = 1;
+    let wobble = 0;
+    let wobbleVelocity = 0;
+
+    // Idle breathing animation helpers
+    let breathePhase = 0;
 
     // Droplet trail configuration
     const activeDroplets: Array<{
@@ -46,7 +55,20 @@ export function useCursor() {
       mx = e.clientX;
       my = e.clientY;
     };
+
+    const onMouseDown = () => {
+      targetClickScale = 0.75; // Squash size on click
+    };
+
+    const onMouseUp = () => {
+      targetClickScale = 1.0;
+      // Kick start spring wobble velocity
+      wobbleVelocity = 0.28;
+    };
+
     document.addEventListener("mousemove", onMove);
+    document.addEventListener("mousedown", onMouseDown);
+    document.addEventListener("mouseup", onMouseUp);
 
     const handleMouseOver = (e: MouseEvent) => {
       const target = (e.target as HTMLElement).closest(
@@ -103,8 +125,8 @@ export function useCursor() {
       } else {
         targetX = mx;
         targetY = my;
-        targetW = 24; // Default ring size
-        targetH = 24;
+        targetW = 28; // Default ring size
+        targetH = 28;
         targetBr = "50%";
         isHovering = false;
 
@@ -137,6 +159,7 @@ export function useCursor() {
       let targetAngle = 0;
       let targetStretch = 1;
       let targetSqueeze = 1;
+      let targetBreathe = 0;
 
       if (!isHovering) {
         const dx = mx - rx;
@@ -149,6 +172,11 @@ export function useCursor() {
           const stretchFactor = Math.min(distance * 0.012, 0.45);
           targetStretch = 1 + stretchFactor;
           targetSqueeze = 1 - stretchFactor * 0.4;
+          breathePhase = 0; // Reset breathe during movement
+        } else {
+          // Idle Breathing Animation (slow pulsation)
+          breathePhase += 0.035;
+          targetBreathe = Math.sin(breathePhase) * 0.06;
         }
 
         // Spawn droplets while moving based on threshold distance from last spawn
@@ -195,12 +223,24 @@ export function useCursor() {
       currentStretch += (targetStretch - currentStretch) * 0.18;
       currentSqueeze += (targetSqueeze - currentSqueeze) * 0.18;
 
+      // Update click squash and spring wobble release physics
+      clickScale += (targetClickScale - clickScale) * 0.22;
+      const springK = 0.14; // Stiffness
+      const damping = 0.84; // Friction decay
+      const wobbleForce = -springK * wobble;
+      wobbleVelocity = (wobbleVelocity + wobbleForce) * damping;
+      wobble += wobbleVelocity;
+
+      // Render stretch + breathe + click squash + release spring wobble
+      const finalScaleX = currentStretch * clickScale * (1 + wobble + targetBreathe);
+      const finalScaleY = currentSqueeze * clickScale * (1 - wobble * 0.5 + targetBreathe);
+
       // 5. Apply style properties directly to the DOM for 60/120fps performance
       if (ringRef.current) {
         ringRef.current.style.width = `${rw}px`;
         ringRef.current.style.height = `${rh}px`;
         ringRef.current.style.borderRadius = targetBr;
-        ringRef.current.style.transform = `translate3d(${rx}px, ${ry}px, 0) translate(-50%, -50%) rotate(${renderAngle}rad) scale(${currentStretch}, ${currentSqueeze})`;
+        ringRef.current.style.transform = `translate3d(${rx}px, ${ry}px, 0) translate(-50%, -50%) rotate(${renderAngle}rad) scale(${finalScaleX}, ${finalScaleY})`;
       }
 
       animId = requestAnimationFrame(loop);
@@ -210,6 +250,8 @@ export function useCursor() {
 
     return () => {
       document.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mousedown", onMouseDown);
+      document.removeEventListener("mouseup", onMouseUp);
       document.removeEventListener("mouseover", handleMouseOver);
       document.removeEventListener("mouseout", handleMouseOut);
       cancelAnimationFrame(animId);

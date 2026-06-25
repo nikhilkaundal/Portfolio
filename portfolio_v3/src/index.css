@@ -43,8 +43,8 @@ body::before {
   inset: 0;
   pointer-events: none;
   z-index: 9998;
-  filter: url('#gooey-cursor');
-  opacity: 0.55;
+  filter: url('#gooey-cursor') drop-shadow(0 0 6px rgba(255, 122, 26, 0.45));
+  opacity: 0.75;
   transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .cursor-wrapper.no-goo {
@@ -64,16 +64,12 @@ body::before {
     border-color 0.3s cubic-bezier(0.25, 1, 0.5, 1),
     border-width 0.3s cubic-bezier(0.25, 1, 0.5, 1),
     border-radius 0.35s cubic-bezier(0.25, 1, 0.5, 1),
-    box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1),
-    backdrop-filter 0.3s ease,
-    -webkit-backdrop-filter 0.3s ease;
+    box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .cursor-ring.snapped {
   background-color: rgba(255, 122, 26, 0.05) !important;
   border: 1px solid rgba(255, 122, 26, 0.45) !important;
   box-shadow: 0 4px 20px rgba(255, 122, 26, 0.12), inset 0 1.5px 0 rgba(255, 255, 255, 0.08) !important;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
 }
 .cursor-droplet {
   width: 16px; height: 16px;
