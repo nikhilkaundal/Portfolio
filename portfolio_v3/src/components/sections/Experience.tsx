@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { EXPERIENCES } from "../../data/portfolio";
 import DystinctionCard from "./DystinctionCard";
+import DICCard from "./DICCard";
 
 const Experience: React.FC = () => {
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -68,6 +69,10 @@ const Experience: React.FC = () => {
                 {exp.id === "exp-dystinction" ? (
                   <div onMouseEnter={() => setActiveId(exp.id)}>
                     <DystinctionCard isActive={isActive} />
+                  </div>
+                ) : exp.id === "exp-dic" ? (
+                  <div onMouseEnter={() => setActiveId(exp.id)}>
+                    <DICCard isActive={isActive} />
                   </div>
                 ) : (
                   <div

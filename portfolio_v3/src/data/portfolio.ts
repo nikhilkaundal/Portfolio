@@ -257,7 +257,7 @@ export const EXPERIENCES = [
     tags: ["Next.js 15","TypeScript","Supabase","React","Turborepo","RBAC"],
   },
   {
-    id:      "exp-02",
+    id:      "exp-dic",
     period:  "Jun — Jul 2025",
     location:"Chandigarh, India",
     role:    "Full Stack & Data Engineer",
