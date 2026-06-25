@@ -3,11 +3,13 @@ import { useEffect, useRef } from "react";
 export function useCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const dropletsRef = useRef<Array<HTMLDivElement | null>>([]);
 
   useEffect(() => {
     let mx = 0, my = 0; // Current mouse coords
     let rx = 0, ry = 0; // Current ring coords
-    let rw = 20, rh = 20; // Current ring size
+    let rw = 24, rh = 24; // Current ring size (slightly larger default circular blob)
     let dotScale = 1; // Current dot scale
     
     // Interpolation helpers for rotation/stretching
@@ -20,10 +22,25 @@ export function useCursor() {
     let isHovering = false;
     
     let targetX = 0, targetY = 0;
-    let targetW = 20, targetH = 20;
+    let targetW = 24, targetH = 24;
     let targetBr = "50%";
     
     let animId: number;
+
+    // Droplet trail configuration
+    const activeDroplets: Array<{
+      x: number;
+      y: number;
+      life: number;
+    }> = Array.from({ length: 12 }).map(() => ({
+      x: 0,
+      y: 0,
+      life: 0
+    }));
+    
+    let lastSpawnX = 0;
+    let lastSpawnY = 0;
+    let nextDropletIndex = 0;
 
     const onMove = (e: MouseEvent) => {
       mx = e.clientX;
@@ -77,16 +94,25 @@ export function useCursor() {
         if (ringRef.current && !ringRef.current.classList.contains("snapped")) {
           ringRef.current.classList.add("snapped");
         }
+        if (wrapperRef.current && !wrapperRef.current.classList.contains("no-goo")) {
+          wrapperRef.current.classList.add("no-goo");
+        }
+
+        // Clear droplet trail instantly on hover to avoid residue
+        activeDroplets.forEach(drop => { drop.life = 0; });
       } else {
         targetX = mx;
         targetY = my;
-        targetW = 20; // Default ring size
-        targetH = 20;
+        targetW = 24; // Default ring size
+        targetH = 24;
         targetBr = "50%";
         isHovering = false;
 
         if (ringRef.current && ringRef.current.classList.contains("snapped")) {
           ringRef.current.classList.remove("snapped");
+        }
+        if (wrapperRef.current && wrapperRef.current.classList.contains("no-goo")) {
+          wrapperRef.current.classList.remove("no-goo");
         }
       }
 
@@ -124,7 +150,39 @@ export function useCursor() {
           targetStretch = 1 + stretchFactor;
           targetSqueeze = 1 - stretchFactor * 0.4;
         }
+
+        // Spawn droplets while moving based on threshold distance from last spawn
+        const distFromLastSpawn = Math.sqrt((rx - lastSpawnX) ** 2 + (ry - lastSpawnY) ** 2);
+        if (distFromLastSpawn > 18) {
+          const drop = activeDroplets[nextDropletIndex];
+          drop.x = rx;
+          drop.y = ry;
+          drop.life = 1.0;
+          
+          lastSpawnX = rx;
+          lastSpawnY = ry;
+          nextDropletIndex = (nextDropletIndex + 1) % activeDroplets.length;
+        }
       }
+
+      // Update and render droplets
+      activeDroplets.forEach((drop, i) => {
+        const el = dropletsRef.current[i];
+        if (drop.life > 0) {
+          drop.life -= 0.035; // Decay life over time (~300ms)
+          drop.y += 0.2; // Gentle downward gravity drift
+
+          if (el) {
+            el.style.opacity = Math.max(0, drop.life).toString();
+            el.style.transform = `translate3d(${drop.x}px, ${drop.y}px, 0) translate(-50%, -50%) scale(${drop.life})`;
+          }
+        } else {
+          if (el) {
+            el.style.opacity = "0";
+            el.style.transform = "scale(0)";
+          }
+        }
+      });
 
       // Interpolate rotation angle smoothly using trigonometric averages to prevent 360-deg wrap jumps
       const targetSin = Math.sin(targetAngle);
@@ -158,5 +216,5 @@ export function useCursor() {
     };
   }, []);
 
-  return { dotRef, ringRef };
+  return { dotRef, ringRef, wrapperRef, dropletsRef };
 }

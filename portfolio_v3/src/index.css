@@ -38,29 +38,52 @@ body::before {
   box-shadow: 0 0 10px rgba(255, 122, 26, 0.8), 0 0 20px rgba(255, 122, 26, 0.4);
   will-change: transform;
 }
+.cursor-wrapper {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  filter: url('#gooey-cursor');
+  opacity: 0.55;
+  transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.cursor-wrapper.no-goo {
+  filter: none;
+  opacity: 1;
+}
 .cursor-ring {
   position: fixed;
   top: 0; left: 0;
   pointer-events: none;
-  z-index: 9998;
-  border: 1px solid rgba(255, 122, 26, 0.25);
-  background: rgba(255, 122, 26, 0.03);
-  box-shadow: 0 0 20px rgba(255, 122, 26, 0.05);
+  background: #FF7A1A;
+  border-radius: 50%;
+  border: 0px solid transparent;
   will-change: transform, width, height, border-radius;
   transition: 
     background-color 0.3s cubic-bezier(0.25, 1, 0.5, 1),
     border-color 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+    border-width 0.3s cubic-bezier(0.25, 1, 0.5, 1),
     border-radius 0.35s cubic-bezier(0.25, 1, 0.5, 1),
     box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1),
     backdrop-filter 0.3s ease,
     -webkit-backdrop-filter 0.3s ease;
 }
 .cursor-ring.snapped {
-  background-color: rgba(255, 122, 26, 0.05);
-  border-color: rgba(255, 122, 26, 0.45);
-  box-shadow: 0 4px 20px rgba(255, 122, 26, 0.12), inset 0 1.5px 0 rgba(255, 255, 255, 0.08);
+  background-color: rgba(255, 122, 26, 0.05) !important;
+  border: 1px solid rgba(255, 122, 26, 0.45) !important;
+  box-shadow: 0 4px 20px rgba(255, 122, 26, 0.12), inset 0 1.5px 0 rgba(255, 255, 255, 0.08) !important;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
+}
+.cursor-droplet {
+  width: 16px; height: 16px;
+  background: #FF7A1A;
+  border-radius: 50%;
+  position: absolute;
+  top: 0; left: 0;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform, opacity;
 }
 
 /* ── Section reveals ──────────────────────────────────── */
