@@ -35,8 +35,8 @@ body::before {
   inset: 0;
   pointer-events: none;
   z-index: 99999;
-  filter: url('#gooey-cursor') drop-shadow(0 0 4px rgba(255, 255, 255, 0.18));
-  opacity: 0.8;
+  filter: url('#gooey-cursor') drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
+  opacity: 0.92;
   transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .cursor-wrapper.no-goo {
@@ -47,7 +47,7 @@ body::before {
   position: fixed;
   top: 0; left: 0;
   pointer-events: none;
-  background: #ffffff;
+  background: radial-gradient(circle at 35% 35%, #ffffff 0%, #d8dddf 30%, #8b9295 65%, #525759 100%);
   border-radius: 50%;
   border: none;
   will-change: transform, width, height, border-radius;
@@ -56,13 +56,13 @@ body::before {
     border-radius 0.35s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .cursor-ring.snapped {
-  background: #ffffff !important;
+  background: radial-gradient(circle at 35% 35%, #ffffff 0%, #d8dddf 30%, #8b9295 65%, #525759 100%) !important;
   border: none !important;
   box-shadow: none !important;
 }
 .cursor-droplet {
   width: 14px; height: 14px;
-  background: #ffffff;
+  background: radial-gradient(circle at 35% 35%, #ffffff 0%, #d8dddf 30%, #8b9295 65%, #525759 100%);
   border-radius: 50%;
   position: absolute;
   top: 0; left: 0;
