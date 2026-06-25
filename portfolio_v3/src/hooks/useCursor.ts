@@ -1,85 +1,28 @@
 import { useEffect, useRef } from "react";
 
 export function useCursor() {
-  const dotRef = useRef<HTMLDivElement>(null);
-  const ringRef = useRef<HTMLDivElement>(null);
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const dropletsRef = useRef<Array<HTMLDivElement | null>>([]);
+  const spotlightRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    let mx = 0, my = 0; // Current mouse coords
-    let rx = 0, ry = 0; // Current ring coords
-    let rw = 20, rh = 20; // Base mercury blob size
-    let dotScale = 1; // Current dot scale (kept for compatibility, though hidden)
-    
-    // Interpolation helpers for rotation/stretching
-    let currentSin = 0;
-    let currentCos = 1;
-    let currentStretch = 1;
-    let currentSqueeze = 1;
+    let mx = 0, my = 0; // Mouse coordinates
+    let rx = 0, ry = 0; // Spotlight trailing coordinates
+    let currentOpacity = 0.11; // Spotlight opacity
+    let currentSize = 260; // Spotlight size (width & height)
 
     let hoveredEl: HTMLElement | null = null;
-    let isHovering = false;
-    let wasHovering = false; // Track hover transition
-    
+
     let targetX = 0, targetY = 0;
-    let targetW = 20, targetH = 20;
-    let targetBr = "50%";
-    
+    let targetOpacity = 0.11;
+    let targetSize = 260;
+
     let animId: number;
-
-    // Elastic Jelly wobble and click squash physics
-    let clickScale = 1;
-    let targetClickScale = 1;
-    let wobble = 0;
-    let wobbleVelocity = 0;
-
-    // Idle breathing animation helpers
-    let breathePhase = 0;
-
-    // Droplet trail configuration
-    const activeDroplets: Array<{
-      x: number;
-      y: number;
-      life: number;
-    }> = Array.from({ length: 12 }).map(() => ({
-      x: 0,
-      y: 0,
-      life: 0
-    }));
-    
-    let lastSpawnX = 0;
-    let lastSpawnY = 0;
-    let nextDropletIndex = 0;
 
     const onMove = (e: MouseEvent) => {
       mx = e.clientX;
       my = e.clientY;
     };
 
-    const onMouseDown = () => {
-      targetClickScale = 0.72; // Squash size on click
-      // Click splash: spawn 1-2 droplets at current position
-      for (let k = 0; k < 2; k++) {
-        const drop = activeDroplets[nextDropletIndex];
-        const angle = Math.random() * Math.PI * 2;
-        const speed = 2 + Math.random() * 3;
-        drop.x = rx + Math.cos(angle) * speed;
-        drop.y = ry + Math.sin(angle) * speed;
-        drop.life = 0.9;
-        nextDropletIndex = (nextDropletIndex + 1) % activeDroplets.length;
-      }
-    };
-
-    const onMouseUp = () => {
-      targetClickScale = 1.0;
-      // Kick start spring wobble velocity (elastic rebound)
-      wobbleVelocity = 0.35;
-    };
-
     document.addEventListener("mousemove", onMove);
-    document.addEventListener("mousedown", onMouseDown);
-    document.addEventListener("mouseup", onMouseUp);
 
     const handleMouseOver = (e: MouseEvent) => {
       const target = (e.target as HTMLElement).closest(
@@ -106,162 +49,43 @@ export function useCursor() {
     document.addEventListener("mouseout", handleMouseOut);
 
     const loop = () => {
-      // 1. Determine target dimensions and positions
+      // 1. Determine target variables
       if (hoveredEl) {
         const rect = hoveredEl.getBoundingClientRect();
         
-        // Center of hovered element
+        // Center of target element
         const bx = rect.left + rect.width / 2;
         const by = rect.top + rect.height / 2;
         
-        // Magnetic pull: Snaps cursor close to center, but allows resistance-based float
-        targetX = bx + (mx - bx) * 0.22; // 22% pull toward mouse
-        targetY = by + (my - by) * 0.22;
+        // Magnetic snap with soft resistance offset (allows cursor to float within the button)
+        targetX = bx + (mx - bx) * 0.35;
+        targetY = by + (my - by) * 0.35;
         
-        targetW = 30; // Enlarge slightly (1.5x of 20px)
-        targetH = 30;
-        targetBr = "50%"; // Keep circular blob form
-        isHovering = true;
-
-        if (ringRef.current && !ringRef.current.classList.contains("snapped")) {
-          ringRef.current.classList.add("snapped");
-        }
-
-        // Hover entry splash: trigger satellite droplets around the snap target
-        if (!wasHovering) {
-          for (let k = 0; k < 3; k++) {
-            const drop = activeDroplets[nextDropletIndex];
-            const angle = Math.random() * Math.PI * 2;
-            const dist = 12 + Math.random() * 12;
-            drop.x = rx + Math.cos(angle) * dist;
-            drop.y = ry + Math.sin(angle) * dist;
-            drop.life = 0.85; // shorter lifespan
-            nextDropletIndex = (nextDropletIndex + 1) % activeDroplets.length;
-          }
-        }
+        targetOpacity = 0.28; // Concentrated brightness (28% opacity)
+        targetSize = 320; // Enlarged light radius
       } else {
         targetX = mx;
         targetY = my;
-        targetW = 20; // Default mercury size
-        targetH = 20;
-        targetBr = "50%";
-        isHovering = false;
-
-        if (ringRef.current && ringRef.current.classList.contains("snapped")) {
-          ringRef.current.classList.remove("snapped");
-        }
+        targetOpacity = 0.11; // Softer default glow (11% opacity)
+        targetSize = 260; // Normal light radius
       }
 
-      // 2. Interpolate dot scale (kept hidden in CSS but handles structure transition)
-      const targetDotScale = isHovering ? 0 : 1;
-      dotScale += (targetDotScale - dotScale) * 0.2;
+      // 2. Smoothly interpolate coordinates using lerp (lower = smoother/more delay)
+      rx += (targetX - rx) * 0.08;
+      ry += (targetY - ry) * 0.08;
       
-      if (dotRef.current) {
-        dotRef.current.style.transform = `translate3d(${mx}px, ${my}px, 0) translate(-50%, -50%) scale(${dotScale})`;
+      // Easing size and opacity transitions
+      currentSize += (targetSize - currentSize) * 0.08;
+      currentOpacity += (targetOpacity - currentOpacity) * 0.08;
+
+      // 3. Apply style transform directly to DOM for GPU acceleration
+      if (spotlightRef.current) {
+        spotlightRef.current.style.transform = `translate3d(${rx}px, ${ry}px, 0) translate(-50%, -50%)`;
+        spotlightRef.current.style.width = `${currentSize}px`;
+        spotlightRef.current.style.height = `${currentSize}px`;
+        spotlightRef.current.style.opacity = currentOpacity.toString();
       }
 
-      // 3. Interpolate ring position and dimensions
-      const easePos = isHovering ? 0.22 : 0.08;
-      rx += (targetX - rx) * easePos;
-      ry += (targetY - ry) * easePos;
-      
-      const easeSize = isHovering ? 0.22 : 0.12;
-      rw += (targetW - rw) * easeSize;
-      rh += (targetH - rh) * easeSize;
-
-      // 4. Calculate fluid stretch and rotation
-      let targetAngle = 0;
-      let targetStretch = 1;
-      let targetSqueeze = 1;
-      let targetBreathe = 0;
-
-      if (!isHovering) {
-        const dx = mx - rx;
-        const dy = my - ry;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        
-        if (distance > 2) {
-          targetAngle = Math.atan2(dy, dx);
-          // Scale stretch with distance (capped at 45% stretch)
-          const stretchFactor = Math.min(distance * 0.012, 0.45);
-          targetStretch = 1 + stretchFactor;
-          targetSqueeze = 1 - stretchFactor * 0.4;
-          breathePhase = 0;
-        } else {
-          // Idle breathing pulsation
-          breathePhase += 0.035;
-          targetBreathe = Math.sin(breathePhase) * 0.05;
-        }
-
-        // Spawn droplets while moving based on threshold distance from last spawn
-        const distFromLastSpawn = Math.sqrt((rx - lastSpawnX) ** 2 + (ry - lastSpawnY) ** 2);
-        if (distFromLastSpawn > 18) {
-          const drop = activeDroplets[nextDropletIndex];
-          drop.x = rx;
-          drop.y = ry;
-          drop.life = 1.0;
-          
-          lastSpawnX = rx;
-          lastSpawnY = ry;
-          nextDropletIndex = (nextDropletIndex + 1) % activeDroplets.length;
-        }
-      } else {
-        // Subtle micro-breathing when hovering snapped
-        breathePhase += 0.02;
-        targetBreathe = Math.sin(breathePhase) * 0.03;
-      }
-
-      // Update and render droplets
-      activeDroplets.forEach((drop, i) => {
-        const el = dropletsRef.current[i];
-        if (drop.life > 0) {
-          drop.life -= 0.035; // Decay life over time
-          drop.y += 0.2; // Gentle gravity drift
-
-          if (el) {
-            el.style.opacity = Math.max(0, drop.life).toString();
-            el.style.transform = `translate3d(${drop.x}px, ${drop.y}px, 0) translate(-50%, -50%) scale(${drop.life})`;
-          }
-        } else {
-          if (el) {
-            el.style.opacity = "0";
-            el.style.transform = "scale(0)";
-          }
-        }
-      });
-
-      // Interpolate rotation angle smoothly using trigonometric averages to prevent 360-deg wrap jumps
-      const targetSin = Math.sin(targetAngle);
-      const targetCos = Math.cos(targetAngle);
-      currentSin += (targetSin - currentSin) * 0.15;
-      currentCos += (targetCos - currentCos) * 0.15;
-      const renderAngle = Math.atan2(currentSin, currentCos);
-
-      // Interpolate scaling/stretch
-      currentStretch += (targetStretch - currentStretch) * 0.18;
-      currentSqueeze += (targetSqueeze - currentSqueeze) * 0.18;
-
-      // Update click squash and spring wobble release physics
-      clickScale += (targetClickScale - clickScale) * 0.22;
-      const springK = 0.14; // Stiffness
-      const damping = 0.84; // Friction decay
-      const wobbleForce = -springK * wobble;
-      wobbleVelocity = (wobbleVelocity + wobbleForce) * damping;
-      wobble += wobbleVelocity;
-
-      // Render stretch + breathe + click squash + release spring wobble
-      const finalScaleX = currentStretch * clickScale * (1 + wobble + targetBreathe);
-      const finalScaleY = currentSqueeze * clickScale * (1 - wobble * 0.5 + targetBreathe);
-
-      // 5. Apply style properties directly to the DOM for 60/120fps performance
-      if (ringRef.current) {
-        ringRef.current.style.width = `${rw}px`;
-        ringRef.current.style.height = `${rh}px`;
-        ringRef.current.style.borderRadius = targetBr;
-        ringRef.current.style.transform = `translate3d(${rx}px, ${ry}px, 0) translate(-50%, -50%) rotate(${renderAngle}rad) scale(${finalScaleX}, ${finalScaleY})`;
-      }
-
-      wasHovering = isHovering;
       animId = requestAnimationFrame(loop);
     };
 
@@ -269,13 +93,11 @@ export function useCursor() {
 
     return () => {
       document.removeEventListener("mousemove", onMove);
-      document.removeEventListener("mousedown", onMouseDown);
-      document.removeEventListener("mouseup", onMouseUp);
       document.removeEventListener("mouseover", handleMouseOver);
       document.removeEventListener("mouseout", handleMouseOut);
       cancelAnimationFrame(animId);
     };
   }, []);
 
-  return { dotRef, ringRef, wrapperRef, dropletsRef };
+  return { spotlightRef };
 }
