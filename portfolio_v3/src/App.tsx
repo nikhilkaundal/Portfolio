@@ -35,6 +35,14 @@ const App: React.FC = () => {
   useLenis();
   useScrollReveal("[data-reveal]", activeRoute);
 
+  // Reset hash to top on page refresh/initial mount for home sections
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash && hash !== "#/" && !hash.startsWith("#/work") && !hash.startsWith("#/projects")) {
+      window.location.hash = "#/";
+    }
+  }, []);
+
   // Hash listener for custom routing
   useEffect(() => {
     const handleHashChange = () => {
