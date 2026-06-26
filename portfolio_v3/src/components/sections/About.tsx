@@ -270,7 +270,7 @@ const About: React.FC = () => {
         {/* ZONE F: Closer Block */}
         <div className="max-w-2xl mt-16">
           <p className="font-mono text-[0.65rem] tracking-[0.2em] uppercase text-amber mb-4">
-            // Closer
+            {"// Closer"}
           </p>
           <h3 className="font-display font-light text-bark text-2xl lg:text-3xl leading-snug tracking-tight mb-6">
             I write code. I lead teams. I shoot photographs.<br />

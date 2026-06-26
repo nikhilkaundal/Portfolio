@@ -64,6 +64,7 @@ export function useMusicPlayer() {
       audio.removeEventListener("ended", onEnded);
       audio.src = "";
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curIdx]);
 
   // Sync play state (run when playing state OR track changes)
