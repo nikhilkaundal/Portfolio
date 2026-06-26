@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bg-secondary: #111113;
+  --border: rgba(232, 228, 221, 0.1);
+  --accent: #C05800;
+  --text-primary: #E8E4DD;
+  --text-muted: #6B6560;
+}
+
 /* ── Reset & base ──────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: auto; overflow-x: hidden; }

@@ -24,7 +24,7 @@ const ModuleRow: React.FC<{
     {/* Row header */}
     <button
       onClick={onToggle}
-      className="w-full flex items-center gap-4 px-5 py-4 text-left group"
+      className="w-full flex items-center gap-4 px-4 py-3.5 sm:px-5 sm:py-4 text-left group"
     >
       <span className="text-xl flex-shrink-0 w-7">{mod.emoji}</span>
 
@@ -69,15 +69,14 @@ const ModuleRow: React.FC<{
       className={`overflow-hidden transition-all duration-400 ease-in-out
         ${isOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"}`}
     >
-      <div className="px-5 pb-5 pl-16">
+      <div className="px-4 pb-4 pl-10 sm:pl-16">
         <ul className="space-y-2 mb-4">
           {mod.details.map((detail, i) => (
             <li
               key={i}
-              className="font-body text-[0.84rem] text-bark/55 leading-relaxed flex gap-2.5"
+              className="font-body text-[0.84rem] text-bark/55 leading-relaxed"
             >
-              <span className="text-amber/40 mt-0.5 flex-shrink-0 text-xs">—</span>
-              <span>{detail}</span>
+              {detail}
             </li>
           ))}
         </ul>
@@ -134,7 +133,7 @@ const DICCard: React.FC<DICCardProps> = ({ isActive = false }) => {
       </div>
 
       {/* ── Card body ── */}
-      <div className="relative p-8 lg:p-10">
+      <div className="relative p-5 sm:p-8 lg:p-10">
 
         {/* ── Header row ── */}
         <div className="flex flex-col lg:flex-row lg:items-start gap-6 mb-8">
@@ -180,11 +179,11 @@ const DICCard: React.FC<DICCardProps> = ({ isActive = false }) => {
           </div>
 
           {/* ── Metric badges ── */}
-          <div className="flex lg:flex-col gap-3 flex-shrink-0">
+          <div className="grid grid-cols-3 lg:flex lg:flex-col gap-3 w-full lg:w-auto flex-shrink-0">
             {exp.metrics.map((m) => (
               <div
                 key={m.label}
-                className="border border-amber/20 bg-surface/80 px-4 py-3 text-center min-w-[80px]"
+                className="border border-amber/20 bg-surface/80 px-1 py-2.5 sm:px-4 sm:py-3 text-center min-w-0 sm:min-w-[80px]"
               >
                 <p
                   className="font-display font-light text-amber leading-none mb-1"

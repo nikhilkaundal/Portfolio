@@ -1,72 +1,40 @@
 import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import MusicPlayer from "../ui/MusicPlayer";
 
 const LINKS = [
-  { label: "About",    href: "#/about"    },
-  { label: "Skills",   href: "#/skills"   },
-  { label: "Work",     href: "#/work"     },
-  { label: "Projects", href: "#/projects" },
-  { label: "Contact",  href: "#/contact"  },
+  { label: "About",    path: "/about"    },
+  { label: "Skills",   path: "/skills"   },
+  { label: "Work",     path: "/work"     },
+  { label: "Projects", path: "/projects" },
+  { label: "Contact",  path: "#contact"  },
 ];
 
 const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
-  const [active, setActive] = useState("#/hero");
-  const [currentRoute, setCurrentRoute] = useState<"home" | "work" | "projects">("home");
+  const location = useLocation();
+  const [active, setActive] = useState(location.pathname);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 60);
+
+      const contactEl = document.getElementById("contact");
+      if (contactEl) {
+        const rect = contactEl.getBoundingClientRect();
+        if (rect.top <= 350) {
+          setActive("contact");
+          return;
+        }
+      }
+      setActive(location.pathname);
     };
+
     window.addEventListener("scroll", handleScroll);
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash;
-      if (hash.startsWith("#/work")) {
-        setCurrentRoute("work");
-        setActive("#/work");
-      } else if (hash.startsWith("#/projects")) {
-        setCurrentRoute("projects");
-        setActive("#/projects");
-      } else {
-        setCurrentRoute("home");
-        if (hash.startsWith("#/")) {
-          setActive(hash);
-        } else {
-          setActive("#/hero");
-        }
-      }
-    };
-
-    handleHashChange();
-    window.addEventListener("hashchange", handleHashChange);
-    return () => window.removeEventListener("hashchange", handleHashChange);
-  }, []);
-
-  useEffect(() => {
-    if (currentRoute !== "home") return;
-
-    const onScroll = () => {
-      const sections = ["contact", "skills", "about", "hero"];
-      for (const id of sections) {
-        const el = document.getElementById(id);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top <= 250) {
-            setActive(`#/${id}`);
-            break;
-          }
-        }
-      }
-    };
-    window.addEventListener("scroll", onScroll);
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [currentRoute]);
+  }, [location.pathname]);
 
   // Prevent background scroll when mobile drawer is open
   useEffect(() => {
@@ -90,36 +58,61 @@ const Navbar: React.FC = () => {
           }`}
       >
         {/* Logo */}
-        <a
-          href="#/"
+        <Link
+          to="/"
           className="font-display text-xl font-light tracking-[0.2em] text-bark group cursor-none"
           onClick={() => setIsOpen(false)}
         >
           NK
           <span className="text-amber inline-block group-hover:animate-pulse transition-all duration-300">.</span>
-        </a>
+        </Link>
 
         {/* Desktop Links */}
         <ul className="hidden md:flex items-center gap-8 lg:gap-10 list-none m-0 p-0">
-          {LINKS.map((link) => (
-            <li key={link.href} className="relative">
-              <a
-                href={link.href}
-                className={`font-mono text-[0.65rem] tracking-[0.18em] uppercase transition-colors duration-300 cursor-none
-                  ${active === link.href ? "text-amber" : "text-bark/40 hover:text-bark/70"}`}
-              >
-                {link.label}
-              </a>
-              {/* Active indicator dot */}
-              {active === link.href && (
-                <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-amber shadow-[0_0_8px_rgba(192,88,0,0.6)] transition-all duration-500" />
-              )}
-            </li>
-          ))}
+          {LINKS.map((link) => {
+            const isLinkActive = link.path === "#contact" ? active === "contact" : active === link.path;
+            return (
+              <li key={link.path} className="relative">
+                {link.path.startsWith("#") ? (
+                  <a
+                    href={link.path}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsOpen(false);
+                      const el = document.getElementById("contact");
+                      if (el) {
+                        el.scrollIntoView({ behavior: "smooth" });
+                      }
+                    }}
+                    className={`font-mono text-[0.65rem] tracking-[0.18em] uppercase transition-colors duration-300 cursor-none
+                      ${isLinkActive ? "text-amber" : "text-bark/40 hover:text-bark/70"}`}
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link
+                    to={link.path}
+                    onClick={() => setIsOpen(false)}
+                    className={`font-mono text-[0.65rem] tracking-[0.18em] uppercase transition-colors duration-300 cursor-none
+                      ${isLinkActive ? "text-amber" : "text-bark/40 hover:text-bark/70"}`}
+                  >
+                    {link.label}
+                  </Link>
+                )}
+                {/* Active indicator dot */}
+                {isLinkActive && (
+                  <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-amber shadow-[0_0_8px_rgba(192,88,0,0.6)] transition-all duration-500" />
+                )}
+              </li>
+            );
+          })}
         </ul>
 
         {/* Action Group */}
         <div className="flex items-center gap-6">
+          {/* Music Player */}
+          <MusicPlayer />
+
           {/* Desktop Contact CTA */}
           <a
             href="mailto:nikhilkaundal1257@gmail.com"
@@ -160,19 +153,41 @@ const Navbar: React.FC = () => {
         <div className="flex flex-col gap-6">
           <span className="font-mono text-[0.6rem] tracking-[0.2em] text-amber mb-2 uppercase">Menu</span>
           <ul className="flex flex-col gap-5 list-none p-0 m-0">
-            {LINKS.map((link, idx) => (
-              <li key={link.href} className="overflow-hidden">
-                <a
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className={`font-display text-4xl font-light tracking-wide block transition-all duration-300 cursor-none
-                    ${active === link.href ? "text-amber translate-x-2" : "text-bark/50 hover:text-bark"}`}
-                  style={{ transitionDelay: `${idx * 0.05}s` }}
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
+            {LINKS.map((link, idx) => {
+              const isLinkActive = link.path === "#contact" ? active === "contact" : active === link.path;
+              return (
+                <li key={link.path} className="overflow-hidden">
+                  {link.path.startsWith("#") ? (
+                    <a
+                      href={link.path}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setIsOpen(false);
+                        const el = document.getElementById("contact");
+                        if (el) {
+                          el.scrollIntoView({ behavior: "smooth" });
+                        }
+                      }}
+                      className={`font-display text-4xl font-light tracking-wide block transition-all duration-300 cursor-none
+                        ${isLinkActive ? "text-amber translate-x-2" : "text-bark/50 hover:text-bark"}`}
+                      style={{ transitionDelay: `${idx * 0.05}s` }}
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link
+                      to={link.path}
+                      onClick={() => setIsOpen(false)}
+                      className={`font-display text-4xl font-light tracking-wide block transition-all duration-300 cursor-none
+                        ${isLinkActive ? "text-amber translate-x-2" : "text-bark/50 hover:text-bark"}`}
+                      style={{ transitionDelay: `${idx * 0.05}s` }}
+                    >
+                      {link.label}
+                    </Link>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </div>
 

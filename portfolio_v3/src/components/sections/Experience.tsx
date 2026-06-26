@@ -44,7 +44,7 @@ const Experience: React.FC = () => {
         {/* Timeline layout */}
         <div ref={sectionRef} className="relative">
           {/* Vertical timeline line */}
-          <div className="absolute left-4 lg:left-8 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-amber/20 to-transparent" />
+          <div className="absolute left-3 sm:left-4 lg:left-8 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-amber/20 to-transparent" />
 
           {EXPERIENCES.map((exp, idx) => {
             const isActive = activeId === exp.id;
@@ -52,13 +52,13 @@ const Experience: React.FC = () => {
               <div
                 key={exp.id}
                 data-exp-id={exp.id}
-                className="relative pl-12 lg:pl-20 mb-8 lg:mb-12 last:mb-0 reveal"
+                className="relative pl-8 sm:pl-12 lg:pl-20 mb-8 lg:mb-12 last:mb-0 reveal"
                 data-reveal
                 data-reveal-delay={String(idx * 0.15)}
               >
                 {/* Timeline dot */}
                 <div
-                  className={`absolute left-[11px] lg:left-[27px] top-8 w-3 h-3 rounded-full border-2 border-night transition-all duration-500
+                  className={`absolute left-[6px] sm:left-[10px] lg:left-[26px] top-8 w-3 h-3 rounded-full border-2 border-night transition-all duration-500
                     ${isActive
                       ? "bg-amber-glow shadow-[0_0_16px_rgba(255,122,26,0.6),0_0_40px_rgba(255,122,26,0.2)]"
                       : "bg-amber/50 shadow-[0_0_8px_rgba(192,88,0,0.3)]"

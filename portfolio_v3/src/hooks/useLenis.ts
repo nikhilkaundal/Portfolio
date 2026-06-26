@@ -28,20 +28,10 @@ export function useLenis() {
       if (!target || !lenis) return;
       
       const href = target.getAttribute("href")!;
-      
-      // If it's a page route hash, let the route state handle it
-      if (href.startsWith("#/work") || href.startsWith("#/projects")) {
-        return;
-      }
-      
-      // Convert route-style hash section link to standard selector (e.g. #/about -> #about)
-      let selector = href;
-      if (href.startsWith("#/")) {
-        selector = href.replace("#/", "#");
-      }
+      if (href === "#") return;
       
       try {
-        const dest = document.querySelector(selector);
+        const dest = document.querySelector(href);
         if (dest) {
           e.preventDefault();
           lenis.scrollTo(dest as HTMLElement, { offset: -80 });
