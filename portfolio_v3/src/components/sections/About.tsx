@@ -162,28 +162,37 @@ const About: React.FC = () => {
 
         {/* ZONE B: Story Paragraph */}
         <div className="mb-24 max-w-2xl">
-          <p className="font-body text-bark/45 leading-relaxed text-[1rem] font-light mb-6">
-            I started college the way most people do, attending lectures, taking notes, not sure what I actually wanted.
+          <p className="font-body text-bark/80 leading-relaxed text-[1rem] font-light mb-6">
+            I started college the way most people do, attending lectures, taking notes, not really sure what I was building toward.
           </p>
-          <p className="font-body text-bark/45 leading-relaxed text-[1rem] font-light mb-6">
-            Then I built my first project. And something clicked. Not the code itself, but the feeling of making something work that didn't exist before. That feeling became an obsession.
+          <p className="font-body text-bark/80 leading-relaxed text-[1rem] font-light mb-6">
+            First year passed. I was average at best. Academically weak, if I'm being honest. But something shifted when I stopped waiting to learn and started trying to build.
           </p>
-          <p className="font-body text-bark/45 leading-relaxed text-[1rem] font-light mb-6">
-            By my second year, I wasn't just learning frameworks. I was building production software at Dystinction Technology, engineering modules that real businesses depend on every day. <em className="italic text-amber">five modules</em>. <em className="italic text-amber">live users</em>. <em className="italic text-amber">real stakes</em>.
+          <p className="font-body text-bark/80 leading-relaxed text-[1rem] font-light mb-6">
+            By second year, I was making things. Small things, clones, experiments, anything to understand how the web actually worked. A Netflix clone. JavaScript projects. HTML and CSS until it stopped feeling foreign. Nothing production-ready. But every broken layout and every fixed bug was teaching me something a classroom wasn't.
           </p>
-          <p className="font-body text-bark/45 leading-relaxed text-[1rem] font-light mb-6">
-            By my third year, I was building AI systems: a <em className="italic text-amber">RAG-based chatbot</em> for Panjab University, as part of a 4-person team under AISOC. I handled the frontend, designed the RAG pipeline, engineered the prompts that made the LLM actually useful, and trained components of the model myself. The university recognized it. I have the certificate to prove it.
+          <p className="font-body text-bark/80 leading-relaxed text-[1rem] font-light mb-6">
+            Third year is when it got real. I built <em className="italic text-amber">Pratibimb</em>, a news website pulling live data from external APIs. Nothing fancy, but it was mine, and it worked. That project made me want more.
           </p>
-          <p className="font-body text-bark/45 leading-relaxed text-[1rem] font-light mb-6">
+          <p className="font-body text-bark/80 leading-relaxed text-[1rem] font-light mb-6">
+            Then I joined <em className="italic text-amber">AISOC</em>. And something clicked, not just interest, but obsession. I built a <em className="italic text-amber">RAG-based chatbot</em> for Panjab University as part of a 4-person team. I designed the retrieval pipeline, engineered the prompts, built the frontend, and made sure the LLM actually gave useful answers, not just confident-sounding ones. The university recognized it. I have the certificate to prove it.
+          </p>
+          <p className="font-body text-bark/80 leading-relaxed text-[1rem] font-light mb-6">
+            After that, I didn't stop. I picked up React properly. Went deeper into Python. Learned the <em className="italic text-amber">MERN stack</em>. Explored <em className="italic text-amber">React Native</em>. Built a todo list app, not because it was impressive, but because shipping something end-to-end, even something small, teaches you what tutorials never do. It's on my GitHub.
+          </p>
+          <p className="font-body text-bark/80 leading-relaxed text-[1rem] font-light mb-6">
+            By eighth semester, I had landed an off-campus internship at <em className="italic text-amber">Dystinction Technology</em> as a full stack developer on <em className="italic text-amber">OkQuoted</em>, a B2B SaaS procurement platform. Real codebase. Real users. Real deadlines. I wasn't fetching data and calling it a day; I was building negotiation systems, role-based dashboards, KYC workflows, and features that actual businesses were depending on.
+          </p>
+          <p className="font-body text-bark/80 leading-relaxed text-[1rem] font-light mb-6">
             But here's what my resume doesn't fully show: I also shoot photographs. I won <em className="italic text-amber">First Place at Spectrum</em>, PEC Chandigarh's inter-college art and photography festival. I shoot under the name <em className="italic text-amber">@capturedvisionnn</em> because I believe how you see the world changes how you build for it.
           </p>
-          <p className="font-body text-bark/45 leading-relaxed text-[1rem] font-light mb-6">
+          <p className="font-body text-bark/80 leading-relaxed text-[1rem] font-light mb-6">
             I led content teams. I ran social media campaigns. I introduced automation into workflows that didn't have any. I made things more efficient, not just in code, but in people.
           </p>
-          <p className="font-body text-bark/45 leading-relaxed text-[1rem] font-light mb-6">
+          <p className="font-body text-bark/80 leading-relaxed text-[1rem] font-light mb-6">
             I listen to music while I work. I think better at night. I care deeply about the details, in a photograph, in a UI, in an API response.
           </p>
-          <p className="font-body text-bark/45 leading-relaxed text-[1rem] font-light">
+          <p className="font-body text-bark/80 leading-relaxed text-[1rem] font-light">
             I'm not the loudest person in the room. But I'm usually the one who's <em className="italic text-amber">already built what everyone else is still talking about</em>.
           </p>
 
@@ -227,7 +236,7 @@ const About: React.FC = () => {
               <h3 className="font-display font-light text-2xl lg:text-3xl italic text-bark mb-3">
                 I Also See The World Differently
               </h3>
-              <p className="font-body text-bark/45 text-sm max-w-xl leading-relaxed">
+              <p className="font-body text-bark/80 text-sm max-w-xl leading-relaxed">
                 Beyond code, I'm a photographer. 1st place at Spectrum, PEC Chandigarh. Core member, Imagen - UIET Photography Club. The same eye that frames a photograph frames a user interface. The same patience that waits for the right light debugs the right bug.
               </p>
             </div>
@@ -276,7 +285,7 @@ const About: React.FC = () => {
             I write code. I lead teams. I shoot photographs.<br />
             <span className="text-amber italic">I'm the kind of person who figures things out.</span>
           </h3>
-          <p className="font-body text-bark/50 leading-relaxed text-[0.92rem] max-w-lg mb-6">
+          <p className="font-body text-bark/80 leading-relaxed text-[0.92rem] max-w-lg mb-6">
             I've shipped production software, built AI systems, won photography competitions, and managed content teams, all before graduation. I'm not looking for a place to prove myself. I'm looking for a place to keep building.
           </p>
 
