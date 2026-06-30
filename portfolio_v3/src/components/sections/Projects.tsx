@@ -694,24 +694,23 @@ const DemoFrame: React.FC<DemoFrameProps> = ({ id, mediaType, mediaSrc, urlBarTe
 
   return (
     <div className="relative rounded-xl overflow-hidden border border-white/[0.06] bg-[#111113] group/frame transition-shadow duration-500 hover:shadow-2xl hover:shadow-black/60">
-      {/* Floating badge */}
-      <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5 bg-[#111113]/90 backdrop-blur-sm border border-white/[0.08] rounded-full px-3 py-1.5">
-        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: badgeCfg.dotColor, boxShadow: `0 0 6px ${badgeCfg.dotColor}` }} />
-        <span className="font-mono text-[0.55rem] tracking-[0.12em] uppercase text-bark/60">{badgeCfg.text}</span>
-      </div>
-
       {/* Title bar */}
       <div className="flex items-center gap-3 px-4 py-2.5 bg-[#161618] border-b border-white/[0.04] group/title">
         {/* Traffic lights */}
-        <div className="flex items-center gap-[6px]">
+        <div className="flex items-center gap-[6px] flex-shrink-0">
           <span className="w-[8px] h-[8px] rounded-full transition-transform duration-300 hover:scale-110" style={{ backgroundColor: "#FF5F57" }} />
           <span className="w-[8px] h-[8px] rounded-full transition-transform duration-300 hover:scale-110" style={{ backgroundColor: "#FEBC2E" }} />
           <span className="w-[8px] h-[8px] rounded-full transition-transform duration-300 hover:scale-110" style={{ backgroundColor: "#28C840" }} />
         </div>
         {/* URL bar */}
-        <div className="flex-1 flex items-center gap-2 bg-[#0A0A0B]/60 rounded-md px-3 py-1.5 transition-colors duration-300 group-hover/frame:bg-[#0A0A0B]/85">
+        <div className="flex-1 min-w-0 flex items-center gap-2 bg-[#0A0A0B]/60 rounded-md px-3 py-1.5 transition-colors duration-300 group-hover/frame:bg-[#0A0A0B]/85">
           <Lock size={10} className="text-bark/20 flex-shrink-0" />
           <span className="font-mono text-[0.65rem] text-bark/30 truncate">{urlBarText}</span>
+        </div>
+        {/* Status Badge */}
+        <div className="flex items-center gap-1.5 bg-[#111113]/90 backdrop-blur-sm border border-white/[0.08] rounded-full px-2.5 py-1 flex-shrink-0">
+          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: badgeCfg.dotColor, boxShadow: `0 0 6px ${badgeCfg.dotColor}` }} />
+          <span className="font-mono text-[0.55rem] tracking-[0.12em] uppercase text-bark/60">{badgeCfg.text}</span>
         </div>
       </div>
 
@@ -1377,13 +1376,30 @@ const CaseStudyRagChatbot: React.FC<CaseStudyRagChatbotProps> = ({ onClose, proj
               </p>
             </div>
             
-            {/* Screenshot Placeholder graphic */}
-            <div className="relative aspect-[4/3] w-full bg-white/[0.01] border border-white/[0.06] rounded-xl flex flex-col items-center justify-center p-6 select-none overflow-hidden group hover:border-amber/20 transition-all duration-300">
-              {/* Decorative grid pattern */}
-              <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:16px_16px]" />
-              <MessageSquare size={28} className="text-amber/40 mb-3 group-hover:scale-110 transition-transform duration-500" />
-              <span className="font-mono text-[0.6rem] tracking-[0.15em] uppercase text-bark/40">Screenshot: chat interface</span>
-              <span className="text-[0.5rem] text-bark/20 mt-1 font-mono uppercase">PU Admission Bot UI</span>
+            {/* Premium Screenshot Showcase */}
+            <div className="relative w-full rounded-xl border border-white/[0.08] bg-[#0E0E10] overflow-hidden group hover:border-amber/30 transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.6),_0_0_30px_rgba(192,88,0,0.05)]">
+              {/* Image wrapper to contain scale effect */}
+              <div className="overflow-hidden relative w-full">
+                <img 
+                  src="/proof/chatbot.png" 
+                  alt="Panjab University Admission Bot UI Chat Interface" 
+                  className="w-full h-auto block transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                />
+                {/* Grid pattern overlay (subtle futuristic aesthetic) */}
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none opacity-60" />
+                
+                {/* Subtle ambient lighting gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-60 pointer-events-none" />
+              </div>
+
+              {/* Caption / Metadata below the image, not overlapping it */}
+              <div className="bg-[#111113] border-t border-white/[0.04] px-4 py-3 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber animate-pulse" />
+                  <span className="font-mono text-[0.6rem] tracking-[0.1em] uppercase text-[#E8E4DD]/85">PU Admission Bot UI</span>
+                </div>
+                <span className="font-mono text-[0.55rem] tracking-[0.15em] text-bark/40">CHAT INTERFACE SCREENSHOT</span>
+              </div>
             </div>
           </div>
         </div>
