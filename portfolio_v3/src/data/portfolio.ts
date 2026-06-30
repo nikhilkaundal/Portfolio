@@ -320,13 +320,14 @@ export const PROJECTS: ProjectData[] = [
     index:    "02",
     featured: false,
     title:    "Salary Manager",
-    desc:     "Automated expense tracking from salary SMS with NLP pipeline & smart categorization.",
+    subtitle: "SMS Parser & Budget Dashboard",
+    desc:     "A web application that automatically parses financial transaction SMS alerts using custom regex and NLP pipelines. It extracts amounts, merchant tags, and transaction dates, automatically categorizing expenses into interactive dashboard charts to maintain personal budgets without manual input.",
     metrics:  [
       { val: "~0", label: "Manual Entry Needed" },
       { val: "~80%", label: "Detection Accuracy" }
     ],
     coreStack: ["PYTHON", "FLASK", "NLP", "MYSQL"],
-    tools:     ["REACT"],
+    tools:     ["REACT", "TAILWIND CSS", "RECHARTS", "REGEX"],
     badge:    "live",
     urlBarText: "https://salary-manager.vercel.app",
     mediaType: "video",
@@ -339,12 +340,14 @@ export const PROJECTS: ProjectData[] = [
     index:    "03",
     featured: false,
     title:    "S&P 500 Predictor",
-    desc:     "LSTM model to predict next-day market trend with high accuracy.",
+    subtitle: "LSTM Market Trend Forecaster",
+    desc:     "An interactive stock forecasting web dashboard driven by an LSTM recurrent neural network. It fetches real-time financial market data via Yahoo Finance, processes historical S&P 500 trend cycles, and forecasts next-day market directions to aid quantitative investment analysis.",
     metrics:  [
-      { val: "~80%", label: "Prediction Accuracy" }
+      { val: "~80%", label: "Prediction Accuracy" },
+      { val: "78.6%", label: "Model Confidence" }
     ],
     coreStack: ["PYTHON", "LSTM", "STREAMLIT"],
-    tools:     ["YFINANCE", "PANDAS"],
+    tools:     ["YFINANCE", "PANDAS", "KERAS", "MATPLOTLIB"],
     badge:    "live",
     urlBarText: "https://sp500-predictor.vercel.app",
     mediaType: "image",
@@ -356,20 +359,20 @@ export const PROJECTS: ProjectData[] = [
     id:       "proj-04",
     index:    "04",
     featured: false,
-    title:    "OkQuoted (Marketplace)",
-    desc:     "RFQ platform connecting buyers & vendors with negotiation & real-time updates.",
+    title:    "Library Management System",
+    subtitle: "Book Inventory & Issue Tracking",
+    desc:     "A Flask and MySQL web app for managing a library's day-to-day operations: adding and removing books from inventory, tracking which books are issued to which students, and keeping records without a spreadsheet.",
     metrics:  [
-      { val: "100+", label: "RFQs Processed" },
-      { val: "50+", label: "Active Vendors" }
+      { val: "Full CRUD Flow", label: "System Design" }
     ],
-    coreStack: ["REACT", "NODEJS", "MONGODB"],
-    tools:     ["SOCKET.IO", "JWT"],
+    coreStack: ["PYTHON", "FLASK", "MYSQL"],
+    tools:     ["HTML/CSS", "JINJA"],
     badge:    "preview",
-    urlBarText: "https://okquoted.app",
+    urlBarText: "localhost:5000",
     mediaType: "image",
-    mediaSrc:  "/proof/companywebpage.png",
-    githubUrl: "https://github.com/nikhilkaundal",
-    primaryCta: "Live Preview",
+    mediaSrc:  "/proof/library-management-screenshot.png",
+    githubUrl: "https://github.com/nikhilkaundal/Library-management-system",
+    primaryCta: "View Screenshots",
   },
 ];
 
@@ -381,12 +384,6 @@ export interface MoreProject {
 }
 
 export const MORE_PROJECTS: MoreProject[] = [
-  {
-    icon:  "book",
-    title: "Library Management System",
-    sub:   "Python + MySQL",
-    link:  "https://github.com/nikhilkaundal/Library-management-system",
-  },
   {
     icon:  "newspaper",
     title: "Pratibimb",

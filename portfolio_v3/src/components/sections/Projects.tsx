@@ -79,8 +79,10 @@ const MetricCounter: React.FC<{ val: string; label: string }> = ({ val, label })
 
   return (
     <div ref={ref} className="text-left">
-      <p className="font-display text-3xl lg:text-4xl font-light text-amber leading-none mb-1">{display}</p>
-      <p className="font-mono text-[0.55rem] tracking-[0.1em] uppercase text-bark/30">{label}</p>
+      <p className={`font-display font-light text-amber leading-none mb-1 ${
+        val.length > 7 ? "text-lg lg:text-xl font-medium tracking-tight" : "text-3xl lg:text-4xl"
+      }`}>{display}</p>
+      {label && <p className="font-mono text-[0.55rem] tracking-[0.1em] uppercase text-bark/30">{label}</p>}
     </div>
   );
 };
@@ -546,66 +548,6 @@ const SP500PredictorMockup: React.FC = () => {
   );
 };
 
-/* ═══════════════════════════════════════════════════════════
-   4. OkQuotedMockup — B2B Procurement dashboard (light theme)
-   ═══════════════════════════════════════════════════════════ */
-const OkQuotedMockup: React.FC = () => {
-  return (
-    <div className="w-full h-full bg-[#FAFAFC] text-[#1E1E24] font-body text-[0.55rem] p-3 flex flex-col justify-between select-none">
-      {/* Header */}
-      <div className="flex justify-between items-center border-b border-black/[0.06] pb-2">
-        <div className="flex items-center gap-1">
-          <div className="w-2.5 h-2.5 bg-amber rounded" />
-          <span className="font-mono font-bold tracking-tight text-black text-[0.6rem]">OkQuoted</span>
-        </div>
-        <div className="flex gap-1.5 items-center">
-          <span className="w-1.5 h-1.5 rounded-full bg-amber animate-pulse" />
-          <span className="text-[0.5rem] text-black/40 uppercase font-mono">Negotiation SLA</span>
-        </div>
-      </div>
-
-      {/* Metrics Grid */}
-      <div className="grid grid-cols-3 gap-1.5 mt-1.5">
-        <div className="bg-white border border-black/[0.04] p-1 rounded shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-          <p className="text-black/35 text-[0.45rem] font-mono uppercase">Open RFQs</p>
-          <p className="text-black font-mono font-bold text-xs">28</p>
-        </div>
-        <div className="bg-white border border-black/[0.04] p-1 rounded shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-          <p className="text-black/35 text-[0.45rem] font-mono uppercase">Avg Savings</p>
-          <p className="text-black font-mono font-bold text-xs">14.2%</p>
-        </div>
-        <div className="bg-white border border-black/[0.04] p-1 rounded shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-          <p className="text-black/35 text-[0.45rem] font-mono uppercase">Active Vendors</p>
-          <p className="text-black font-mono font-bold text-xs">53</p>
-        </div>
-      </div>
-
-      {/* Negotiations Table */}
-      <div className="flex-1 bg-white border border-black/[0.05] rounded shadow-[0_1px_2px_rgba(0,0,0,0.02)] mt-2 p-2 flex flex-col justify-between overflow-hidden">
-        <div className="flex justify-between items-center text-[0.45rem] font-mono font-bold text-black/50 border-b border-black/[0.04] pb-1 mb-1">
-          <span>PRODUCT</span>
-          <span>VENDOR</span>
-          <span>ROUND</span>
-          <span>STATUS</span>
-        </div>
-        <div className="flex-1 flex flex-col gap-1 overflow-y-auto scrollbar-none">
-          {[
-            { prod: "Steel Tubes", vend: "TATA Steel", round: "R2", status: "Awaiting Vendor", color: "#C05800" },
-            { prod: "Copper Wire", vend: "Finolex", round: "R3", status: "Action Required", color: "#FF7A1A" },
-            { prod: "PVC Pipes", vend: "Supreme", round: "R1", status: "Completed", color: "#28C840" },
-          ].map((row, i) => (
-            <div key={i} className="flex justify-between items-center text-[0.48rem] text-black/75 py-0.5 border-b border-black/[0.02] last:border-b-0">
-              <span className="font-bold truncate max-w-[42px]">{row.prod}</span>
-              <span className="truncate max-w-[40px] text-black/50">{row.vend}</span>
-              <span className="font-mono">{row.round}</span>
-              <span className="font-mono text-[0.45rem] px-1 rounded-sm text-white" style={{ backgroundColor: row.color }}>{row.status}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
 
 /* ═══════════════════════════════════════════════════════════
    LiveIframeMockup — embeds actual live webpage via iframe
@@ -614,20 +556,30 @@ const LiveIframeMockup: React.FC<{ src: string }> = ({ src }) => {
   const [isLoading, setIsLoading] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
-  const [isMobile, setIsMobile] = useState(false);
+  const [virtualWidth, setVirtualWidth] = useState(1920);
+  const [virtualHeight, setVirtualHeight] = useState(876);
 
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
 
     const updateScale = () => {
-      const width = el.getBoundingClientRect().width;
+      const rect = el.getBoundingClientRect();
+      const width = rect.width;
+      const height = rect.height;
       const mobileMode = width < 768;
-      setIsMobile(mobileMode);
       
       if (mobileMode) {
-        setScale(1);
+        // Load the iframe at a standard mobile width (375px)
+        const vWidth = 375;
+        // The virtual height should match the aspect ratio of the container (vHeight = vWidth * height/width)
+        const vHeight = vWidth * (height / width);
+        setVirtualWidth(vWidth);
+        setVirtualHeight(vHeight);
+        setScale(width / vWidth);
       } else {
+        setVirtualWidth(1920);
+        setVirtualHeight(876);
         setScale(width / 1920);
       }
     };
@@ -654,9 +606,9 @@ const LiveIframeMockup: React.FC<{ src: string }> = ({ src }) => {
         title="Live Project Demo"
         className="absolute border-0"
         style={{
-          width: isMobile ? "100%" : "1920px",
-          height: isMobile ? "100%" : "876px",
-          transform: isMobile ? "none" : `scale(${scale})`,
+          width: `${virtualWidth}px`,
+          height: `${virtualHeight}px`,
+          transform: `scale(${scale})`,
           transformOrigin: "top left",
           opacity: isLoading ? 0 : 1,
           transition: "opacity 500ms ease",
@@ -691,9 +643,28 @@ const DemoFrame: React.FC<DemoFrameProps> = ({ id, mediaType, mediaSrc, urlBarTe
   const [mediaError, setMediaError] = useState(false);
   const [viewMode, setViewMode] = useState<"video" | "live" | "interactive">("video");
   const badgeCfg = BADGE_CONFIG[badge];
+  const [containerWidth, setContainerWidth] = useState(0);
+  const frameRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = frameRef.current;
+    if (!el) return;
+
+    const handleResize = () => {
+      setContainerWidth(el.getBoundingClientRect().width);
+    };
+
+    handleResize();
+    const observer = new ResizeObserver(handleResize);
+    observer.observe(el);
+
+    return () => observer.disconnect();
+  }, []);
+
+  const isMobile = containerWidth > 0 && containerWidth < 768;
 
   return (
-    <div className="relative rounded-xl overflow-hidden border border-white/[0.06] bg-[#111113] group/frame transition-shadow duration-500 hover:shadow-2xl hover:shadow-black/60">
+    <div ref={frameRef} className="relative rounded-xl overflow-hidden border border-white/[0.06] bg-[#111113] group/frame transition-shadow duration-500 hover:shadow-2xl hover:shadow-black/60">
       {/* Title bar */}
       <div className="flex items-center gap-3 px-4 py-2.5 bg-[#161618] border-b border-white/[0.04] group/title">
         {/* Traffic lights */}
@@ -753,7 +724,7 @@ const DemoFrame: React.FC<DemoFrameProps> = ({ id, mediaType, mediaSrc, urlBarTe
       {/* Media area — dynamic aspect ratio depending on project */}
       <div
         className="relative overflow-hidden bg-[#0A0A0B]"
-        style={{ aspectRatio: id === "proj-01" ? "1920 / 876" : "16 / 9" }}
+        style={{ aspectRatio: id === "proj-01" ? (isMobile ? "16 / 13" : "1920 / 876") : "16 / 9" }}
       >
         {id === "proj-01" ? (
           viewMode === "interactive" ? (
@@ -775,8 +746,6 @@ const DemoFrame: React.FC<DemoFrameProps> = ({ id, mediaType, mediaSrc, urlBarTe
           <SalaryManagerMockup />
         ) : id === "proj-03" ? (
           <SP500PredictorMockup />
-        ) : id === "proj-04" ? (
-          <OkQuotedMockup />
         ) : mediaError ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
             <Play size={32} className="text-bark/15" />
