@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import ReactDOM from "react-dom";
+import { createPortal } from "react-dom";
 import { PROJECTS, MORE_PROJECTS } from "../../data/portfolio";
 import type { ProjectData } from "../../data/portfolio";
 import {
@@ -1304,7 +1304,7 @@ const CaseStudyRagChatbot: React.FC<CaseStudyRagChatbotProps> = ({ onClose, proj
     setShowConfirm(true);
   };
 
-  return ReactDOM.createPortal(
+  return createPortal(
     <div
       ref={scrollRef}
       data-lenis-prevent
