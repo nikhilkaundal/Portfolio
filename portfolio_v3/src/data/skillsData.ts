@@ -96,6 +96,24 @@ export const SKILLS_DATA: Skill[] = [
       since: '2024'
     }
   },
+  {
+    id: 'react-native',
+    name: 'React Native',
+    category: 'FRONTEND',
+    tier: 'primary',
+    iconSlug: 'react',
+    proof: {
+      usedIn: 'Salary Management App',
+      whatIBuilt: 'Cross-platform mobile app for employee salary management',
+      github: 'https://github.com/nikhilkaundal',
+      previewImage: '/proof/Salarymanagement.png'
+    },
+    stats: {
+      usedAt: 'Salary Mgmt App',
+      impact: 'Mobile App',
+      since: '2025'
+    }
+  },
 
   // BACKEND
   {

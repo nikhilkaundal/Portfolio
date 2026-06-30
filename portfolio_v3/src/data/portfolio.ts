@@ -271,39 +271,133 @@ export const EXPERIENCES = [
   },
 ];
 
-export const PROJECTS = [
+export interface ProjectData {
+  id: string;
+  index: string;
+  featured: boolean;
+  title: string;
+  subtitle?: string;
+  desc: string;
+  metrics: { val: string; label: string }[];
+  coreStack: string[];
+  tools: string[];
+  badge: 'live' | 'demo' | 'preview';
+  urlBarText: string;
+  mediaType: 'video' | 'image';
+  mediaSrc: string;
+  liveUrl?: string;
+  githubUrl: string;
+  primaryCta: string;
+  secondaryCta?: string;
+}
+
+export const PROJECTS: ProjectData[] = [
   {
     id:       "proj-01",
     index:    "01",
     featured: true,
     title:    "RAG Chatbot",
-    sub:      "Panjab University",
-    desc:     "Full-stack Retrieval-Augmented Generation chatbot with automated vector indexing pipeline via ChromaDB. Built accuracy monitoring dashboard and follow-up suggestion engine from scratch.",
-    metrics:  [{ val: "~60%", label: "Faster resolution" }, { val: "~95%", label: "Data consistency" }],
-    tags:     ["Python","Flask","LlamaIndex","ChromaDB","Groq","HuggingFace"],
-    github:   "https://github.com/nikhilkaundal",
+    subtitle: "AI Assistant for University Admissions",
+    desc:     "Context-aware AI chatbot built with a Retrieval-Augmented Generation pipeline to answer admission-related queries with high accuracy.",
+    metrics:  [
+      { val: "~60%", label: "Response Accuracy" },
+      { val: "1.2s", label: "Avg Response" },
+      { val: "10K+", label: "Docs Indexed" },
+      { val: "100+", label: "Queries Tested" }
+    ],
+    coreStack: ["PYTHON", "LLAMAINDEX", "CHROMADB", "GROQ"],
+    tools:     ["FLASK", "HUGGINGFACE", "VITE", "REACT", "VERCEL"],
+    badge:    "live",
+    urlBarText: "https://pu-admission-bot.vercel.app",
+    mediaType: "video",
+    mediaSrc:  "/projects/Recording 2026-05-11 220548.mp4",
+    liveUrl:   "https://rag-based-chatbot-for-pu-campus.vercel.app",
+    githubUrl: "https://github.com/nikhilkaundal/RAG-Based-Chatbot-for-PU-Campus",
+    primaryCta: "Live Demo ↗",
   },
   {
     id:       "proj-02",
     index:    "02",
     featured: false,
-    title:    "Salary Management System",
-    sub:      "",
-    desc:     "End-to-end payroll application with automated computation, secure JWT auth, RBAC, employee management, and full data validation built production-ready.",
-    metrics:  [],
-    tags:     ["React.js","Node.js","Express.js","MySQL","JWT"],
-    github:   "https://github.com/nikhilkaundal",
+    title:    "Salary Manager",
+    desc:     "Automated expense tracking from salary SMS with NLP pipeline & smart categorization.",
+    metrics:  [
+      { val: "~0", label: "Manual Entry Needed" },
+      { val: "~80%", label: "Detection Accuracy" }
+    ],
+    coreStack: ["PYTHON", "FLASK", "NLP", "MYSQL"],
+    tools:     ["REACT"],
+    badge:    "live",
+    urlBarText: "https://salary-manager.vercel.app",
+    mediaType: "video",
+    mediaSrc:  "/demos/salary-manager-demo.mp4",
+    githubUrl: "https://github.com/nikhilkaundal/salary-manager-app",
+    primaryCta: "Watch Demo",
   },
   {
     id:       "proj-03",
     index:    "03",
     featured: false,
-    title:    "S&P 500 Financial Analysis",
-    sub:      "",
-    desc:     "Automated pipeline for 500+ stock records. ARIMA forecasting with ~80% directional accuracy, Power BI sector dashboards, A/B tested volatility models.",
-    metrics:  [],
-    tags:     ["Python","Pandas","Flask","Power BI","ARIMA"],
-    github:   "https://github.com/nikhilkaundal",
+    title:    "S&P 500 Predictor",
+    desc:     "LSTM model to predict next-day market trend with high accuracy.",
+    metrics:  [
+      { val: "~80%", label: "Prediction Accuracy" }
+    ],
+    coreStack: ["PYTHON", "LSTM", "STREAMLIT"],
+    tools:     ["YFINANCE", "PANDAS"],
+    badge:    "live",
+    urlBarText: "https://sp500-predictor.vercel.app",
+    mediaType: "image",
+    mediaSrc:  "/demos/sp500-dashboard.png",
+    githubUrl: "https://github.com/nikhilkaundal/S-P-500-Portfolio-Analysis-main",
+    primaryCta: "View Dashboard",
+  },
+  {
+    id:       "proj-04",
+    index:    "04",
+    featured: false,
+    title:    "OkQuoted (Marketplace)",
+    desc:     "RFQ platform connecting buyers & vendors with negotiation & real-time updates.",
+    metrics:  [
+      { val: "100+", label: "RFQs Processed" },
+      { val: "50+", label: "Active Vendors" }
+    ],
+    coreStack: ["REACT", "NODEJS", "MONGODB"],
+    tools:     ["SOCKET.IO", "JWT"],
+    badge:    "preview",
+    urlBarText: "https://okquoted.app",
+    mediaType: "image",
+    mediaSrc:  "/proof/companywebpage.png",
+    githubUrl: "https://github.com/nikhilkaundal",
+    primaryCta: "Live Preview",
+  },
+];
+
+export interface MoreProject {
+  icon: 'book' | 'newspaper' | 'globe';
+  title: string;
+  sub: string;
+  link: string;
+}
+
+export const MORE_PROJECTS: MoreProject[] = [
+  {
+    icon:  "book",
+    title: "Library Management System",
+    sub:   "Python + MySQL",
+    link:  "https://github.com/nikhilkaundal/Library-management-system",
+  },
+  {
+    icon:  "newspaper",
+    title: "Pratibimb",
+    sub:   "News Website",
+    link:  "https://github.com/nikhilkaundal/Pratibimbnews",
+  },
+  {
+    icon:  "globe",
+    title: "Portfolio Website",
+    sub:   "Personal",
+    link:  "https://github.com/nikhilkaundal",
   },
 ];
 
