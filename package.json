@@ -8,5 +8,8 @@
     "dev": "npm run dev --prefix portfolio_v3",
     "build": "npm run build --prefix portfolio_v3",
     "test": "npm test --prefix portfolio_v3"
+  },
+  "dependencies": {
+    "@vercel/speed-insights": "^2.0.0"
   }
 }

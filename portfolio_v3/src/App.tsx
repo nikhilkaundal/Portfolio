@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import "./index.css";
 
 // Layout
@@ -69,6 +71,8 @@ const App: React.FC = () => {
         </main>
         <Footer />
       </div>
+      <Analytics />
+      <SpeedInsights />
     </>
   );
 };
