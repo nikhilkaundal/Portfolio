@@ -6,7 +6,7 @@ const Footer: React.FC = () => {
   }, []);
 
   return (
-    <footer className="relative border-t border-white/5 px-8 md:px-16 py-8 flex flex-col md:flex-row items-center justify-between bg-night gap-4">
+    <footer className="relative border-t border-bark/10 px-8 md:px-16 py-8 flex flex-col md:flex-row items-center justify-between bg-night gap-4">
       {/* Top Border Glow Accent */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[1px] bg-gradient-to-r from-transparent via-amber/30 to-transparent" />
 

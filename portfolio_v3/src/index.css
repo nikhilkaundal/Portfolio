@@ -8,17 +8,135 @@
   --accent: #C05800;
   --text-primary: #E8E4DD;
   --text-muted: #6B6560;
+
+  /* Opacities & spotlight settings */
+  --hero-canvas-opacity: 0.5;
+  --contact-canvas-opacity: 0.5;
+  --cursor-spotlight-opacity: 1;
+
+  /* Tailwind CSS variables in RGB format */
+  --night-rgb: 10, 10, 11;             /* #0A0A0B */
+  --night-light-rgb: 17, 17, 19;       /* #111113 */
+  
+  --surface-rgb: 26, 26, 29;           /* #1A1A1D */
+  --surface-light-rgb: 34, 34, 37;     /* #222225 */
+  --surface-dark-rgb: 17, 17, 19;      /* #111113 */
+  
+  --amber-rgb: 192, 88, 0;             /* #C05800 */
+  --amber-dark-rgb: 113, 54, 0;        /* #713600 */
+  --amber-glow-rgb: 255, 122, 26;      /* #FF7A1A */
+  --amber-muted-rgb: 139, 69, 19;      /* #8B4513 */
+  
+  --bark-rgb: 232, 228, 221;           /* #E8E4DD */
+  --bark-muted-rgb: 107, 101, 96;      /* #6B6560 */
+  --bark-dim-rgb: 74, 69, 64;          /* #4A4540 */
+  
+  --cream-rgb: 250, 239, 208;          /* #FAEFD0 */
+  --ivory-rgb: 253, 251, 212;          /* #FDFBD4 */
+
+  /* SkillsSection specific variables */
+  --skills-bg: #111111;
+  --skills-bg-stats: #0d0d0d;
+  --skills-border: #222222;
+  --skills-border-stats: #1f1f1f;
+  --skills-text-muted: #666666;
+  --skills-text-stats-label: #555555;
+  --skills-text-white: #ffffff;
+  --skills-accent: #F97316;
+  --skills-accent-bg: #1a1005;
+  --skills-border-hover: #333333;
+  --skills-drag-handle: #333333;
+  --skills-private-text: #555555;
+  --skills-private-subtext: #444444;
+
+  /* Mockups specific variables */
+  --mock-bg: #0A0A0C;
+  --mock-surface: #0E0E10;
+  --mock-surface-light: #111113;
+  --mock-surface-border: #161618;
+  --mock-border: rgba(255, 255, 255, 0.04);
+  --mock-border-light: rgba(255, 255, 255, 0.08);
+  --mock-border-dim: rgba(255, 255, 255, 0.03);
+  --mock-accent-bg: rgba(255, 255, 255, 0.05);
+  --mock-accent-text: #FAEFD0;
+  --mock-text: #E8E4DD;
+}
+
+[data-theme="light"] {
+  /* Existing css variables */
+  --bg-secondary: #F2EDE4;
+  --border: #E5DDD0;
+  --accent: #D4600A;
+  --text-primary: #1A1613;
+  --text-muted: #6B6259;
+
+  /* Opacities & spotlight settings */
+  --hero-canvas-opacity: 0.12;
+  --contact-canvas-opacity: 0.12;
+  --cursor-spotlight-opacity: 0.25;
+
+  /* Tailwind CSS variables in RGB format */
+  --night-rgb: 250, 246, 240;          /* #FAF6F0 - warm cream */
+  --night-light-rgb: 242, 237, 228;    /* #F2EDE4 - cards/sections */
+  
+  --surface-rgb: 242, 237, 228;        /* #F2EDE4 - cards/sections */
+  --surface-light-rgb: 251, 232, 214;  /* #FBE8D6 - tags/highlights */
+  --surface-dark-rgb: 242, 237, 228;   /* #F2EDE4 */
+  
+  --amber-rgb: 212, 96, 10;            /* #D4600A - brand accent */
+  --amber-dark-rgb: 179, 79, 8;        /* #B34F08 - accent-hover */
+  --amber-glow-rgb: 212, 96, 10;
+  --amber-muted-rgb: 179, 79, 8;
+  
+  --bark-rgb: 26, 22, 19;              /* #1A1613 - text primary */
+  --bark-muted-rgb: 107, 98, 89;       /* #6B6259 - text secondary */
+  --bark-dim-rgb: 107, 98, 89;         /* #6B6259 */
+  
+  --cream-rgb: 251, 232, 214;          /* #FBE8D6 */
+  --ivory-rgb: 251, 232, 214;          /* #FBE8D6 */
+
+  /* SkillsSection specific variables */
+  --skills-bg: #F2EDE4;
+  --skills-bg-stats: #FAF6F0;
+  --skills-border: #E5DDD0;
+  --skills-border-stats: #E5DDD0;
+  --skills-text-muted: #6B6259;
+  --skills-text-stats-label: #6B6259;
+  --skills-text-white: #1A1613;
+  --skills-accent: #D4600A;
+  --skills-accent-bg: #FBE8D6;
+  --skills-border-hover: #D4600A;
+  --skills-drag-handle: #E5DDD0;
+  --skills-private-text: #6B6259;
+  --skills-private-subtext: #6B6259;
+
+  /* Mockups specific variables */
+  --mock-bg: #FAF6F0;
+  --mock-surface: #F2EDE4;
+  --mock-surface-light: #F2EDE4;
+  --mock-surface-border: #E5DDD0;
+  --mock-border: #E5DDD0;
+  --mock-border-light: #E5DDD0;
+  --mock-border-dim: #E5DDD0;
+  --mock-accent-bg: #FBE8D6;
+  --mock-accent-text: #D4600A;
+  --mock-text: #1A1613;
+}
+
+/* Smooth element transitions targeting only colors/backgrounds, preserving custom transform animations */
+html, body, section, nav, div, p, span, h1, h2, h3, h4, h5, h6, a, button, svg, input, textarea {
+  transition: color 300ms ease, background-color 300ms ease, border-color 300ms ease, box-shadow 300ms ease;
 }
 
 /* ── Reset & base ──────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: auto; overflow-x: hidden; }
+html { scroll-behavior: auto; overflow-x: clip; }
 body {
-  background: #0A0A0B;
-  color: #E8E4DD;
+  background: rgb(var(--night-rgb));
+  color: rgb(var(--bark-rgb));
   cursor: default;
   font-family: 'DM Sans', system-ui, sans-serif;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* ── Grain overlay ─────────────────────────────────────── */
@@ -46,6 +164,12 @@ body::before {
   transform: translate(-50%, -50%);
   will-change: transform, width, height, opacity;
   mix-blend-mode: screen;
+  opacity: var(--cursor-spotlight-opacity);
+}
+
+[data-theme="light"] .cursor-spotlight {
+  background: radial-gradient(circle, rgba(212, 96, 10, 0.25) 0%, rgba(212, 96, 10, 0.08) 35%, transparent 70%);
+  mix-blend-mode: multiply;
 }
 
 /* ── Section reveals ──────────────────────────────────── */

@@ -57,8 +57,8 @@ const App: React.FC = () => {
         <Navbar />
         <main className="min-h-[85vh]">
           <div 
-            className={`transition-all duration-300 transform-gpu
-              ${transitioning ? "opacity-0 translate-y-3 blur-[2px]" : "opacity-100 translate-y-0 blur-0"}`}
+            className={`transition-all duration-300
+              ${transitioning ? "opacity-0 translate-y-3 blur-[2px] transform-gpu" : "opacity-100"}`}
           >
             <Routes location={displayLocation}>
               <Route path="/" element={<Home />} />

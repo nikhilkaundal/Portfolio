@@ -187,7 +187,7 @@ const Contact: React.FC = () => {
         </div>
 
         <h2
-          className="font-display font-light mb-8 leading-none text-white tracking-tight"
+          className="font-display font-light mb-8 leading-none text-bark tracking-tight"
           style={{ fontSize: "clamp(3.5rem, 8vw, 7.5rem)", letterSpacing: "-0.04em" }}
         >
           Let's build <br />
@@ -207,7 +207,7 @@ const Contact: React.FC = () => {
             className="font-mono text-[0.8rem] tracking-[0.15em] uppercase
               inline-block border border-amber/30 text-amber px-10 py-4.5
               bg-surface/50 backdrop-blur-md rounded-none cursor-none
-              hover:border-amber-glow hover:text-white transition-all duration-300
+              hover:border-amber-glow hover:text-amber-glow dark:hover:text-white transition-all duration-300
               hover:shadow-[0_0_40px_rgba(255,122,26,0.25)]"
           >
             nikhilkaundal1257@gmail.com

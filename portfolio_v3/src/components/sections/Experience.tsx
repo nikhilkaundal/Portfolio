@@ -136,7 +136,7 @@ const Experience: React.FC = () => {
                             border transition-all duration-300
                             ${isActive
                               ? "border-amber/25 text-amber/70"
-                              : "border-white/[0.04] text-bark/20"
+                              : "border-bark/10 text-bark/20"
                             }`}
                           style={{
                             transitionDelay: isActive ? `${tagIdx * 50}ms` : "0ms",

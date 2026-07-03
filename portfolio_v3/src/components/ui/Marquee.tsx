@@ -33,7 +33,7 @@ const MarqueeRow: React.FC<{ items: string[]; reverse?: boolean; speed?: string;
 );
 
 const Marquee: React.FC = () => (
-  <div className="border-t border-b border-white/[0.04] py-3 overflow-hidden bg-night select-none">
+  <div className="border-t border-b border-bark/10 py-3 overflow-hidden bg-night select-none">
     <MarqueeRow items={ROW1} speed="32s" />
     <MarqueeRow items={ROW2} reverse speed="38s" outline />
   </div>
