@@ -1,8 +1,13 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Spline from "@splinetool/react-spline";
 import type { SplineEvent } from "@splinetool/runtime";
 import { useTheme } from "../../hooks/useTheme";
+
+// ── Lazy-load Spline runtime ──
+// Moves ~800 KB of @splinetool/* into a separate async chunk so it doesn't
+// block the main bundle parse and lets critical above-the-fold content
+// (hero text, buttons) paint first.
+const LazySpline = lazy(() => import("@splinetool/react-spline"));
 
 // Interactive Spline object name constants
 export const INTERACTIVE_OBJECTS = {
@@ -22,8 +27,32 @@ const RoomScene: React.FC<RoomSceneProps> = React.memo(({
   const splineRef = useRef<any>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isInView, setIsInView] = useState(false);
   const navigate = useNavigate();
   const { isDark } = useTheme();
+
+  // ── IntersectionObserver viewport gate ──
+  // Defer Spline mount until container is in (or about to enter) the viewport.
+  // For the above-fold Hero this fires almost immediately (within the first
+  // animation frame), but crucially *after* the browser has had a chance to
+  // paint the critical text and buttons — decoupling LCP from Spline parse.
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" } // start loading slightly before fully in view
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   // Sync Spline isDarkMode variable with current theme
   const syncSplineTheme = useCallback((dark: boolean, caller: string) => {
@@ -187,14 +216,18 @@ const RoomScene: React.FC<RoomSceneProps> = React.memo(({
         transform: "translateZ(0)",
       }}
     >
-      <Spline
-        scene={sceneUrl}
-        onLoad={handleLoad}
-        style={{ width: "100%", height: "100%" }}
-        onSplineMouseDown={handleSplineMouseDown}
-        onSplineMouseHover={handleSplineMouseHover}
-        {...({ onSplineMouseOut: handleSplineMouseOut } as any)}
-      />
+      {isInView && (
+        <Suspense fallback={null}>
+          <LazySpline
+            scene={sceneUrl}
+            onLoad={handleLoad}
+            style={{ width: "100%", height: "100%" }}
+            onSplineMouseDown={handleSplineMouseDown}
+            onSplineMouseHover={handleSplineMouseHover}
+            {...({ onSplineMouseOut: handleSplineMouseOut } as any)}
+          />
+        </Suspense>
+      )}
     </div>
   );
 });
