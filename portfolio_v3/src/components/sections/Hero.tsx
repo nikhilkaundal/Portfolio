@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import * as THREE from "three";
 import gsap from "gsap";
 
@@ -7,6 +8,7 @@ const MagneticBtn: React.FC<{ href: string; children: React.ReactNode; variant?:
   href, children, variant = "filled"
 }) => {
   const ref = useRef<HTMLAnchorElement>(null);
+  const navigate = useNavigate();
 
   const onMove = useCallback((e: React.MouseEvent) => {
     const el = ref.current;
@@ -20,13 +22,27 @@ const MagneticBtn: React.FC<{ href: string; children: React.ReactNode; variant?:
     if (ref.current) ref.current.style.transform = "";
   }, []);
 
+  const handleClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    if (href.startsWith("#")) {
+      // Hash link — smooth scroll to section on the same page
+      const target = document.querySelector(href);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      // Route path — use React Router navigation
+      navigate(href);
+    }
+  }, [href, navigate]);
+
   const base = "magnetic-btn font-mono text-[0.72rem] tracking-[0.12em] uppercase px-8 py-4 transition-all duration-300";
   const styles = variant === "filled"
     ? `${base} bg-amber text-night hover:shadow-[0_0_40px_rgba(192,88,0,0.4)] hover:bg-amber-glow`
     : `${base} border border-bark/20 text-bark/70 hover:border-amber/50 hover:text-amber`;
 
   return (
-    <a ref={ref} href={href} className={styles} onMouseMove={onMove} onMouseLeave={onLeave}>
+    <a ref={ref} href={href} className={styles} onMouseMove={onMove} onMouseLeave={onLeave} onClick={handleClick}>
       {children}
     </a>
   );
@@ -225,7 +241,7 @@ const Hero: React.FC = () => {
           className="hero-ctas flex items-center gap-4 mt-10 flex-wrap"
           style={{ opacity: 0, transform: "translateY(16px)" }}
         >
-          <MagneticBtn href="#projects" variant="filled">View Projects</MagneticBtn>
+          <MagneticBtn href="/projects" variant="filled">View Projects</MagneticBtn>
           <MagneticBtn href="#contact" variant="outline">Get in Touch</MagneticBtn>
         </div>
       </div>
