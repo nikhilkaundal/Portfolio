@@ -13,6 +13,7 @@ const MagneticBtn: React.FC<{ href: string; children: React.ReactNode; variant?:
   href, children, variant = "filled", target, rel
 }) => {
   const ref = useRef<HTMLAnchorElement>(null);
+  const navigate = useNavigate();
 
   const onMove = useCallback((e: React.MouseEvent) => {
     const el = ref.current;
