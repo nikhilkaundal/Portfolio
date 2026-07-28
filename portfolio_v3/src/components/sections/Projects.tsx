@@ -23,7 +23,7 @@ import {
 /* GitHub brand icon (not in lucide-react) */
 const GitHubIcon: React.FC<{ size?: number; className?: string }> = ({ size = 16, className }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
   </svg>
 );
 
@@ -79,9 +79,8 @@ const MetricCounter: React.FC<{ val: string; label: string }> = ({ val, label })
 
   return (
     <div ref={ref} className="text-left">
-      <p className={`font-display font-light text-amber leading-none mb-1 ${
-        val.length > 7 ? "text-lg lg:text-xl font-medium tracking-tight" : "text-3xl lg:text-4xl"
-      }`}>{display}</p>
+      <p className={`font-display font-light text-amber leading-none mb-1 ${val.length > 7 ? "text-lg lg:text-xl font-medium tracking-tight" : "text-3xl lg:text-4xl"
+        }`}>{display}</p>
       {label && <p className="font-mono text-[0.55rem] tracking-[0.1em] uppercase text-bark/30">{label}</p>}
     </div>
   );
@@ -136,7 +135,7 @@ const PremiumGlowCard: React.FC<PremiumGlowCardProps> = ({
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
-      className={`glow-card rounded-2xl relative overflow-hidden transition-all duration-500 ease-out border border-white/[0.06] bg-[#0E0E10] ${className}`}
+      className={`glow-card rounded-2xl relative overflow-hidden transition-all duration-500 ease-out border border-bark/10 bg-surface/40 ${className}`}
       style={{
         transform: isHovered ? "translateY(-4px)" : "translateY(0)",
         boxShadow: isHovered
@@ -167,7 +166,7 @@ const PremiumGlowCard: React.FC<PremiumGlowCardProps> = ({
           background: `radial-gradient(400px circle at ${coords.x}px ${coords.y}px, rgba(255, 122, 26, 0.08), transparent 80%)`,
         }}
       />
-      
+
       {/* 3. Futuristic Laser Scanline Grid Mesh */}
       <div
         className="absolute pointer-events-none inset-0 z-0 opacity-0 transition-opacity duration-500 rounded-inherit mix-blend-overlay"
@@ -227,7 +226,7 @@ const InteractiveChatMockup: React.FC = () => {
   ]);
   const [isTyping, setIsTyping] = useState(false);
   const [currentTypingText, setCurrentTypingText] = useState("");
-  const chatEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   const suggestedQuestions = [
     "What are the fees for B.Tech CSE?",
@@ -238,7 +237,7 @@ const InteractiveChatMockup: React.FC = () => {
 
   const handleSend = (text: string) => {
     if (isTyping) return;
-    
+
     setMessages(prev => [...prev, { sender: "user", text }]);
     setIsTyping(true);
 
@@ -275,13 +274,15 @@ const InteractiveChatMockup: React.FC = () => {
   };
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
   }, [messages, currentTypingText]);
 
   return (
-    <div className="flex h-full bg-[#0E0E10] text-[#E8E4DD] font-body text-xs overflow-hidden select-none">
+    <div className="flex h-full bg-mock-surface text-mock-text font-body text-xs overflow-hidden select-none">
       {/* Sidebar */}
-      <div className="hidden sm:flex w-[140px] bg-[#0A0A0C] border-r border-white/[0.04] p-2.5 flex-col justify-between flex-shrink-0">
+      <div className="hidden sm:flex w-[140px] bg-mock-bg border-r border-mock-border p-2.5 flex-col justify-between flex-shrink-0">
         <div>
           {/* Logo */}
           <div className="flex items-center gap-1.5 mb-4 px-1">
@@ -295,7 +296,7 @@ const InteractiveChatMockup: React.FC = () => {
               setIsTyping(false);
               setCurrentTypingText("");
             }}
-            className="w-full py-1.5 px-2 bg-amber hover:bg-[#D46200] text-night font-mono text-[0.55rem] font-bold rounded transition-colors cursor-none mb-4"
+            className="w-full py-1.5 px-2 bg-amber hover:bg-amber-dark text-night font-mono text-[0.55rem] font-bold rounded transition-colors cursor-none mb-4"
           >
             + New Chat
           </button>
@@ -309,27 +310,26 @@ const InteractiveChatMockup: React.FC = () => {
       </div>
 
       {/* Main chat window */}
-      <div className="flex-1 flex flex-col justify-between bg-[#0E0E10] relative">
+      <div className="flex-1 flex flex-col justify-between bg-mock-surface relative">
         {/* Floating badge inside main window */}
-        <div className="absolute top-2 right-2 z-10 flex items-center gap-1 bg-[#161618]/90 border border-white/[0.06] rounded-full px-2 py-0.5">
+        <div className="absolute top-2 right-2 z-10 flex items-center gap-1 bg-mock-surfaceLight/90 border border-mock-borderLight rounded-full px-2 py-0.5">
           <span className="w-1.5 h-1.5 rounded-full bg-[#28C840] animate-pulse" />
           <span className="font-mono text-[0.45rem] tracking-[0.1em] text-bark/50">LIVE DEMO</span>
         </div>
 
         {/* Chat History Area */}
-        <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-2.5 scrollbar-thin">
+        <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-3 flex flex-col gap-2.5 scrollbar-thin">
           {messages.map((msg, idx) => (
             <div key={idx} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
               <div
-                className={`max-w-[85%] rounded-lg p-2.5 leading-relaxed whitespace-pre-line text-[0.7rem] ${
-                  msg.sender === "user"
-                    ? "bg-white/[0.05] text-[#FAEFD0] border border-white/[0.04]"
-                    : "bg-[#161618] text-bark/80 border border-white/[0.03]"
-                }`}
+                className={`max-w-[85%] rounded-lg p-2.5 leading-relaxed whitespace-pre-line text-[0.7rem] ${msg.sender === "user"
+                    ? "bg-mock-accent-bg text-mock-accent-text border border-mock-borderLight"
+                    : "bg-mock-surfaceLight text-bark/80 border border-mock-border"
+                  }`}
               >
                 {msg.text}
                 {msg.hasPdf && (
-                  <button className="mt-2 block w-full py-1 px-2 bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] text-amber text-[0.58rem] font-mono rounded text-center transition-colors cursor-none">
+                  <button className="mt-2 block w-full py-1 px-2 bg-mock-surfaceLight hover:bg-mock-surfaceLight/80 border border-mock-borderLight text-amber text-[0.58rem] font-mono rounded text-center transition-colors cursor-none">
                     View Fee Structure PDF ↗
                   </button>
                 )}
@@ -338,7 +338,7 @@ const InteractiveChatMockup: React.FC = () => {
           ))}
           {isTyping && (
             <div className="flex justify-start">
-              <div className="max-w-[85%] rounded-lg p-2.5 bg-[#161618] text-bark/80 border border-white/[0.03] text-[0.7rem]">
+              <div className="max-w-[85%] rounded-lg p-2.5 bg-mock-surfaceLight text-bark/80 border border-mock-border text-[0.7rem]">
                 {currentTypingText ? (
                   currentTypingText
                 ) : (
@@ -351,11 +351,10 @@ const InteractiveChatMockup: React.FC = () => {
               </div>
             </div>
           )}
-          <div ref={chatEndRef} />
         </div>
 
         {/* Suggested questions & input */}
-        <div className="p-3 bg-[#0A0A0C]/50 border-t border-white/[0.03]">
+        <div className="p-3 bg-mock-bg/50 border-t border-mock-border">
           {/* Suggested pills */}
           <div className="mb-2">
             <span className="font-mono text-[0.5rem] tracking-[0.1em] text-bark/20 block mb-1">SUGGESTED QUESTIONS</span>
@@ -365,7 +364,7 @@ const InteractiveChatMockup: React.FC = () => {
                   key={q}
                   onClick={() => handleSend(q)}
                   disabled={isTyping}
-                  className="px-2 py-1 bg-[#161618] hover:bg-white/[0.05] border border-white/[0.06] text-bark/60 hover:text-bark/85 text-[0.58rem] rounded transition-colors cursor-none disabled:opacity-50"
+                  className="px-2 py-1 bg-mock-surfaceLight hover:bg-mock-accent-bg border border-mock-borderLight text-bark/60 hover:text-bark/85 text-[0.58rem] rounded transition-colors cursor-none disabled:opacity-50"
                 >
                   {q}
                 </button>
@@ -373,7 +372,7 @@ const InteractiveChatMockup: React.FC = () => {
             </div>
           </div>
           {/* Input field */}
-          <div className="flex items-center gap-2 bg-[#0A0A0B]/80 rounded-md border border-white/[0.04] p-1.5">
+          <div className="flex items-center gap-2 bg-mock-bg/80 rounded-md border border-mock-border p-1.5">
             <input
               type="text"
               placeholder="Ask anything..."
@@ -386,7 +385,7 @@ const InteractiveChatMockup: React.FC = () => {
               }}
               className="bg-transparent outline-none flex-1 text-bark/70 placeholder-bark/25 text-[0.7rem] px-1 disabled:opacity-50"
             />
-            <button className="w-5 h-5 rounded-md bg-[#161618] flex items-center justify-center border border-white/[0.06] hover:border-amber/40 transition-colors cursor-none">
+            <button className="w-5 h-5 rounded-md bg-mock-surfaceLight flex items-center justify-center border border-mock-borderLight hover:border-amber/40 transition-colors cursor-none">
               <ChevronRight size={11} className="text-bark/50" />
             </button>
           </div>
@@ -401,9 +400,9 @@ const InteractiveChatMockup: React.FC = () => {
    ═══════════════════════════════════════════════════════════ */
 const SalaryManagerMockup: React.FC = () => {
   return (
-    <div className="w-full h-full bg-[#0A0A0C] text-[#E8E4DD] font-body text-[0.55rem] p-3 flex flex-col justify-between select-none">
+    <div className="w-full h-full bg-mock-bg text-mock-text font-body text-[0.55rem] p-3 flex flex-col justify-between select-none">
       {/* Header */}
-      <div className="flex justify-between items-center border-b border-white/[0.04] pb-2">
+      <div className="flex justify-between items-center border-b border-mock-border pb-2">
         <span className="font-mono tracking-wider text-bark/40">SALARY MANAGER</span>
         <div className="flex gap-1.5 items-center">
           <span className="w-1.5 h-1.5 rounded-full bg-[#28C840] animate-pulse" />
@@ -416,21 +415,21 @@ const SalaryManagerMockup: React.FC = () => {
         {/* Left Stats & Chart */}
         <div className="flex flex-col justify-between">
           <div className="grid grid-cols-3 gap-1.5">
-            <div className="bg-[#111113] border border-white/[0.04] p-1 rounded">
+            <div className="bg-mock-surface border border-mock-border p-1 rounded">
               <p className="text-bark/30 text-[0.45rem] font-mono uppercase">SMS Read</p>
               <p className="text-amber font-mono font-bold text-xs">142</p>
             </div>
-            <div className="bg-[#111113] border border-white/[0.04] p-1 rounded">
+            <div className="bg-mock-surface border border-mock-border p-1 rounded">
               <p className="text-bark/30 text-[0.45rem] font-mono uppercase">Spend</p>
               <p className="text-amber font-mono font-bold text-xs">₹24.5K</p>
             </div>
-            <div className="bg-[#111113] border border-white/[0.04] p-1 rounded">
+            <div className="bg-mock-surface border border-mock-border p-1 rounded">
               <p className="text-bark/30 text-[0.45rem] font-mono uppercase">Saves</p>
               <p className="text-amber font-mono font-bold text-xs">₹35.5K</p>
             </div>
           </div>
 
-          <div className="flex-1 bg-[#111113]/50 border border-white/[0.03] rounded p-2 mt-2 flex flex-col justify-between">
+          <div className="flex-1 bg-mock-surface/50 border border-mock-border rounded p-2 mt-2 flex flex-col justify-between">
             <p className="text-bark/35 text-[0.45rem] font-mono uppercase mb-1">Expense Breakdown</p>
             <div className="flex items-end justify-between h-[36px] px-2">
               {[
@@ -450,15 +449,15 @@ const SalaryManagerMockup: React.FC = () => {
         </div>
 
         {/* Right Parsed SMS Log */}
-        <div className="hidden sm:flex bg-[#111113] border border-white/[0.04] rounded p-2 flex-col overflow-hidden">
-          <p className="text-bark/30 text-[0.45rem] font-mono uppercase mb-1.5 border-b border-white/[0.03] pb-1">SMS Parser Logs</p>
+        <div className="hidden sm:flex bg-mock-surface border border-mock-border rounded p-2 flex-col overflow-hidden">
+          <p className="text-bark/30 text-[0.45rem] font-mono uppercase mb-1.5 border-b border-mock-border pb-1">SMS Parser Logs</p>
           <div className="flex-1 flex flex-col gap-1.5 overflow-y-auto scrollbar-none">
             {[
               { type: "debit", source: "HDFC", amt: "₹850", tag: "Swiggy", time: "Just now" },
               { type: "debit", source: "SBI", amt: "₹2,400", tag: "Fuel", time: "1h ago" },
               { type: "credit", source: "ICICI", amt: "₹60K", tag: "Salary", time: "1d ago" },
             ].map((log, i) => (
-              <div key={i} className="bg-white/[0.02] border border-white/[0.03] p-1 rounded flex flex-col gap-0.5">
+              <div key={i} className="bg-bark/5 border border-mock-border p-1 rounded flex flex-col gap-0.5">
                 <div className="flex justify-between items-center">
                   <span className="font-mono text-bark/20 text-[0.45rem]">{log.source} SMS</span>
                   <span className={log.type === "credit" ? "text-green-500 font-bold" : "text-amber font-bold"}>{log.amt}</span>
@@ -481,7 +480,7 @@ const SalaryManagerMockup: React.FC = () => {
    ═══════════════════════════════════════════════════════════ */
 const SP500PredictorMockup: React.FC = () => {
   return (
-    <div className="w-full h-full bg-[#0A0A0C] text-[#E8E4DD] font-body text-[0.55rem] p-3 flex flex-col justify-between select-none relative">
+    <div className="w-full h-full bg-mock-bg text-mock-text font-body text-[0.55rem] p-3 flex flex-col justify-between select-none relative">
       <div className="absolute top-2.5 right-3 bg-amber/10 border border-amber/30 text-amber px-1.5 py-0.5 rounded font-mono text-[0.48rem] font-bold animate-pulse">
         78.6% CONFIDENCE
       </div>
@@ -491,16 +490,16 @@ const SP500PredictorMockup: React.FC = () => {
         <h4 className="text-bark/80 text-xs font-light font-display">LSTM Trend Prediction</h4>
       </div>
 
-      <div className="flex-1 relative my-2 border-b border-l border-white/[0.05] flex items-end">
+      <div className="flex-1 relative my-2 border-b border-l border-mock-border flex items-end">
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 200 80" preserveAspectRatio="none">
           <defs>
             <linearGradient id="gradientActual" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#C05800" stopOpacity="0.2"/>
-              <stop offset="100%" stopColor="#C05800" stopOpacity="0"/>
+              <stop offset="0%" stopColor="#C05800" stopOpacity="0.2" />
+              <stop offset="100%" stopColor="#C05800" stopOpacity="0" />
             </linearGradient>
             <linearGradient id="gradientPredict" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#FF7A1A" stopOpacity="0.15"/>
-              <stop offset="100%" stopColor="#FF7A1A" stopOpacity="0"/>
+              <stop offset="0%" stopColor="#FF7A1A" stopOpacity="0.15" />
+              <stop offset="100%" stopColor="#FF7A1A" stopOpacity="0" />
             </linearGradient>
           </defs>
 
@@ -527,7 +526,7 @@ const SP500PredictorMockup: React.FC = () => {
             strokeDasharray="2,2"
           />
 
-          <line x1="140" y1="0" x2="140" y2="80" stroke="rgba(255,255,255,0.06)" strokeWidth="1" strokeDasharray="1,2" />
+          <line x1="140" y1="0" x2="140" y2="80" stroke="var(--mock-border)" strokeWidth="1" strokeDasharray="1,2" />
         </svg>
 
         <div className="absolute left-[142px] top-4 border-l border-amber/40 pl-1.5 animate-bounce" style={{ animationDuration: "3s" }}>
@@ -566,22 +565,11 @@ const LiveIframeMockup: React.FC<{ src: string }> = ({ src }) => {
     const updateScale = () => {
       const rect = el.getBoundingClientRect();
       const width = rect.width;
-      const height = rect.height;
-      const mobileMode = width < 768;
-      
-      if (mobileMode) {
-        // Load the iframe at a standard mobile width (375px)
-        const vWidth = 375;
-        // The virtual height should match the aspect ratio of the container (vHeight = vWidth * height/width)
-        const vHeight = vWidth * (height / width);
-        setVirtualWidth(vWidth);
-        setVirtualHeight(vHeight);
-        setScale(width / vWidth);
-      } else {
-        setVirtualWidth(1920);
-        setVirtualHeight(876);
-        setScale(width / 1920);
-      }
+      const vWidth = 1366; // True Desktop Browser Resolution
+      const vHeight = 820;
+      setVirtualWidth(vWidth);
+      setVirtualHeight(vHeight);
+      setScale(width / vWidth);
     };
 
     updateScale();
@@ -634,8 +622,8 @@ interface DemoFrameProps {
 }
 
 const BADGE_CONFIG = {
-  live:    { dotColor: "#28C840", text: "LIVE DEMO" },
-  demo:    { dotColor: "#C05800", text: "DEMO" },
+  live: { dotColor: "#28C840", text: "LIVE DEMO" },
+  demo: { dotColor: "#C05800", text: "DEMO" },
   preview: { dotColor: "#C05800", text: "PREVIEW" },
 };
 
@@ -664,9 +652,9 @@ const DemoFrame: React.FC<DemoFrameProps> = ({ id, mediaType, mediaSrc, urlBarTe
   const isMobile = containerWidth > 0 && containerWidth < 768;
 
   return (
-    <div ref={frameRef} className="relative rounded-xl overflow-hidden border border-white/[0.06] bg-[#111113] group/frame transition-shadow duration-500 hover:shadow-2xl hover:shadow-black/60">
+    <div ref={frameRef} className="relative rounded-xl overflow-hidden border border-mock-border bg-mock-surface group/frame transition-shadow duration-500 hover:shadow-2xl hover:shadow-black/60">
       {/* Title bar */}
-      <div className="flex items-center gap-3 px-4 py-2.5 bg-[#161618] border-b border-white/[0.04] group/title">
+      <div className="flex items-center gap-3 px-4 py-2.5 bg-mock-surfaceLight border-b border-mock-border group/title">
         {/* Traffic lights */}
         <div className="flex items-center gap-[6px] flex-shrink-0">
           <span className="w-[8px] h-[8px] rounded-full transition-transform duration-300 hover:scale-110" style={{ backgroundColor: "#FF5F57" }} />
@@ -674,12 +662,12 @@ const DemoFrame: React.FC<DemoFrameProps> = ({ id, mediaType, mediaSrc, urlBarTe
           <span className="w-[8px] h-[8px] rounded-full transition-transform duration-300 hover:scale-110" style={{ backgroundColor: "#28C840" }} />
         </div>
         {/* URL bar */}
-        <div className="flex-1 min-w-0 flex items-center gap-2 bg-[#0A0A0B]/60 rounded-md px-3 py-1.5 transition-colors duration-300 group-hover/frame:bg-[#0A0A0B]/85">
+        <div className="flex-1 min-w-0 flex items-center gap-2 bg-mock-bg/60 rounded-md px-3 py-1.5 transition-colors duration-300 group-hover/frame:bg-mock-bg/85">
           <Lock size={10} className="text-bark/20 flex-shrink-0" />
           <span className="font-mono text-[0.65rem] text-bark/30 truncate">{urlBarText}</span>
         </div>
         {/* Status Badge */}
-        <div className="flex items-center gap-1.5 bg-[#111113]/90 backdrop-blur-sm border border-white/[0.08] rounded-full px-2.5 py-1 flex-shrink-0">
+        <div className="flex items-center gap-1.5 bg-mock-surface/90 backdrop-blur-sm border border-mock-borderLight rounded-full px-2.5 py-1 flex-shrink-0">
           <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: badgeCfg.dotColor, boxShadow: `0 0 6px ${badgeCfg.dotColor}` }} />
           <span className="font-mono text-[0.55rem] tracking-[0.12em] uppercase text-bark/60">{badgeCfg.text}</span>
         </div>
@@ -687,34 +675,31 @@ const DemoFrame: React.FC<DemoFrameProps> = ({ id, mediaType, mediaSrc, urlBarTe
 
       {/* RAG Chatbot Dual Mode tab bar switcher */}
       {id === "proj-01" && (
-        <div className="flex bg-[#161618] border-b border-white/[0.04] px-4 py-1.5 gap-2 select-none relative z-20 overflow-x-auto whitespace-nowrap flex-nowrap scrollbar-none">
+        <div className="flex bg-mock-surfaceLight border-b border-mock-border px-4 py-1.5 gap-2 select-none relative z-20 overflow-x-auto whitespace-nowrap flex-nowrap scrollbar-none">
           <button
             onClick={() => setViewMode("video")}
-            className={`flex-shrink-0 font-mono text-[0.55rem] tracking-wider uppercase px-2.5 py-1 rounded transition-colors cursor-none ${
-              viewMode === "video"
-                ? "text-amber bg-white/[0.04] border border-white/[0.08]"
+            className={`flex-shrink-0 font-mono text-[0.55rem] tracking-wider uppercase px-2.5 py-1 rounded transition-colors cursor-none ${viewMode === "video"
+                ? "text-amber bg-bark/5 border border-bark/10"
                 : "text-bark/40 hover:text-bark/70 border border-transparent"
-            }`}
+              }`}
           >
             📹 Demo Video
           </button>
           <button
             onClick={() => setViewMode("live")}
-            className={`flex-shrink-0 font-mono text-[0.55rem] tracking-wider uppercase px-2.5 py-1 rounded transition-colors cursor-none ${
-              viewMode === "live"
-                ? "text-amber bg-white/[0.04] border border-white/[0.08]"
+            className={`flex-shrink-0 font-mono text-[0.55rem] tracking-wider uppercase px-2.5 py-1 rounded transition-colors cursor-none ${viewMode === "live"
+                ? "text-amber bg-bark/5 border border-bark/10"
                 : "text-bark/40 hover:text-bark/70 border border-transparent"
-            }`}
+              }`}
           >
             🌐 Live Website
           </button>
           <button
             onClick={() => setViewMode("interactive")}
-            className={`flex-shrink-0 font-mono text-[0.55rem] tracking-wider uppercase px-2.5 py-1 rounded transition-colors cursor-none ${
-              viewMode === "interactive"
-                ? "text-amber bg-white/[0.04] border border-white/[0.08]"
+            className={`flex-shrink-0 font-mono text-[0.55rem] tracking-wider uppercase px-2.5 py-1 rounded transition-colors cursor-none ${viewMode === "interactive"
+                ? "text-amber bg-bark/5 border border-bark/10"
                 : "text-bark/40 hover:text-bark/70 border border-transparent"
-            }`}
+              }`}
           >
             💬 Interactive Simulator
           </button>
@@ -724,7 +709,7 @@ const DemoFrame: React.FC<DemoFrameProps> = ({ id, mediaType, mediaSrc, urlBarTe
       {/* Media area — dynamic aspect ratio depending on project */}
       <div
         className="relative overflow-hidden bg-[#0A0A0B]"
-        style={{ aspectRatio: id === "proj-01" ? (isMobile ? "16 / 13" : "1920 / 876") : "16 / 9" }}
+        style={{ aspectRatio: "16 / 10" }}
       >
         {id === "proj-01" ? (
           viewMode === "interactive" ? (
@@ -771,8 +756,6 @@ const DemoFrame: React.FC<DemoFrameProps> = ({ id, mediaType, mediaSrc, urlBarTe
             className="w-full h-full object-cover screenshot-pan hover:scale-[1.03] transition-transform duration-[500ms] ease-out"
           />
         )}
-        {/* Bottom gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
       </div>
     </div>
   );
@@ -784,7 +767,7 @@ const DemoFrame: React.FC<DemoFrameProps> = ({ id, mediaType, mediaSrc, urlBarTe
 const ArchitectureStrip: React.FC = () => {
   const steps = [
     { icon: MessageSquare, label: "Query" },
-    { icon: Database,      label: "Retrieval" },
+    { icon: Database, label: "Retrieval" },
     { icon: MessageSquare, label: "Response" },
   ];
 
@@ -792,7 +775,7 @@ const ArchitectureStrip: React.FC = () => {
     <div className="flex items-center gap-2 sm:gap-3 select-none">
       {steps.map((step, i) => (
         <React.Fragment key={step.label}>
-          <div className="flex items-center gap-2 border border-white/[0.06] rounded-lg px-3 py-2 bg-white/[0.02] hover:border-amber/40 hover:bg-amber/[0.03] hover:scale-105 transition-all duration-300">
+          <div className="flex items-center gap-2 border border-bark/10 rounded-lg px-3 py-2 bg-bark/[0.01] hover:border-amber/40 hover:bg-amber/[0.03] hover:scale-105 transition-all duration-300">
             <step.icon size={14} className="text-amber/50" />
             <span className="hidden sm:inline font-mono text-[0.6rem] tracking-[0.08em] uppercase text-bark/40">{step.label}</span>
           </div>
@@ -832,8 +815,8 @@ const ConfirmModal: React.FC<{ url: string; onClose: () => void }> = ({ url, onC
           <button
             onClick={onClose}
             className="font-mono text-[0.68rem] tracking-[0.1em] uppercase
-              text-bark/40 border border-white/[0.08] rounded-full px-5 py-2.5
-              hover:border-white/[0.15] hover:text-bark/60
+              text-bark/40 border border-bark/10 rounded-full px-5 py-2.5
+              hover:border-bark/20 hover:text-bark/60
               transition-all duration-300 cursor-none"
           >
             Cancel
@@ -959,7 +942,7 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({ project, onOpenCaseStudy })
           </div>
 
           {/* Bottom row: Info on left, architecture in middle, CTAs on right */}
-          <div className="border-t border-white/[0.04] mt-8 pt-6 flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+          <div className="border-t border-bark/10 mt-8 pt-6 flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
             <p className="font-mono text-[0.52rem] sm:text-[0.58rem] tracking-[0.05em] text-bark/60 text-center md:text-left max-w-xs md:max-w-none">
               Built with modern AI stack &amp; RAG pipeline for accurate, context-aware responses.
             </p>
@@ -1004,12 +987,12 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({ project, onOpenCaseStudy })
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-mono text-[0.68rem] tracking-[0.1em] uppercase group/btn
-                  text-bark/50 border border-white/[0.08] rounded px-6 py-2.5
+                  text-bark/50 border border-bark/10 rounded px-6 py-2.5
                   hover:border-amber/30 hover:text-amber/70
                   transition-all duration-300 cursor-none
                   inline-flex items-center gap-2"
               >
-                Source Code 
+                Source Code
                 <ExternalLink size={12} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform duration-300" />
               </a>
             </div>
@@ -1103,12 +1086,12 @@ const SecondaryCard: React.FC<{ project: ProjectData; revealDelay?: number }> = 
               target="_blank"
               rel="noopener noreferrer"
               className="font-mono text-[0.65rem] tracking-[0.1em] uppercase group/btn
-                text-bark/50 border border-white/[0.08] rounded px-5 py-2
+                text-bark/50 border border-bark/10 rounded px-5 py-2
                 hover:border-amber/30 hover:text-amber/70
                 transition-all duration-300 cursor-none
                 inline-flex items-center gap-2"
             >
-              Source Code 
+              Source Code
               <ExternalLink size={11} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform duration-300" />
             </a>
           </div>
@@ -1136,7 +1119,7 @@ const MoreProjectsRow: React.FC = () => {
         <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-bark/55">
           More Projects
         </span>
-        <span className="h-px flex-1 bg-white/[0.04]" />
+        <span className="h-px flex-1 bg-bark/10" />
       </div>
 
       <div className="flex flex-wrap items-center gap-4">
@@ -1148,8 +1131,8 @@ const MoreProjectsRow: React.FC = () => {
               href={item.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 border border-white/[0.06] rounded-xl px-5 py-3.5
-                bg-white/[0.02] hover:border-amber/20 hover:bg-amber/[0.03] hover:-translate-y-1
+              className="flex items-center gap-3 border border-bark/10 rounded-xl px-5 py-3.5
+                bg-bark/[0.01] hover:border-amber/20 hover:bg-amber/[0.03] hover:-translate-y-1
                 transition-all duration-300 cursor-none group"
             >
               <div className="w-8 h-8 rounded-lg bg-amber/10 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
@@ -1173,7 +1156,7 @@ const MoreProjectsRow: React.FC = () => {
           href="https://github.com/nikhilkaundal?tab=repositories"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 border border-white/[0.08] rounded-full px-5 py-2.5 group
+          className="flex items-center gap-2 border border-bark/10 rounded-full px-5 py-2.5 group
             text-bark/40 hover:border-amber/30 hover:text-amber/70 hover:shadow-lg hover:shadow-amber/5
             transition-all duration-300 cursor-none ml-auto"
         >
@@ -1195,7 +1178,7 @@ const PipelineDiagram: React.FC = () => {
   return (
     <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-2 my-10 max-w-4xl mx-auto">
       {/* Ingestion */}
-      <div className="flex-1 w-full bg-white/[0.02] border border-white/[0.06] rounded-xl p-5 text-center hover:border-amber/40 hover:bg-amber/[0.02] transition-all duration-300 group/box">
+      <div className="flex-1 w-full bg-bark/[0.01] border border-bark/10 rounded-xl p-5 text-center hover:border-amber/40 hover:bg-amber/[0.02] transition-all duration-300 group/box">
         <div className="w-10 h-10 rounded-full bg-amber/10 flex items-center justify-center mx-auto mb-3 border border-amber/20 group-hover/box:scale-110 transition-transform">
           <FileText size={18} className="text-amber" />
         </div>
@@ -1212,7 +1195,7 @@ const PipelineDiagram: React.FC = () => {
       </div>
 
       {/* Retrieval */}
-      <div className="flex-1 w-full bg-white/[0.02] border border-white/[0.06] rounded-xl p-5 text-center hover:border-amber/40 hover:bg-amber/[0.02] transition-all duration-300 group/box">
+      <div className="flex-1 w-full bg-bark/[0.01] border border-bark/10 rounded-xl p-5 text-center hover:border-amber/40 hover:bg-amber/[0.02] transition-all duration-300 group/box">
         <div className="w-10 h-10 rounded-full bg-amber/10 flex items-center justify-center mx-auto mb-3 border border-amber/20 group-hover/box:scale-110 transition-transform">
           <Search size={18} className="text-amber" />
         </div>
@@ -1229,7 +1212,7 @@ const PipelineDiagram: React.FC = () => {
       </div>
 
       {/* Generation */}
-      <div className="flex-1 w-full bg-white/[0.02] border border-white/[0.06] rounded-xl p-5 text-center hover:border-amber/40 hover:bg-amber/[0.02] transition-all duration-300 group/box">
+      <div className="flex-1 w-full bg-bark/[0.01] border border-bark/10 rounded-xl p-5 text-center hover:border-amber/40 hover:bg-amber/[0.02] transition-all duration-300 group/box">
         <div className="w-10 h-10 rounded-full bg-amber/10 flex items-center justify-center mx-auto mb-3 border border-amber/20 group-hover/box:scale-110 transition-transform">
           <Sparkles size={18} className="text-amber" />
         </div>
@@ -1257,11 +1240,11 @@ const CaseStudyRagChatbot: React.FC<CaseStudyRagChatbotProps> = ({ onClose, proj
   useEffect(() => {
     // Reset scroll to top when opened
     scrollRef.current?.scrollTo({ top: 0 });
-    
+
     // Lock background scroll
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    
+
     return () => {
       document.body.style.overflow = prevOverflow;
     };
@@ -1276,7 +1259,7 @@ const CaseStudyRagChatbot: React.FC<CaseStudyRagChatbotProps> = ({ onClose, proj
     <div
       ref={scrollRef}
       data-lenis-prevent
-      className="fixed inset-0 z-[90] bg-[#0A0A0C] overflow-y-auto pt-24 pb-20 case-study-overlay"
+      className="fixed inset-0 z-[90] bg-night overflow-y-auto pt-24 pb-20 case-study-overlay"
       style={{ scrollBehavior: "smooth" }}
     >
       {/* Top back button row */}
@@ -1323,12 +1306,12 @@ const CaseStudyRagChatbot: React.FC<CaseStudyRagChatbotProps> = ({ onClose, proj
         </div>
 
         {/* B. The Problem Section */}
-        <div className="space-y-6 border-t border-white/[0.04] pt-14">
+        <div className="space-y-6 border-t border-bark/10 pt-14">
           <div className="flex items-center gap-4 mb-4">
             <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-bark/55">The Problem</span>
-            <span className="h-px flex-1 bg-white/[0.04]" />
+            <span className="h-px flex-1 bg-bark/10" />
           </div>
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-10 lg:gap-14 items-start">
             <div className="max-w-[680px] space-y-4">
               <h2 className="font-display font-light text-bark text-2xl sm:text-3xl tracking-tight">
@@ -1344,28 +1327,28 @@ const CaseStudyRagChatbot: React.FC<CaseStudyRagChatbotProps> = ({ onClose, proj
                 That gap became the brief: build something that could sit between a student's question and the university's information, and close that distance to a single response. I worked on this as part of a four-person team during my internship, and took on the system's frontend, the end-to-end pipeline build, and the API integration connecting Flask backend to the chat interface, while a teammate handled data cleaning and vector database conversion.
               </p>
             </div>
-            
+
             {/* Premium Screenshot Showcase */}
-            <div className="relative w-full rounded-xl border border-white/[0.08] bg-[#0E0E10] overflow-hidden group hover:border-amber/30 transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.6),_0_0_30px_rgba(192,88,0,0.05)]">
+            <div className="relative w-full rounded-xl border border-mock-border bg-mock-surface overflow-hidden group hover:border-amber/30 transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.6),_0_0_30px_rgba(192,88,0,0.05)]">
               {/* Image wrapper to contain scale effect */}
               <div className="overflow-hidden relative w-full">
-                <img 
-                  src="/proof/chatbot.png" 
-                  alt="Panjab University Admission Bot UI Chat Interface" 
+                <img
+                  src="/proof/chatbot.png"
+                  alt="Panjab University Admission Bot UI Chat Interface"
                   className="w-full h-auto block transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                 />
                 {/* Grid pattern overlay (subtle futuristic aesthetic) */}
                 <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none opacity-60" />
-                
+
                 {/* Subtle ambient lighting gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-60 pointer-events-none" />
               </div>
 
               {/* Caption / Metadata below the image, not overlapping it */}
-              <div className="bg-[#111113] border-t border-white/[0.04] px-4 py-3 flex items-center justify-between">
+              <div className="bg-mock-surfaceLight border-t border-mock-border px-4 py-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber animate-pulse" />
-                  <span className="font-mono text-[0.6rem] tracking-[0.1em] uppercase text-[#E8E4DD]/85">PU Admission Bot UI</span>
+                  <span className="font-mono text-[0.6rem] tracking-[0.1em] uppercase text-mock-text/85">PU Admission Bot UI</span>
                 </div>
                 <span className="font-mono text-[0.55rem] tracking-[0.15em] text-bark/40">CHAT INTERFACE SCREENSHOT</span>
               </div>
@@ -1374,10 +1357,10 @@ const CaseStudyRagChatbot: React.FC<CaseStudyRagChatbotProps> = ({ onClose, proj
         </div>
 
         {/* C. The Approach Section */}
-        <div className="space-y-6 border-t border-white/[0.04] pt-14">
+        <div className="space-y-6 border-t border-bark/10 pt-14">
           <div className="flex items-center gap-4 mb-4">
             <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-bark/55">The Approach</span>
-            <span className="h-px flex-1 bg-white/[0.04]" />
+            <span className="h-px flex-1 bg-bark/10" />
           </div>
 
           <div className="space-y-6">
@@ -1418,10 +1401,10 @@ const CaseStudyRagChatbot: React.FC<CaseStudyRagChatbotProps> = ({ onClose, proj
         </div>
 
         {/* D. The Hard Part Section */}
-        <div className="space-y-6 border-t border-white/[0.04] pt-14">
+        <div className="space-y-6 border-t border-bark/10 pt-14">
           <div className="flex items-center gap-4 mb-4">
             <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-bark/55">The Hard Part</span>
-            <span className="h-px flex-1 bg-white/[0.04]" />
+            <span className="h-px flex-1 bg-bark/10" />
           </div>
 
           <div className="space-y-6">
@@ -1429,7 +1412,7 @@ const CaseStudyRagChatbot: React.FC<CaseStudyRagChatbotProps> = ({ onClose, proj
               Where it actually got difficult
             </h2>
 
-            <div className="bg-white/[0.015] border border-white/[0.06] rounded-2xl p-6 sm:p-8 md:p-10 relative overflow-hidden group">
+            <div className="bg-bark/[0.01] border border-bark/10 rounded-2xl p-6 sm:p-8 md:p-10 relative overflow-hidden group">
               <div className="max-w-[680px] mb-8">
                 <p className="font-body text-[0.875rem] text-bark/70 leading-relaxed">
                   Getting <em>a</em> chatbot working is a weekend project. Getting one that's <em>accurate enough to trust</em> is a different problem entirely, and that's where most of the real engineering time went.
@@ -1442,7 +1425,7 @@ const CaseStudyRagChatbot: React.FC<CaseStudyRagChatbotProps> = ({ onClose, proj
               {/* Side-by-side challenges */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Challenge 1 */}
-                <div className="bg-white/[0.02] border border-white/[0.04] rounded-xl p-6 hover:border-amber/25 transition-all duration-300">
+                <div className="bg-bark/5 border border-bark/10 rounded-xl p-6 hover:border-amber/25 transition-all duration-300">
                   <h4 className="font-display font-medium text-bark text-base mb-3 flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-amber" />
                     Retrieval precision
@@ -1453,7 +1436,7 @@ const CaseStudyRagChatbot: React.FC<CaseStudyRagChatbotProps> = ({ onClose, proj
                 </div>
 
                 {/* Challenge 2 */}
-                <div className="bg-white/[0.02] border border-white/[0.04] rounded-xl p-6 hover:border-amber/25 transition-all duration-300">
+                <div className="bg-bark/5 border border-bark/10 rounded-xl p-6 hover:border-amber/25 transition-all duration-300">
                   <h4 className="font-display font-medium text-bark text-base mb-3 flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-amber" />
                     Response consistency
@@ -1468,10 +1451,10 @@ const CaseStudyRagChatbot: React.FC<CaseStudyRagChatbotProps> = ({ onClose, proj
         </div>
 
         {/* E. The Result Section */}
-        <div className="space-y-6 border-t border-white/[0.04] pt-14">
+        <div className="space-y-6 border-t border-bark/10 pt-14">
           <div className="flex items-center gap-4 mb-4">
             <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-bark/55">The Result</span>
-            <span className="h-px flex-1 bg-white/[0.04]" />
+            <span className="h-px flex-1 bg-bark/10" />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-[45%_55%] gap-8 lg:gap-14 items-center">
@@ -1486,15 +1469,15 @@ const CaseStudyRagChatbot: React.FC<CaseStudyRagChatbotProps> = ({ onClose, proj
 
             {/* Metrics */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
-              <div className="bg-white/[0.015] border border-white/[0.04] rounded-xl p-6 text-center md:text-left hover:border-amber/20 transition-all duration-300">
+              <div className="bg-bark/[0.01] border border-bark/10 rounded-xl p-6 text-center md:text-left hover:border-amber/20 transition-all duration-300">
                 <div className="font-display text-4xl sm:text-5xl text-amber font-light tracking-tight mb-2">~60%</div>
                 <div className="font-mono text-[0.58rem] tracking-[0.15em] uppercase text-bark/40 mb-2">Faster Query Resolution</div>
                 <p className="text-[0.7rem] text-bark/60 leading-relaxed">
                   Compared to manually searching and browsing through the official university website.
                 </p>
               </div>
-              
-              <div className="bg-white/[0.015] border border-white/[0.04] rounded-xl p-6 text-center md:text-left hover:border-amber/20 transition-all duration-300">
+
+              <div className="bg-bark/[0.01] border border-bark/10 rounded-xl p-6 text-center md:text-left hover:border-amber/20 transition-all duration-300">
                 <div className="font-display text-4xl sm:text-5xl text-amber font-light tracking-tight mb-2">~95%</div>
                 <div className="font-mono text-[0.58rem] tracking-[0.15em] uppercase text-bark/40 mb-2">Data Consistency</div>
                 <p className="text-[0.7rem] text-bark/60 leading-relaxed">
@@ -1506,10 +1489,10 @@ const CaseStudyRagChatbot: React.FC<CaseStudyRagChatbotProps> = ({ onClose, proj
         </div>
 
         {/* F. What I'd Do Differently Section */}
-        <div className="space-y-6 border-t border-white/[0.04] pt-14">
+        <div className="space-y-6 border-t border-bark/10 pt-14">
           <div className="flex items-center gap-4 mb-4">
             <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-bark/55">Future Work</span>
-            <span className="h-px flex-1 bg-white/[0.04]" />
+            <span className="h-px flex-1 bg-bark/10" />
           </div>
 
           <div className="max-w-[680px] space-y-4">
@@ -1523,7 +1506,7 @@ const CaseStudyRagChatbot: React.FC<CaseStudyRagChatbotProps> = ({ onClose, proj
         </div>
 
         {/* G. Footer / CTA Block */}
-        <div className="border-t border-white/[0.04] pt-14 pb-10 space-y-8">
+        <div className="border-t border-bark/10 pt-14 pb-10 space-y-8">
           <div className="flex flex-col items-center justify-center text-center space-y-4">
             <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-bark/45">Tech Stack Used</span>
             <div className="flex flex-wrap gap-2 justify-center max-w-2xl select-none">
@@ -1556,7 +1539,7 @@ const CaseStudyRagChatbot: React.FC<CaseStudyRagChatbotProps> = ({ onClose, proj
               target="_blank"
               rel="noopener noreferrer"
               className="font-mono text-[0.68rem] tracking-[0.12em] uppercase group/btn
-                text-bark/50 border border-white/[0.08] rounded px-8 py-3.5 w-full sm:w-auto justify-center
+                text-bark/50 border border-bark/10 rounded px-8 py-3.5 w-full sm:w-auto justify-center
                 hover:border-amber/30 hover:text-amber/70
                 transition-all duration-300 cursor-none
                 inline-flex items-center gap-2"
@@ -1591,7 +1574,7 @@ const CaseStudyRagChatbot: React.FC<CaseStudyRagChatbotProps> = ({ onClose, proj
    ═══════════════════════════════════════════════════════════ */
 const Projects: React.FC = () => {
   const featured = PROJECTS.find((p) => p.featured) || PROJECTS[0];
-  const rest     = featured ? PROJECTS.filter((p) => p.id !== featured.id) : PROJECTS;
+  const rest = featured ? PROJECTS.filter((p) => p.id !== featured.id) : PROJECTS;
   const [showCaseStudy, setShowCaseStudy] = useState(false);
 
   useEffect(() => {
@@ -1611,7 +1594,7 @@ const Projects: React.FC = () => {
   if (!featured) return null;
 
   return (
-    <section id="projects" className="py-28 lg:py-36 bg-[#0A0A0C]">
+    <section id="projects" className="py-28 lg:py-36 bg-night">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-16">
         {/* Header */}
         <div className="flex items-center gap-4 mb-5 reveal" data-reveal>

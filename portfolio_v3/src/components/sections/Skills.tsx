@@ -40,7 +40,7 @@ const Skills: React.FC = () => {
                 border transition-all duration-300 cursor-pointer
                 ${activeCategory === cat
                   ? "border-amber/50 text-amber bg-amber/8 shadow-[0_0_15px_rgba(192,88,0,0.1)]"
-                  : "border-white/[0.06] text-bark/30 hover:border-amber/20 hover:text-bark/50"
+                  : "border-bark/10 text-bark/30 hover:border-amber/20 hover:text-bark/50"
                 }`}
             >
               {cat}

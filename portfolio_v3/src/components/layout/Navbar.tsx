@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import MusicPlayer from "../ui/MusicPlayer";
+import { useTheme } from "../../hooks/useTheme";
+import { Sun, Moon } from "lucide-react";
+
 
 const LINKS = [
+  { label: "Home",     path: "/"         },
   { label: "About",    path: "/about"    },
   { label: "Skills",   path: "/skills"   },
   { label: "Work",     path: "/work"     },
@@ -11,6 +15,7 @@ const LINKS = [
 ];
 
 const Navbar: React.FC = () => {
+  const { toggleTheme, isDark } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const [active, setActive] = useState(location.pathname);
@@ -53,7 +58,7 @@ const Navbar: React.FC = () => {
       <nav
         className={`fixed top-0 left-0 right-0 z-[100] flex items-center justify-between transition-all duration-500 select-none
           ${scrolled
-            ? "px-8 lg:px-16 py-3 bg-night/80 backdrop-blur-xl border-b border-white/[0.04]"
+            ? "px-8 lg:px-16 py-3 bg-night/80 backdrop-blur-xl border-b border-bark/10"
             : "px-8 lg:px-16 py-6"
           }`}
       >
@@ -109,13 +114,28 @@ const Navbar: React.FC = () => {
         </ul>
 
         {/* Action Group */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3 sm:gap-6">
           {/* Music Player */}
           <MusicPlayer />
 
+          {/* Theme Toggle Button */}
+          <button
+            onClick={toggleTheme}
+            className="flex items-center justify-center p-2.5 rounded-full border border-bark/10 text-bark/60 hover:text-amber hover:border-amber/30 transition-all duration-300 focus:outline-none cursor-none"
+            aria-label="Toggle theme"
+          >
+            {isDark ? (
+              <Sun size={14} className="transition-transform duration-500 rotate-0 hover:rotate-45" />
+            ) : (
+              <Moon size={14} className="transition-transform duration-500 rotate-0 hover:-rotate-12" />
+            )}
+          </button>
+
           {/* Desktop Contact CTA */}
           <a
-            href="mailto:nikhilkaundal1257@gmail.com"
+            href="https://mail.google.com/mail/?view=cm&fs=1&to=nikhilkaundal1257@gmail.com"
+            target="_blank"
+            rel="noopener noreferrer"
             className="hidden sm:inline-block font-mono text-[0.62rem] tracking-[0.15em] uppercase text-amber border border-amber/30 px-5 py-2.5 cursor-none
               hover:bg-amber hover:text-night hover:border-amber hover:shadow-[0_0_30px_rgba(192,88,0,0.3)]
               transition-all duration-400"
@@ -146,7 +166,7 @@ const Navbar: React.FC = () => {
 
       {/* Mobile Drawer (70% Width) */}
       <div
-        className={`fixed top-0 right-0 bottom-0 z-[105] w-[70vw] max-w-[320px] bg-night/95 border-l border-white/[0.04] md:hidden 
+        className={`fixed top-0 right-0 bottom-0 z-[105] w-[70vw] max-w-[320px] bg-night/95 border-l border-bark/10 md:hidden 
           transition-all duration-500 ease-in-out flex flex-col justify-between p-8 pt-28
           ${isOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0 pointer-events-none"}`}
       >
@@ -194,7 +214,9 @@ const Navbar: React.FC = () => {
         <div className="flex flex-col gap-6">
           {/* Mobile CTA inside Drawer */}
           <a
-            href="mailto:nikhilkaundal1257@gmail.com"
+            href="https://mail.google.com/mail/?view=cm&fs=1&to=nikhilkaundal1257@gmail.com"
+            target="_blank"
+            rel="noopener noreferrer"
             className="w-full text-center font-mono text-[0.72rem] tracking-[0.15em] uppercase text-amber border border-amber/30 py-4 cursor-none
               hover:bg-amber hover:text-night hover:border-amber hover:shadow-[0_0_30px_rgba(192,88,0,0.3)]
               transition-all duration-400"

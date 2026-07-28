@@ -1,15 +1,63 @@
 /** @type {import('tailwindcss').Config} */
+function withOpacity(variableName) {
+  return ({ opacityValue }) => {
+    if (opacityValue !== undefined) {
+      return `rgba(var(${variableName}), ${opacityValue})`;
+    }
+    return `rgb(var(${variableName}))`;
+  };
+}
+
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        night:   { DEFAULT: "#0A0A0B", light: "#111113" },
-        surface: { DEFAULT: "#1A1A1D", light: "#222225", dark: "#111113" },
-        amber:   { DEFAULT: "#C05800", dark: "#713600", glow: "#FF7A1A", muted: "#8B4513" },
-        bark:    { DEFAULT: "#E8E4DD", muted: "#6B6560", dim: "#4A4540" },
-        cream:   "#FAEFD0",
-        ivory:   "#FDFBD4",
+        night: {
+          DEFAULT: withOpacity('--night-rgb'),
+          light: withOpacity('--night-light-rgb'),
+        },
+        surface: {
+          DEFAULT: withOpacity('--surface-rgb'),
+          light: withOpacity('--surface-light-rgb'),
+          dark: withOpacity('--surface-dark-rgb'),
+        },
+        amber: {
+          DEFAULT: withOpacity('--amber-rgb'),
+          dark: withOpacity('--amber-dark-rgb'),
+          glow: withOpacity('--amber-glow-rgb'),
+          muted: withOpacity('--amber-muted-rgb'),
+        },
+        bark: {
+          DEFAULT: withOpacity('--bark-rgb'),
+          muted: withOpacity('--bark-muted-rgb'),
+          dim: withOpacity('--bark-dim-rgb'),
+        },
+        cream: withOpacity('--cream-rgb'),
+        ivory: withOpacity('--ivory-rgb'),
+        
+        // Skills specific classes mapped to CSS variables
+        skills: {
+          bg: 'var(--skills-bg)',
+          bgInactive: 'var(--skills-bg)',
+          bgActive: 'var(--skills-accent-bg)',
+          borderInactive: 'var(--skills-border)',
+          borderHover: 'var(--skills-border-hover)',
+          borderActive: 'var(--skills-accent)',
+          white: 'var(--skills-text-white)',
+          muted: 'var(--skills-text-muted)',
+          dark: 'var(--skills-private-text)',
+          darker: 'var(--skills-private-subtext)',
+        },
+        
+        // Mockups specific classes mapped to CSS variables
+        mock: {
+          bg: 'var(--mock-bg)',
+          surface: 'var(--mock-surface)',
+          surfaceLight: 'var(--mock-surface-light)',
+          border: 'var(--mock-border)',
+          borderLight: 'var(--mock-border-light)',
+        }
       },
       fontFamily: {
         display: ["'Cormorant Garamond'", "Georgia", "serif"],

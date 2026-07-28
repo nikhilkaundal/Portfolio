@@ -1,11 +1,31 @@
 import React, { useState, useEffect, useRef } from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { EXPERIENCES } from "../../data/portfolio";
 import DystinctionCard from "./DystinctionCard";
 import DICCard from "./DICCard";
 
+// ── Main Experience Section ─────────────────────────────────────────
 const Experience: React.FC = () => {
   const [activeId, setActiveId] = useState<string | null>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
+
+  // Parallax scroll effect for background "WORK" watermark text
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"],
+  });
+
+  // Smooth spring physics for buttery fluid scroll glide
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 80,
+    damping: 24,
+    restDelta: 0.001,
+  });
+
+  // Parallax drift inside sticky viewport container (glides down across entire section)
+  const watermarkY = useTransform(smoothProgress, [0, 1], ["-40px", "320px"]);
+  // Glowing laser fill for timeline rail
+  const railFillHeight = useTransform(smoothProgress, [0, 1], ["0%", "100%"]);
 
   /* Auto-activate card when it scrolls into center */
   useEffect(() => {
@@ -18,15 +38,29 @@ const Experience: React.FC = () => {
           }
         });
       },
-      { threshold: 0.5 }
+      { threshold: 0.3 }
     );
     cards.forEach((c) => io.observe(c));
     return () => io.disconnect();
   }, []);
 
   return (
-    <section id="experience" className="py-28 lg:py-36 bg-night">
-      <div className="max-w-7xl mx-auto px-8 lg:px-16">
+    <section id="experience" ref={sectionRef} className="py-28 lg:py-36 bg-night relative overflow-hidden">
+      {/* Sticky Watermark Track — Stays pinned & glides down 100% of Work section until Contact begins */}
+      <div className="absolute inset-0 pointer-events-none select-none z-0 overflow-hidden" aria-hidden>
+        <div className="sticky top-[16vh] h-[calc(100%-16vh)] w-full flex items-start justify-start pl-3 sm:pl-8 lg:pl-14">
+          <motion.div
+            style={{ y: watermarkY }}
+            className="origin-left"
+          >
+            <span className="font-display text-[25vw] sm:text-[18vw] font-black uppercase tracking-[0.12em] text-bark/[0.08] dark:text-bark/[0.05] leading-none block whitespace-nowrap">
+              WORK
+            </span>
+          </motion.div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-8 lg:px-16 relative z-10">
         {/* Header */}
         <div className="flex items-center gap-4 mb-5 reveal" data-reveal>
           <span className="section-label">Work</span>
@@ -37,14 +71,19 @@ const Experience: React.FC = () => {
           data-reveal
           style={{ fontSize: "clamp(2.8rem, 5vw, 5rem)", letterSpacing: "-0.02em", lineHeight: 1.0 }}
         >
-          Where I've<br />
+          Where I&apos;ve<br />
           <em className="italic text-amber">built things</em>
         </h2>
 
         {/* Timeline layout */}
-        <div ref={sectionRef} className="relative">
-          {/* Vertical timeline line */}
-          <div className="absolute left-3 sm:left-4 lg:left-8 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-amber/20 to-transparent" />
+        <div className="relative">
+          {/* Vertical timeline line with glowing scroll progress fill */}
+          <div className="absolute left-3 sm:left-4 lg:left-8 top-0 bottom-0 w-px bg-bark/10">
+            <motion.div
+              style={{ height: railFillHeight }}
+              className="w-full bg-gradient-to-b from-amber via-amber-glow to-amber shadow-[0_0_12px_rgba(235,94,0,0.6)]"
+            />
+          </div>
 
           {EXPERIENCES.map((exp, idx) => {
             const isActive = activeId === exp.id;
@@ -97,7 +136,7 @@ const Experience: React.FC = () => {
                       <span className="font-mono text-[0.62rem] tracking-[0.12em] uppercase text-amber bg-amber/8 px-3 py-1.5 border border-amber/15">
                         {exp.period}
                       </span>
-                      <span className="font-mono text-[0.58rem] tracking-[0.08em] text-bark/25">
+                      <span className="font-mono text-[0.58rem] tracking-[0.08em] text-bark/40">
                         {exp.location}
                       </span>
                     </div>
@@ -109,7 +148,7 @@ const Experience: React.FC = () => {
                     >
                       {exp.role}
                     </h3>
-                    <p className="font-body text-[0.85rem] text-amber/60 mb-6 font-medium tracking-wide">
+                    <p className="font-body text-[0.85rem] text-amber/70 mb-6 font-medium tracking-wide">
                       {exp.company}
                     </p>
 
@@ -118,9 +157,9 @@ const Experience: React.FC = () => {
                       {exp.points.map((pt, i) => (
                         <li
                           key={i}
-                          className="font-body text-[0.875rem] text-bark/40 leading-relaxed
+                          className="font-body text-[0.875rem] text-bark/55 leading-relaxed
                             pl-5 relative before:content-['▸'] before:absolute before:left-0
-                            before:text-amber/40 before:text-sm"
+                            before:text-amber/50 before:text-sm"
                         >
                           {pt}
                         </li>
@@ -136,7 +175,7 @@ const Experience: React.FC = () => {
                             border transition-all duration-300
                             ${isActive
                               ? "border-amber/25 text-amber/70"
-                              : "border-white/[0.04] text-bark/20"
+                              : "border-bark/15 text-bark/35"
                             }`}
                           style={{
                             transitionDelay: isActive ? `${tagIdx * 50}ms` : "0ms",

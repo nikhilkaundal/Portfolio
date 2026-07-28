@@ -22,7 +22,9 @@ const getIconUrl = (slug: string) => {
   }
   const darkLogos = ["nextdotjs", "express", "flask", "jsonwebtokens", "github"];
   if (darkLogos.includes(slug)) {
-    return `https://cdn.simpleicons.org/${slug}/ffffff`;
+    const theme = typeof document !== "undefined" ? document.documentElement.getAttribute("data-theme") : "dark";
+    const color = theme === "light" ? "1a1613" : "ffffff";
+    return `https://cdn.simpleicons.org/${slug}/${color}`;
   }
   return `https://cdn.simpleicons.org/${slug}`;
 };
@@ -31,31 +33,31 @@ const renderStatsStrip = (skill: Skill) => {
   return (
     <div className="flex gap-2.5 items-stretch w-full mb-5 select-none">
       {/* Box 1: Used At */}
-      <div className="flex-1 min-w-0 bg-[#0d0d0d] border border-[#1f1f1f] rounded-[6px] p-2 sm:p-3">
-        <span className="block text-[9px] font-bold text-[#555555] uppercase tracking-[0.1em] mb-1">
+      <div className="flex-1 min-w-0 bg-night border border-skills-borderInactive rounded-[6px] p-2 sm:p-3">
+        <span className="block text-[9px] font-bold text-skills-dark uppercase tracking-[0.1em] mb-1">
           Used At
         </span>
-        <span className="block text-[11px] sm:text-[13px] font-semibold text-[#ffffff] break-words">
+        <span className="block text-[11px] sm:text-[13px] font-semibold text-skills-white break-words">
           {skill.stats.usedAt}
         </span>
       </div>
 
       {/* Box 2: Impact */}
-      <div className="flex-1 min-w-0 bg-[#0d0d0d] border border-[#1f1f1f] rounded-[6px] p-2 sm:p-3">
-        <span className="block text-[9px] font-bold text-[#555555] uppercase tracking-[0.1em] mb-1">
+      <div className="flex-1 min-w-0 bg-night border border-skills-borderInactive rounded-[6px] p-2 sm:p-3">
+        <span className="block text-[9px] font-bold text-skills-dark uppercase tracking-[0.1em] mb-1">
           Impact
         </span>
-        <span className="block text-[11px] sm:text-[13px] font-semibold text-[#ffffff] break-words" title={skill.stats.impact}>
+        <span className="block text-[11px] sm:text-[13px] font-semibold text-skills-white break-words" title={skill.stats.impact}>
           {skill.stats.impact}
         </span>
       </div>
 
       {/* Box 3: Since */}
-      <div className="flex-1 min-w-0 bg-[#0d0d0d] border border-[#1f1f1f] rounded-[6px] p-2 sm:p-3">
-        <span className="block text-[9px] font-bold text-[#555555] uppercase tracking-[0.1em] mb-1">
+      <div className="flex-1 min-w-0 bg-night border border-skills-borderInactive rounded-[6px] p-2 sm:p-3">
+        <span className="block text-[9px] font-bold text-skills-dark uppercase tracking-[0.1em] mb-1">
           Since
         </span>
-        <span className="block text-[11px] sm:text-[13px] font-semibold text-[#ffffff] break-words">
+        <span className="block text-[11px] sm:text-[13px] font-semibold text-skills-white break-words">
           {skill.stats.since}
         </span>
       </div>
@@ -71,7 +73,7 @@ const renderPreviewImage = (skill: Skill) => {
       <img
         src={previewImage}
         alt={`${skill.name} project preview`}
-        className="w-full h-[160px] object-cover rounded-[6px] border border-[#222222] mt-5 mb-2 bg-[#111111]"
+        className="w-full h-[160px] object-cover rounded-[6px] border border-skills-borderInactive mt-5 mb-2 bg-skills-bgInactive"
         loading="lazy"
       />
     );
@@ -96,10 +98,18 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
   const [activeSkill, setActiveSkill] = useState<Skill | null>(null);
   const [mounted, setMounted] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [, setTick] = useState(0);
 
   // Set mounted on client side
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  // Listen to custom themechange events to force re-render icon URLs
+  useEffect(() => {
+    const handleThemeChange = () => setTick((t) => t + 1);
+    window.addEventListener("themechange", handleThemeChange);
+    return () => window.removeEventListener("themechange", handleThemeChange);
   }, []);
 
   // Check if screen is mobile
@@ -174,10 +184,10 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
           width: 4px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(255, 255, 255, 0.01);
+          background: rgba(var(--bark-rgb), 0.01);
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(255, 255, 255, 0.1);
+          background: rgba(var(--bark-rgb), 0.1);
           border-radius: 2px;
         }
       `}} />
@@ -210,8 +220,8 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
                      ${cardOpacity}
                      ${isPrimary ? "p-3 sm:p-5" : "p-2.5 sm:p-4"}
                      ${isActive
-                       ? "border-[#F97316] bg-[#1a1005]"
-                       : "border-[#222222] bg-[#111111] hover:border-[#333333] hover:scale-[1.01]"
+                       ? "border-skills-borderActive bg-skills-bgActive"
+                       : "border-skills-borderInactive bg-skills-bgInactive hover:border-skills-borderHover hover:scale-[1.01]"
                      }
                    `}
                  >
@@ -243,19 +253,19 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
                    {/* Right Side: Label + Category Name */}
                    <div className="min-w-0 flex-1">
                      <h4
-                       className={`font-body truncate leading-tight font-semibold
+                      className={`font-body truncate leading-tight font-semibold
                          ${isPrimary ? "text-[0.8rem] sm:text-[0.94rem]" : "text-[0.72rem] sm:text-[0.88rem]"}
-                         ${isActive ? "text-[#F97316]" : "text-[#ffffff]"}
+                         ${isActive ? "text-skills-borderActive" : "text-skills-white"}
                        `}
-                     >
-                       {skill.name}
-                     </h4>
-                     <span className="block font-mono text-[0.5rem] sm:text-[0.62rem] tracking-[0.1em] text-[#666666] uppercase mt-0.5">
-                       {skill.category}
-                     </span>
-                   </div>
-                 </div>
-               );
+                    >
+                      {skill.name}
+                    </h4>
+                    <span className="block font-mono text-[0.5rem] sm:text-[0.62rem] tracking-[0.1em] text-skills-muted uppercase mt-0.5">
+                      {skill.category}
+                    </span>
+                  </div>
+                </div>
+              );
             })}
           </div>
         </div>
@@ -264,8 +274,8 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
         <div className="hidden md:block md:w-[35%]">
           {!selectedSkill ? (
             // Default placeholder state
-            <div className="h-full min-h-[320px] flex flex-col items-center justify-center p-8 rounded-lg border border-dashed border-[#222222] text-center">
-              <span className="font-mono text-[0.7rem] tracking-[0.1em] text-[#666666] uppercase">
+            <div className="h-full min-h-[320px] flex flex-col items-center justify-center p-8 rounded-lg border border-dashed border-skills-borderInactive text-center">
+              <span className="font-mono text-[0.7rem] tracking-[0.1em] text-skills-muted uppercase">
                 Click any skill to see proof of work
               </span>
             </div>
@@ -273,11 +283,11 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
             // Proof Detail Panel Content
             <div
               key={animateKey}
-              className="proof-animate h-full border border-[#222222] bg-[#111111] p-6 rounded-lg flex flex-col justify-between"
+              className="proof-animate h-full border border-skills-borderInactive bg-skills-bgInactive p-6 rounded-lg flex flex-col justify-between"
             >
               <div>
                 {/* Header (Icon + Name side by side) */}
-                <div className="flex items-center gap-3 mb-6 pb-6 border-b border-[#222222]">
+                <div className="flex items-center gap-3 mb-6 pb-6 border-b border-skills-borderInactive">
                   <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded">
                     {iconErrors[selectedSkill.id] ? (
                       <div
@@ -302,7 +312,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
                     )}
                   </div>
                   <div>
-                    <h3 className="font-body text-[1.25rem] font-bold text-white leading-tight">
+                    <h3 className="font-body text-[1.25rem] font-bold text-skills-white leading-tight">
                       {selectedSkill.name}
                     </h3>
                     <span
@@ -321,7 +331,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
                 {renderStatsStrip(selectedSkill)}
 
                 {/* Section title */}
-                <span className="block font-mono text-[0.62rem] font-bold tracking-[0.15em] text-[#F97316] uppercase mb-4">
+                <span className="block font-mono text-[0.62rem] font-bold tracking-[0.15em] text-skills-borderActive uppercase mb-4">
                   PROOF OF WORK
                 </span>
 
@@ -329,15 +339,15 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
                 <div className="space-y-4">
                   {/* Row 1: Used In */}
                   <div>
-                    <span className="block text-[0.72rem] text-[#666666] mb-1">
+                    <span className="block text-[0.72rem] text-skills-muted mb-1">
                       Used in
                     </span>
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="text-[0.88rem] font-semibold text-white">
+                      <span className="text-[0.88rem] font-semibold text-skills-white">
                         {selectedSkill.proof.usedIn}
                       </span>
                       {selectedSkill.proof.note?.toLowerCase().includes("private") && (
-                        <span className="inline-flex items-center gap-1 text-[0.68rem] text-[#666666] bg-white/[0.03] px-2 py-0.5 rounded border border-white/[0.05]">
+                        <span className="inline-flex items-center gap-1 text-[0.68rem] text-skills-muted bg-bark/5 px-2 py-0.5 rounded border border-bark/10">
                           <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24">
                             <path d="M12 2c-2.76 0-5 2.24-5 5v3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-8c0-1.1-.9-2-2-2V7c0-2.76-2.24-5-5-5zm-3 5c0-1.66 1.34-3 3-3s3 1.34 3 3v3H9V7zm3 9c-.83 0-1.5-.67-1.5-1.5S11.17 13 12 13s1.5.67 1.5 1.5S12.83 16 12 16z" />
                           </svg>
@@ -349,7 +359,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
 
                   {/* Row 2: What I Built */}
                   <div>
-                    <span className="block text-[0.72rem] text-[#666666] mb-1">
+                    <span className="block text-[0.72rem] text-skills-muted mb-1">
                       What I built
                     </span>
                     <p className="text-[0.88rem] leading-relaxed text-bark/80">
@@ -363,14 +373,14 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
               </div>
 
               {/* Row 3 & 4 Links at the bottom */}
-              <div className="border-t border-[#222222] mt-6 pt-4 space-y-2">
+              <div className="border-t border-skills-borderInactive mt-6 pt-4 space-y-2">
                 {/* GitHub repository */}
                 {selectedSkill.proof.note?.toLowerCase().includes("private repo") ? (
                   <div className="flex flex-col gap-0.5 select-none">
-                    <span className="text-[13px] text-[#555555] font-medium flex items-center gap-1.5">
+                    <span className="text-[13px] text-skills-dark font-medium flex items-center gap-1.5">
                       🔒 Private codebase (company IP)
                     </span>
-                    <span className="text-[11px] text-[#444444] italic">
+                    <span className="text-[11px] text-skills-darker italic">
                       Happy to walk through it in an interview
                     </span>
                   </div>
@@ -380,10 +390,10 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
                       href={selectedSkill.proof.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-[0.8rem] text-[#F97316] font-semibold hover:underline"
+                      className="inline-flex items-center gap-2 text-[0.8rem] text-skills-borderActive font-semibold hover:underline"
                     >
                       <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
                       </svg>
                       View Repository
                     </a>
@@ -397,7 +407,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
                       href={selectedSkill.proof.liveLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-[0.8rem] text-[#F97316] font-semibold hover:underline"
+                      className="inline-flex items-center gap-2 text-[0.8rem] text-skills-borderActive font-semibold hover:underline"
                     >
                       <svg className="w-4 h-4 fill-none stroke-current" strokeWidth="2" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -429,17 +439,17 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
 
           {/* Sheet */}
           <div 
-            className={`relative bg-[#111111] border-t border-[#333333] rounded-t-2xl h-[60vh] w-full flex flex-col z-10 transition-transform duration-300 ease-out transform ${
+            className={`relative bg-skills-bgInactive border-t border-skills-drag-handle rounded-t-2xl h-[60vh] w-full flex flex-col z-10 transition-transform duration-300 ease-out transform ${
               selectedSkill ? "translate-y-0" : "translate-y-full"
             }`}
           >
             {/* Drag handle bar at top */}
-            <div className="w-10 h-1 bg-[#333333] rounded-full mx-auto my-3 flex-shrink-0" />
+            <div className="w-10 h-1 bg-skills-drag-handle rounded-full mx-auto my-3 flex-shrink-0" />
 
             {/* Close button X */}
             <button
               onClick={() => setSelectedSkill(null)}
-              className="absolute top-3 right-4 text-[#666666] hover:text-white p-1 focus:outline-none"
+              className="absolute top-3 right-4 text-skills-muted hover:text-skills-white p-1 focus:outline-none"
             >
               <svg className="w-6 h-6 fill-none stroke-current" strokeWidth="2" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -449,7 +459,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
             {/* Content (Scrollable) */}
             <div ref={scrollContainerRef} className="flex-1 overflow-y-auto px-6 pb-8 custom-scrollbar">
               {/* Header */}
-              <div className="flex items-center gap-3 mb-6 pb-6 border-b border-[#222222]">
+              <div className="flex items-center gap-3 mb-6 pb-6 border-b border-skills-borderInactive">
                 <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded">
                   {iconErrors[activeSkill.id] ? (
                     <div
@@ -474,7 +484,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
                   )}
                 </div>
                 <div>
-                  <h3 className="font-body text-[1.2rem] font-bold text-white leading-tight">
+                  <h3 className="font-body text-[1.2rem] font-bold text-skills-white leading-tight">
                     {activeSkill.name}
                   </h3>
                   <span
@@ -493,7 +503,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
               {renderStatsStrip(activeSkill)}
 
               {/* Section title */}
-              <span className="block font-mono text-[0.6rem] font-bold tracking-[0.15em] text-[#F97316] uppercase mb-4">
+              <span className="block font-mono text-[0.6rem] font-bold tracking-[0.15em] text-skills-borderActive uppercase mb-4">
                 PROOF OF WORK
               </span>
 
@@ -501,15 +511,15 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
               <div className="space-y-4 mb-6">
                 {/* Row 1: Used In */}
                 <div>
-                  <span className="block text-[0.7rem] text-[#666666] mb-1">
+                  <span className="block text-[0.7rem] text-skills-muted mb-1">
                     Used in
                   </span>
                   <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="text-[0.85rem] font-semibold text-white">
+                    <span className="text-[0.85rem] font-semibold text-skills-white">
                       {activeSkill.proof.usedIn}
                     </span>
                     {activeSkill.proof.note?.toLowerCase().includes("private") && (
-                      <span className="inline-flex items-center gap-1 text-[0.65rem] text-[#666666] bg-white/[0.03] px-2 py-0.5 rounded border border-white/[0.05]">
+                      <span className="inline-flex items-center gap-1 text-[0.65rem] text-skills-muted bg-bark/5 px-2 py-0.5 rounded border border-bark/10">
                         <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24">
                           <path d="M12 2c-2.76 0-5 2.24-5 5v3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-8c0-1.1-.9-2-2-2V7c0-2.76-2.24-5-5-5zm-3 5c0-1.66 1.34-3 3-3s3 1.34 3 3v3H9V7zm3 9c-.83 0-1.5-.67-1.5-1.5S11.17 13 12 13s1.5.67 1.5 1.5S12.83 16 12 16z" />
                         </svg>
@@ -521,7 +531,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
 
                 {/* Row 2: What I Built */}
                 <div>
-                  <span className="block text-[0.7rem] text-[#666666] mb-1">
+                  <span className="block text-[0.7rem] text-skills-muted mb-1">
                     What I built
                   </span>
                   <p className="text-[0.85rem] leading-relaxed text-bark/80">
@@ -534,13 +544,13 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
               {renderPreviewImage(activeSkill)}
 
               {/* Row 3 & 4 Links */}
-              <div className="border-t border-[#222222] pt-4 space-y-2">
+              <div className="border-t border-skills-borderInactive pt-4 space-y-2">
                 {activeSkill.proof.note?.toLowerCase().includes("private repo") ? (
                   <div className="flex flex-col gap-0.5 select-none">
-                    <span className="text-[13px] text-[#555555] font-medium flex items-center gap-1.5">
+                    <span className="text-[13px] text-skills-dark font-medium flex items-center gap-1.5">
                       🔒 Private codebase (company IP)
                     </span>
-                    <span className="text-[11px] text-[#444444] italic">
+                    <span className="text-[11px] text-skills-darker italic">
                       Happy to walk through it in an interview
                     </span>
                   </div>
@@ -550,10 +560,10 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
                       href={activeSkill.proof.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-[0.78rem] text-[#F97316] font-semibold hover:underline"
+                      className="inline-flex items-center gap-2 text-[0.78rem] text-skills-borderActive font-semibold hover:underline"
                     >
                       <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
                       </svg>
                       View Repository
                     </a>
@@ -566,7 +576,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
                       href={activeSkill.proof.liveLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-[0.78rem] text-[#F97316] font-semibold hover:underline"
+                      className="inline-flex items-center gap-2 text-[0.78rem] text-skills-borderActive font-semibold hover:underline"
                     >
                       <svg className="w-4 h-4 fill-none stroke-current" strokeWidth="2" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />

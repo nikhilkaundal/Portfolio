@@ -118,7 +118,6 @@ export const DYSTINCTION_EXP = {
     {
       id: "mod-negotiation",
       name: "Multi-Round Negotiation System",
-      emoji: "🤝",
       shortDesc: "3-round structured buyer–vendor–admin negotiation engine",
       details: [
         "Designed complete negotiation state machine: 12 procurement stages with controlled round progression",
@@ -133,7 +132,6 @@ export const DYSTINCTION_EXP = {
     {
       id: "mod-pvr",
       name: "Product Validation Request (PVR) Lifecycle",
-      emoji: "📦",
       shortDesc: "End-to-end physical sample tracking & validation workflow",
       details: [
         "Built complete PVR workflow: from validation request creation to delivery confirmation",
@@ -149,7 +147,6 @@ export const DYSTINCTION_EXP = {
     {
       id: "mod-rfq",
       name: "RFQ Workflow (Request for Quotation)",
-      emoji: "📋",
       shortDesc: "Buyer RFQ creation → vendor response → quotation management",
       details: [
         "Guest RFQ flow: public token-based access so vendors can respond without login",
@@ -165,7 +162,6 @@ export const DYSTINCTION_EXP = {
     {
       id: "mod-dashboards",
       name: "Buyer & Vendor Dashboards",
-      emoji: "📊",
       shortDesc: "Role-based KPI dashboards with real-time data sync",
       details: [
         "Buyer dashboard: active RFQs, pending quotes, negotiation status, PVR tracking",
@@ -181,7 +177,6 @@ export const DYSTINCTION_EXP = {
     {
       id: "mod-cms",
       name: "Web CMS with 3-Layer RBAC",
-      emoji: "🖊️",
       shortDesc: "Content authoring system for non-technical users (Admin / Editor / Viewer)",
       details: [
         "Built full content management system: non-technical team can publish without code",
@@ -197,7 +192,6 @@ export const DYSTINCTION_EXP = {
     {
       id: "mod-kyc",
       name: "Vendor KYC System",
-      emoji: "🪪",
       shortDesc: "Document upload, tax compliance & admin approval workflow",
       details: [
         "Vendor onboarding KYC flow: PAN, GST, bank details, business registration docs",
@@ -212,7 +206,6 @@ export const DYSTINCTION_EXP = {
     {
       id: "mod-mobile",
       name: "Mobile App Setup (React Native + Expo)",
-      emoji: "📱",
       shortDesc: "Cross-platform mobile foundation on Turborepo monorepo",
       details: [
         "React Native + Expo project setup inside Turborepo monorepo alongside web app",
@@ -227,7 +220,6 @@ export const DYSTINCTION_EXP = {
     {
       id: "mod-explore",
       name: "Explore Marketplace",
-      emoji: "🛍️",
       shortDesc: "Product listing page revamp: filtering, sorting, dynamic rendering",
       details: [
         "Complete Explore page revamp: redesigned product listing UI with cards and grid/list toggle",

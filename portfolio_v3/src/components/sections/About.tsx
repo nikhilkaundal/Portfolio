@@ -224,7 +224,7 @@ const About: React.FC = () => {
         </div>
 
         {/* ZONE D: Photography Standalone Block */}
-        <div className="my-24 relative p-8 border border-white/[0.04] bg-white/[0.01] overflow-hidden group">
+        <div className="my-24 relative p-8 border border-bark/10 bg-bark/[0.01] overflow-hidden group">
           {/* Viewfinder corners */}
           <div className="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-bark/20 group-hover:border-amber/50 transition-colors duration-500" />
           <div className="absolute top-4 right-4 w-4 h-4 border-t-2 border-r-2 border-bark/20 group-hover:border-amber/50 transition-colors duration-500" />
