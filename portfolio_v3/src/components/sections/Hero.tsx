@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, Suspense, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import * as THREE from "three";
 import gsap from "gsap";
 import { motion, AnimatePresence } from "framer-motion";
