@@ -68,7 +68,7 @@ const Hero: React.FC = () => {
           console.warn("Spline loading timed out. Falling back to static image.");
           setIsSplineTimeout(true);
         }
-      }, 8000); // 8 seconds timeout limit
+      }, 30000); // 30 seconds timeout limit
       return () => clearTimeout(timer);
     }
   }, [isDesktop, isSplineLoaded]);

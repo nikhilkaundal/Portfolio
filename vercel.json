@@ -1,0 +1,11 @@
+{
+  "buildCommand": "cd portfolio_v3 && npm run build",
+  "outputDirectory": "portfolio_v3/build",
+  "framework": "create-react-app",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

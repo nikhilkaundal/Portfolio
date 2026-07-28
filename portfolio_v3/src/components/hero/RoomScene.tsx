@@ -12,7 +12,7 @@ const LazySpline = lazy(() => import("@splinetool/react-spline"));
 const SCENE_URL =
   process.env.REACT_APP_SPLINE_SCENE_URL ||
   process.env.NEXT_PUBLIC_SPLINE_SCENE_URL ||
-  "https://prod.spline.design/wE2djS2PkGrlqcom/scene.splinecode";
+  "https://prod.spline.design/Sl5IZaek3stpaL-m/scene.splinecode";
 
 // Interactive Spline object name constants (supporting both the 3D models and their text labels)
 export const INTERACTIVE_OBJECTS = {
