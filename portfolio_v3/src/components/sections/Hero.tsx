@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, Suspense, useCallback } from "react";
 import * as THREE from "three";
 import gsap from "gsap";
-import { motion, useScroll, useTransform, useMotionValueEvent, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { PROJECTS } from "../../data/portfolio";
 import RoomScene from "../hero/RoomScene";
@@ -9,8 +9,8 @@ import RoomSkeleton from "../hero/RoomSkeleton";
 import SplineErrorBoundary from "../hero/SplineErrorBoundary";
 
 /* ── Magnetic button component ── */
-const MagneticBtn: React.FC<{ href: string; children: React.ReactNode; variant?: "filled" | "outline" }> = ({
-  href, children, variant = "filled"
+const MagneticBtn: React.FC<{ href: string; children: React.ReactNode; variant?: "filled" | "outline"; target?: string; rel?: string }> = ({
+  href, children, variant = "filled", target, rel
 }) => {
   const ref = useRef<HTMLAnchorElement>(null);
 
@@ -26,13 +26,13 @@ const MagneticBtn: React.FC<{ href: string; children: React.ReactNode; variant?:
     if (ref.current) ref.current.style.transform = "";
   }, []);
 
-  const base = "magnetic-btn font-mono text-[0.72rem] tracking-[0.12em] uppercase px-8 py-4 transition-all duration-300";
+  const base = "font-mono text-[0.68rem] sm:text-[0.72rem] tracking-[0.15em] uppercase px-7 sm:px-8 py-3.5 sm:py-4 rounded-full transition-all duration-300 w-full sm:w-auto text-center flex justify-center items-center gap-2 group font-semibold";
   const styles = variant === "filled"
-    ? `${base} bg-amber text-night hover:shadow-[0_0_40px_rgba(192,88,0,0.4)] hover:bg-amber-glow`
-    : `${base} border border-bark/20 text-bark/70 hover:border-amber/50 hover:text-amber`;
+    ? `${base} bg-amber text-night shadow-[0_0_25px_rgba(235,94,0,0.35)] hover:shadow-[0_0_40px_rgba(235,94,0,0.6)] hover:bg-amber-glow`
+    : `${base} bg-bark/5 border border-bark/30 text-bark hover:border-amber hover:bg-amber/15 hover:text-amber shadow-sm`;
 
   return (
-    <a ref={ref} href={href} className={styles} onMouseMove={onMove} onMouseLeave={onLeave}>
+    <a ref={ref} href={href} className={styles} onMouseMove={onMove} onMouseLeave={onLeave} target={target} rel={rel}>
       {children}
     </a>
   );
@@ -48,136 +48,15 @@ const Hero: React.FC = () => {
   // State management for Spline load lifecycle and interactivity
   const [isSplineLoaded, setIsSplineLoaded] = useState(false);
   const [isSplineTimeout, setIsSplineTimeout] = useState(false);
-  const [interactive, setInteractive] = useState(false);
-  const [isZoomed, setIsZoomed] = useState(false);
   const [isLaptopOpen, setIsLaptopOpen] = useState(false);
 
-  // Spline instance references for camera animation
+  // Spline instance reference
   const splineRef = useRef<any>(null);
-  const cameraRef = useRef<any>(null);
-  const initialCameraPos = useRef<{ x: number; y: number; z: number } | null>(null);
-  const initialCameraZoom = useRef<number | null>(null);
-
-  // Scroll animations values (Framer Motion)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"]
-  });
-
-  // Scroll text fading, shrinking, and scrolling up
-  const textOpacity = useTransform(scrollYProgress, [0, 0.45], [1, 0]);
-  const textScale = useTransform(scrollYProgress, [0, 0.45], [1, 0.9]);
-  const textY = useTransform(scrollYProgress, [0, 0.45], ["0px", "-350px"]);
-
-  // Room container translation to focus directly on the laptop desk
-  const roomScale = useTransform(scrollYProgress, [0, 1], [1, 2.0]);
-  const roomX = useTransform(scrollYProgress, [0, 1], ["0%", "-75%"]);
-  const roomY = useTransform(scrollYProgress, [0, 1], ["0%", "0%"]);
-
-  // Smooth camera zoom animation using a requestAnimationFrame loop + linear interpolation (lerp)
-  const targetProgress = useRef(0);
-  const currentProgress = useRef(0);
-  const animFrameRef = useRef<number | null>(null);
 
   const handleSplineLoad = useCallback((splineApp: any) => {
     splineRef.current = splineApp;
-    console.log("--- SPLINE SCENE LOADED ---");
-    
-    // Log all objects in the scene graph to find their names and types
-    let allObjects: any[] = [];
-    if (splineApp._scene) {
-      try {
-        splineApp._scene.traverse((obj: any) => {
-          if (obj.name) {
-            allObjects.push({ name: obj.name, type: obj.type });
-          }
-        });
-      } catch (err) {
-        console.warn("Could not traverse scene graph:", err);
-      }
-    }
-
-    // Resolve camera object
-    let cam = splineApp.findObjectByName("Camera") || 
-              splineApp.findObjectByName("Personal Camera") || 
-              splineApp.findObjectByName("Default Camera");
-
-    if (!cam && allObjects.length > 0) {
-      cam = allObjects.find(
-        (obj: any) =>
-          obj.type === "Camera" ||
-          obj.isCamera ||
-          (obj.name && obj.name.toLowerCase().includes("camera"))
-      );
-    }
-
-    if (cam) {
-      console.log("Successfully found camera object:", cam.name, "Type:", cam.type);
-      cameraRef.current = cam;
-      initialCameraPos.current = { x: cam.position.x, y: cam.position.y, z: cam.position.z };
-      if (typeof cam.zoom === "number") {
-        initialCameraZoom.current = cam.zoom;
-      }
-    } else {
-      console.error("CRITICAL: No camera object found in Spline scene!");
-    }
-
     setIsSplineLoaded(true);
   }, []);
-
-  const tick = () => {
-    if (!cameraRef.current) {
-      animFrameRef.current = null;
-      return;
-    }
-
-    const target = targetProgress.current;
-    const current = currentProgress.current;
-    
-    // Linear interpolation (lerp) for frame-rate decoupled smooth transitions
-    const next = current + (target - current) * 0.08;
-    currentProgress.current = next;
-
-    const cam = cameraRef.current;
-
-    // Perspective Camera Zoom (reducing coordinates toward scene origin for fly-in effect)
-    if (initialCameraPos.current) {
-      const start = initialCameraPos.current;
-      const targetZ = start.z * 0.08;
-      const targetY = start.y * 0.08;
-      const targetX = start.x * 0.08;
-
-      cam.position.x = start.x + (targetX - start.x) * next;
-      cam.position.y = start.y + (targetY - start.y) * next;
-      cam.position.z = start.z + (targetZ - start.z) * next;
-    }
-
-    // Orthographic Camera Zoom support (zoom closer to laptop desk)
-    if (initialCameraZoom.current !== null) {
-      const startZoom = initialCameraZoom.current;
-      const targetZoom = startZoom * 10.0;
-      cam.zoom = startZoom + (targetZoom - startZoom) * next;
-    }
-
-    // Continue loop if we haven't reached target yet
-    if (Math.abs(target - next) > 0.0001) {
-      animFrameRef.current = requestAnimationFrame(tick);
-    } else {
-      currentProgress.current = target;
-      animFrameRef.current = null;
-    }
-  };
-
-  // Sync motion value updates with the lerp loop and set interaction pointer events
-  useMotionValueEvent(scrollYProgress, "change", (progress) => {
-    targetProgress.current = progress;
-    if (animFrameRef.current === null) {
-      animFrameRef.current = requestAnimationFrame(tick);
-    }
-    // Enable pointer events for clickables when text is faded and room is centered
-    setInteractive(progress > 0.35);
-    setIsZoomed(progress > 0.88);
-  });
 
   // Graceful load timeout fallback (e.g. adblocker, network failures)
   useEffect(() => {
@@ -191,15 +70,6 @@ const Hero: React.FC = () => {
       return () => clearTimeout(timer);
     }
   }, [isDesktop, isSplineLoaded]);
-
-  // Clean up animation frames on component unmount
-  useEffect(() => {
-    return () => {
-      if (animFrameRef.current !== null) {
-        cancelAnimationFrame(animFrameRef.current);
-      }
-    };
-  }, []);
 
   /* ── Keyboard listener to close projects modal ── */
   useEffect(() => {
@@ -222,7 +92,7 @@ const Hero: React.FC = () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x000000, 0);
 
-    const scene  = new THREE.Scene();
+    const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 5;
 
@@ -315,31 +185,51 @@ const Hero: React.FC = () => {
     };
   }, []);
 
-  /* ── GSAP text entrance timeline ── */
+  /* ── GSAP text entrance timeline with safe context & route cleanup ── */
   useEffect(() => {
-    const tl = gsap.timeline({ delay: 0.2 });
-    tl.to(".hero-line", { opacity: 1, scaleX: 1, duration: 0.8, ease: "power3.out" })
-      .to(".hero-eyebrow", { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, "-=0.3")
-      .to(".hero-n1", { opacity: 1, y: 0, duration: 1.2, ease: "power4.out" }, "-=0.2")
-      .to(".hero-n2", { opacity: 1, y: 0, duration: 1.2, ease: "power4.out" }, "-=0.8")
-      .to(".hero-room", { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: "power3.out" }, "-=1.0")
-      .to(".hero-sub", { opacity: 1, duration: 0.7, ease: "power3.out" }, "-=0.4")
-      .to(".hero-ctas", { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, "-=0.3")
-      .to(".hero-side", { opacity: 1, duration: 0.5 }, "-=0.3")
-      .to(".hero-scroll", { opacity: 1, duration: 0.5 }, "-=0.2");
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ delay: 0.1 });
+      tl.to(".hero-line", { opacity: 1, scaleX: 1, duration: 0.6, ease: "power3.out" })
+        .to(".hero-eyebrow", { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, "-=0.3")
+        .to(".hero-n1", { opacity: 1, y: 0, duration: 0.8, ease: "power4.out" }, "-=0.2")
+        .to(".hero-n2", { opacity: 1, y: 0, duration: 0.8, ease: "power4.out" }, "-=0.6")
+        .to(".hero-room", { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, "-=0.7")
+        .to(".hero-sub", { opacity: 1, duration: 0.5, ease: "power3.out" }, "-=0.4")
+        .to(".hero-ctas", { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, "-=0.3")
+        .to(".hero-side", { opacity: 1, duration: 0.4 }, "-=0.3")
+        .to(".hero-scroll", { opacity: 1, duration: 0.4 }, "-=0.2");
+    }, containerRef);
+
+    // Guaranteed fallback: ensures text is 100% visible even if GSAP timeline is interrupted on route change
+    const fallbackTimer = setTimeout(() => {
+      if (containerRef.current) {
+        const els = containerRef.current.querySelectorAll(".hero-line, .hero-eyebrow, .hero-n1, .hero-n2, .hero-sub, .hero-ctas, .hero-side, .hero-scroll");
+        els.forEach((el) => {
+          (el as HTMLElement).style.opacity = "1";
+          (el as HTMLElement).style.transform = "none";
+        });
+      }
+    }, 800);
+
+    return () => {
+      ctx.revert();
+      clearTimeout(fallbackTimer);
+    };
   }, []);
 
   // Determine section layout parameters natively in CSS classes to prevent hydration issues
-  const sectionClass = "relative h-[300vh] bg-night";
-  const pinChildClass = "sticky top-0 h-screen w-full overflow-hidden flex items-center";
+  const sectionClass = "relative min-h-[82vh] lg:min-h-screen lg:h-screen bg-night overflow-hidden flex items-center justify-center pt-24 sm:pt-28 pb-12 lg:py-0 select-none";
+  const pinChildClass = "relative w-full h-auto lg:h-full flex items-center justify-center overflow-visible";
 
-  // Static fallback image render
+  // Static fallback image render for mobile or slow connections
   const renderStaticFallback = () => (
-    <img
-      src="/images/room-static.png"
-      alt="Interactive 3D Music Room Studio Illustration"
-      className="w-full h-full object-cover rounded-2xl select-none pointer-events-none"
-    />
+    <div className="w-full h-full flex items-center justify-center p-2 sm:p-4">
+      <img
+        src="/images/room-static.png"
+        alt="Interactive 3D Music Room Studio Illustration"
+        className="w-full max-w-[500px] h-auto object-contain rounded-2xl shadow-xl select-none pointer-events-none border border-bark/10"
+      />
+    </div>
   );
 
   return (
@@ -358,24 +248,23 @@ const Hero: React.FC = () => {
         />
 
         {/* Primary layout container */}
-        <div className="grid grid-cols-12 gap-8 w-full px-8 lg:px-20 max-w-7xl mx-auto relative h-full items-center z-10">
-          {/* Left Column: Text (Transforms opacity/scale/y on scroll via framer-motion) */}
+        <div className="grid grid-cols-12 gap-6 w-full px-6 sm:px-8 lg:px-16 max-w-7xl mx-auto relative h-full items-center justify-center z-10">
+          {/* Left Column: Text */}
           <motion.div
-            style={isDesktop ? { opacity: textOpacity, scale: textScale, y: textY } : undefined}
-            className="col-span-12 lg:col-span-7 select-none relative z-10 pointer-events-auto flex flex-col justify-center text-left py-6 lg:py-0"
+            className="col-span-12 lg:col-span-6 select-none relative z-10 pointer-events-auto flex flex-col justify-center items-center lg:items-start text-center lg:text-left py-0 lg:py-0"
           >
             {/* Decorative line */}
             <div
-              className="hero-line h-px w-20 bg-amber/50 mb-8 origin-left"
+              className="hero-line h-px w-16 sm:w-20 bg-amber/50 mb-4 sm:mb-8 origin-center lg:origin-left"
               style={{ opacity: 0, transform: "scaleX(0)" }}
             />
 
             {/* Eyebrow */}
             <div
-              className="hero-eyebrow font-mono text-[0.65rem] tracking-[0.35em] uppercase text-amber/80 mb-6"
+              className="hero-eyebrow font-mono text-[0.6rem] sm:text-[0.65rem] tracking-[0.3em] sm:tracking-[0.35em] uppercase text-amber font-semibold mb-3 sm:mb-6"
               style={{ opacity: 0, transform: "translateY(16px)" }}
             >
-              Available for Full Stack Roles · 2026
+              ENGINEERING SCALABLE WEB &amp; AI SYSTEMS
             </div>
 
             {/* Name */}
@@ -383,7 +272,7 @@ const Hero: React.FC = () => {
               <span
                 className="hero-n1 font-display block leading-[0.88] tracking-[-0.03em] text-bark"
                 style={{
-                  fontSize: "clamp(4.5rem, 12vw, 10rem)",
+                  fontSize: "clamp(3.8rem, 11vw, 10rem)",
                   fontWeight: 300,
                   opacity: 0,
                   transform: "translateY(110%)",
@@ -396,7 +285,7 @@ const Hero: React.FC = () => {
               <span
                 className="hero-n2 font-display italic block leading-[0.88] tracking-[-0.03em] text-amber"
                 style={{
-                  fontSize: "clamp(4.5rem, 12vw, 10rem)",
+                  fontSize: "clamp(3.8rem, 11vw, 10rem)",
                   fontWeight: 300,
                   opacity: 0,
                   transform: "translateY(110%)",
@@ -408,7 +297,7 @@ const Hero: React.FC = () => {
 
             {/* Subtitle */}
             <p
-              className="hero-sub font-body font-light text-bark/40 tracking-[0.18em] uppercase mt-8 text-sm"
+              className="hero-sub font-body font-medium text-bark/70 tracking-[0.15em] sm:tracking-[0.18em] uppercase mt-3 sm:mt-8 text-xs sm:text-sm"
               style={{ opacity: 0 }}
             >
               React &nbsp;·&nbsp; Next.js &nbsp;·&nbsp; Node.js &nbsp;·&nbsp; Production-Grade
@@ -416,32 +305,30 @@ const Hero: React.FC = () => {
 
             {/* CTAs */}
             <div
-              className="hero-ctas flex items-center gap-4 mt-10 flex-wrap pointer-events-auto"
+              className="hero-ctas flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 mt-7 sm:mt-10 pointer-events-auto w-full sm:w-auto max-w-xs sm:max-w-none mx-auto lg:mx-0"
               style={{ opacity: 0, transform: "translateY(16px)" }}
             >
-              <MagneticBtn href="#projects" variant="filled">View Projects</MagneticBtn>
+              <MagneticBtn href="/proof/resume_16.pdf" variant="filled" target="_blank" rel="noopener noreferrer">View Resume</MagneticBtn>
               <MagneticBtn href="#contact" variant="outline">Get in Touch</MagneticBtn>
             </div>
           </motion.div>
 
-          {/* Right Column: Pinned absolute room element */}
+          {/* Right Column: 3D Room element (Desktop/Laptop only: hidden on mobile, visible on lg+) */}
           <motion.div
-            style={isDesktop ? { scale: roomScale, x: roomX, y: roomY } : undefined}
-            className={`col-span-12 lg:col-span-5 w-full lg:w-[48vw] h-[50vh] lg:h-[75vh] z-20 overflow-visible relative lg:absolute lg:right-[-12%] lg:top-[12%] flex items-center justify-center ${
-              interactive ? "pointer-events-auto" : "pointer-events-none"
-            }`}
+            style={{ background: "transparent" }}
+            className="hidden lg:flex col-span-12 lg:col-span-6 w-full lg:w-[54vw] h-screen z-20 overflow-visible absolute right-[-1.9vw] top-0 bottom-0 items-center justify-center pointer-events-auto"
           >
             {/* GSAP Entrance Wrapper - Animates opacity/y on load */}
             <div
-              className="w-full h-full relative hero-room flex items-center justify-center"
-              style={{ opacity: 0, transform: "translateY(24px) scale(0.98)" }}
+              className="w-full h-full relative hero-room flex items-center justify-center overflow-visible"
+              style={{ opacity: 0, transform: "translateY(24px)", background: "transparent" }}
             >
               {isDesktop && !isSplineTimeout ? (
                 <SplineErrorBoundary fallback={renderStaticFallback()}>
                   <Suspense fallback={<RoomSkeleton />}>
                     <RoomScene onLoad={handleSplineLoad} />
                   </Suspense>
-                  
+
                   {/* Fade out loading skeleton once Spline load confirms */}
                   <div
                     className="absolute inset-0 transition-opacity duration-700 ease-out-quad pointer-events-none z-30"
@@ -461,39 +348,6 @@ const Hero: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Laptop screen hotspot interactive overlay */}
-        {isDesktop && isZoomed && (
-          <div className="absolute inset-0 flex items-center justify-center z-40 pointer-events-none">
-            <motion.button
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              onClick={() => setIsLaptopOpen(true)}
-              className="pointer-events-auto cursor-pointer group relative flex flex-col items-center justify-center"
-              style={{
-                width: "350px",
-                height: "250px",
-                transform: "translate(-50px, -20px)" // Positioned centered on the zoomed Spline laptop
-              }}
-            >
-              {/* Pulsing ring indicator */}
-              <div className="absolute inset-0 border-2 border-amber/40 rounded-xl animate-pulse bg-amber/5 backdrop-blur-[1px] group-hover:border-amber group-hover:bg-amber/10 transition-all duration-300 shadow-[0_0_30px_rgba(192,88,0,0.15)]" />
-              
-              {/* Glowing core indicator */}
-              <div className="w-3.5 h-3.5 bg-amber rounded-full shadow-[0_0_15px_rgb(192,88,0)] mb-3 animate-bounce" />
-              
-              {/* Floating tooltip */}
-              <div className="bg-night/95 border border-border px-4 py-2 rounded-lg shadow-2xl text-center pointer-events-none group-hover:scale-105 transition-transform duration-200">
-                <p className="font-mono text-[0.65rem] tracking-[0.12em] text-amber uppercase font-semibold">
-                  💻 PROJECTS WORKSPACE
-                </p>
-                <p className="font-sans text-[0.58rem] text-bark/70 whitespace-nowrap mt-0.5">
-                  Click to open Laptop Monitor
-                </p>
-              </div>
-            </motion.button>
-          </div>
-        )}
-
         {/* Laptop Window Modal (Glassmorphic Browser Interface) */}
         <AnimatePresence>
           {isLaptopOpen && (
@@ -509,8 +363,8 @@ const Hero: React.FC = () => {
                 <div className="flex items-center justify-between px-4 py-3 bg-surface border-b border-border select-none">
                   {/* Left: Chrome Dots */}
                   <div className="flex items-center gap-2">
-                    <button 
-                      onClick={() => setIsLaptopOpen(false)} 
+                    <button
+                      onClick={() => setIsLaptopOpen(false)}
                       className="w-3.5 h-3.5 rounded-full bg-[#FF5F56] border border-[#E0443E] hover:opacity-85 transition-opacity cursor-pointer"
                     />
                     <div className="w-3.5 h-3.5 rounded-full bg-[#FFBD2E] border border-[#DEA123]" />
@@ -570,7 +424,7 @@ const Hero: React.FC = () => {
                     {/* Projects Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {PROJECTS.map((project) => (
-                        <div 
+                        <div
                           key={project.id}
                           className="border border-border bg-surface/30 hover:border-amber/40 hover:bg-surface/50 p-6 rounded-xl transition-all duration-300 flex flex-col justify-between group shadow-lg hover:shadow-black/20"
                         >
@@ -600,8 +454,8 @@ const Hero: React.FC = () => {
                             {/* Core stack labels */}
                             <div className="flex flex-wrap gap-1.5 mt-5">
                               {project.coreStack.map((tech) => (
-                                <span 
-                                  key={tech} 
+                                <span
+                                  key={tech}
                                   className="font-mono text-[0.55rem] bg-night border border-border/40 text-bark/50 px-2 py-0.5 rounded"
                                 >
                                   {tech}
@@ -611,18 +465,18 @@ const Hero: React.FC = () => {
                           </div>
 
                           <div className="border-t border-border/50 pt-4 mt-6 flex items-center justify-between select-none">
-                            <a 
-                              href={project.githubUrl} 
-                              target="_blank" 
+                            <a
+                              href={project.githubUrl}
+                              target="_blank"
                               rel="noopener noreferrer"
                               className="font-mono text-[0.62rem] tracking-wider text-bark/40 hover:text-amber transition-colors duration-200"
                             >
                               // VIEW GITHUB ↗
                             </a>
                             {project.liveUrl && (
-                              <a 
-                                href={project.liveUrl} 
-                                target="_blank" 
+                              <a
+                                href={project.liveUrl}
+                                target="_blank"
                                 rel="noopener noreferrer"
                                 className="font-mono text-[0.62rem] tracking-wider text-amber hover:text-amber-glow font-bold transition-colors duration-200"
                               >
@@ -649,8 +503,8 @@ const Hero: React.FC = () => {
           <span className="font-mono text-[0.55rem] text-bark/20">001</span>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="hero-scroll absolute bottom-10 left-8 lg:left-20 flex items-center gap-3" style={{ opacity: 0 }}>
+        {/* Desktop Scroll indicator */}
+        <div className="hero-scroll absolute bottom-8 left-8 lg:left-20 hidden sm:flex items-center gap-3" style={{ opacity: 0 }}>
           <div className="w-px h-12 bg-gradient-to-b from-amber/40 to-transparent animate-pulse" />
           <span className="font-mono text-[0.55rem] tracking-[0.2em] uppercase text-bark/25">Scroll</span>
         </div>

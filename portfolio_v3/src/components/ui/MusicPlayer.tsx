@@ -50,6 +50,17 @@ const MusicPlayer: React.FC = () => {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  // Listen for the custom "toggle-music" event emitted by the 3D Spline scene
+  useEffect(() => {
+    const handleToggleMusic = () => {
+      mp.togglePlay();
+    };
+    window.addEventListener("toggle-music", handleToggleMusic);
+    return () => {
+      window.removeEventListener("toggle-music", handleToggleMusic);
+    };
+  }, [mp.togglePlay]);
+
   const shortName = mp.track.name.split("—")[0].trim().split(" ").slice(0, 3).join(" ");
 
   return (

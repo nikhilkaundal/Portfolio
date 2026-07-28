@@ -71,9 +71,9 @@
   --text-muted: #6B6259;
 
   /* Opacities & spotlight settings */
-  --hero-canvas-opacity: 0.12;
-  --contact-canvas-opacity: 0.12;
-  --cursor-spotlight-opacity: 0.25;
+  --hero-canvas-opacity: 0.70;
+  --contact-canvas-opacity: 0.70;
+  --cursor-spotlight-opacity: 0.45;
 
   /* Tailwind CSS variables in RGB format */
   --night-rgb: 250, 246, 240;          /* #FAF6F0 - warm cream */
@@ -592,4 +592,28 @@ body::before {
 .scrollbar-none {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
+}
+
+/* Ensure Spline canvas background is transparent and prevent pixelation */
+.hero-room canvas,
+.hero-room-scene canvas,
+canvas[data-engine] {
+  background: transparent !important;
+}
+
+/* Hide Spline "Built with Spline" logo watermark badge across Light DOM & Shadow DOM */
+spline-viewer::part(logo),
+a[href*="spline.design"],
+#spline-logo,
+#logo[href*="spline"],
+.spline-watermark,
+.spline-logo,
+div[class*="spline"] a,
+canvas + a,
+canvas ~ a,
+a[target="_blank"][href*="spline"] {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
 }

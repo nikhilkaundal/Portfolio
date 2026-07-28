@@ -26,48 +26,43 @@ import { useScrollReveal } from "./hooks/useScrollReveal";
 const App: React.FC = () => {
   const [loaded, setLoaded] = useState(false);
   const location = useLocation();
-  
-  // Transition state
-  const [transitioning, setTransitioning] = useState(false);
-  const [displayLocation, setDisplayLocation] = useState(location);
 
   const handleLoaded = useCallback(() => setLoaded(true), []);
 
   useLenis();
-  useScrollReveal("[data-reveal]", displayLocation.pathname);
+  useScrollReveal("[data-reveal]", location.pathname);
 
-  // Handle route change transition
+  // Instant clean route navigation & scroll reset
   useEffect(() => {
-    if (location.pathname !== displayLocation.pathname) {
-      setTransitioning(true);
-      const timer = setTimeout(() => {
-        window.scrollTo({ top: 0 });
-        setDisplayLocation(location);
-        setTransitioning(false);
-      }, 250);
-      return () => clearTimeout(timer);
+    // Reset Lenis smooth scroll to top immediately
+    if ((window as any).__lenis) {
+      (window as any).__lenis.scrollTo(0, { immediate: true });
     }
-  }, [location, displayLocation]);
+    window.scrollTo(0, 0);
+
+    // Refresh scroll triggers & intersection observers
+    const timer = setTimeout(() => {
+      window.dispatchEvent(new Event("resize"));
+      window.dispatchEvent(new Event("scroll"));
+    }, 60);
+
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
 
   return (
     <>
       <Cursor />
       {!loaded && <Preloader onComplete={handleLoaded} />}
-      <div className="transition-opacity duration-700" style={{ opacity: loaded ? 1 : 0 }}>
+      <div className="transition-opacity duration-500" style={{ opacity: loaded ? 1 : 0 }}>
         <Navbar />
         <main className="min-h-[85vh]">
-          <div 
-            className={`transition-all duration-300
-              ${transitioning ? "opacity-0 translate-y-3 blur-[2px] transform-gpu" : "opacity-100"}`}
-          >
-            <Routes location={displayLocation}>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/skills" element={<SkillsPage />} />
-              <Route path="/work" element={<WorkPage />} />
-              <Route path="/projects" element={<ProjectsPage />} />
-            </Routes>
-          </div>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/skills" element={<SkillsPage />} />
+            <Route path="/work" element={<WorkPage />} />
+            <Route path="/projects" element={<ProjectsPage />} />
+          </Routes>
         </main>
         <Footer />
       </div>
@@ -78,4 +73,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-

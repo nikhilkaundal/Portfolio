@@ -23,7 +23,7 @@ import {
 /* GitHub brand icon (not in lucide-react) */
 const GitHubIcon: React.FC<{ size?: number; className?: string }> = ({ size = 16, className }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
   </svg>
 );
 
@@ -79,9 +79,8 @@ const MetricCounter: React.FC<{ val: string; label: string }> = ({ val, label })
 
   return (
     <div ref={ref} className="text-left">
-      <p className={`font-display font-light text-amber leading-none mb-1 ${
-        val.length > 7 ? "text-lg lg:text-xl font-medium tracking-tight" : "text-3xl lg:text-4xl"
-      }`}>{display}</p>
+      <p className={`font-display font-light text-amber leading-none mb-1 ${val.length > 7 ? "text-lg lg:text-xl font-medium tracking-tight" : "text-3xl lg:text-4xl"
+        }`}>{display}</p>
       {label && <p className="font-mono text-[0.55rem] tracking-[0.1em] uppercase text-bark/30">{label}</p>}
     </div>
   );
@@ -167,7 +166,7 @@ const PremiumGlowCard: React.FC<PremiumGlowCardProps> = ({
           background: `radial-gradient(400px circle at ${coords.x}px ${coords.y}px, rgba(255, 122, 26, 0.08), transparent 80%)`,
         }}
       />
-      
+
       {/* 3. Futuristic Laser Scanline Grid Mesh */}
       <div
         className="absolute pointer-events-none inset-0 z-0 opacity-0 transition-opacity duration-500 rounded-inherit mix-blend-overlay"
@@ -227,7 +226,7 @@ const InteractiveChatMockup: React.FC = () => {
   ]);
   const [isTyping, setIsTyping] = useState(false);
   const [currentTypingText, setCurrentTypingText] = useState("");
-  const chatEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   const suggestedQuestions = [
     "What are the fees for B.Tech CSE?",
@@ -238,7 +237,7 @@ const InteractiveChatMockup: React.FC = () => {
 
   const handleSend = (text: string) => {
     if (isTyping) return;
-    
+
     setMessages(prev => [...prev, { sender: "user", text }]);
     setIsTyping(true);
 
@@ -275,7 +274,9 @@ const InteractiveChatMockup: React.FC = () => {
   };
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
   }, [messages, currentTypingText]);
 
   return (
@@ -317,15 +318,14 @@ const InteractiveChatMockup: React.FC = () => {
         </div>
 
         {/* Chat History Area */}
-        <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-2.5 scrollbar-thin">
+        <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-3 flex flex-col gap-2.5 scrollbar-thin">
           {messages.map((msg, idx) => (
             <div key={idx} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
               <div
-                className={`max-w-[85%] rounded-lg p-2.5 leading-relaxed whitespace-pre-line text-[0.7rem] ${
-                  msg.sender === "user"
+                className={`max-w-[85%] rounded-lg p-2.5 leading-relaxed whitespace-pre-line text-[0.7rem] ${msg.sender === "user"
                     ? "bg-mock-accent-bg text-mock-accent-text border border-mock-borderLight"
                     : "bg-mock-surfaceLight text-bark/80 border border-mock-border"
-                }`}
+                  }`}
               >
                 {msg.text}
                 {msg.hasPdf && (
@@ -351,7 +351,6 @@ const InteractiveChatMockup: React.FC = () => {
               </div>
             </div>
           )}
-          <div ref={chatEndRef} />
         </div>
 
         {/* Suggested questions & input */}
@@ -495,12 +494,12 @@ const SP500PredictorMockup: React.FC = () => {
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 200 80" preserveAspectRatio="none">
           <defs>
             <linearGradient id="gradientActual" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#C05800" stopOpacity="0.2"/>
-              <stop offset="100%" stopColor="#C05800" stopOpacity="0"/>
+              <stop offset="0%" stopColor="#C05800" stopOpacity="0.2" />
+              <stop offset="100%" stopColor="#C05800" stopOpacity="0" />
             </linearGradient>
             <linearGradient id="gradientPredict" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#FF7A1A" stopOpacity="0.15"/>
-              <stop offset="100%" stopColor="#FF7A1A" stopOpacity="0"/>
+              <stop offset="0%" stopColor="#FF7A1A" stopOpacity="0.15" />
+              <stop offset="100%" stopColor="#FF7A1A" stopOpacity="0" />
             </linearGradient>
           </defs>
 
@@ -566,22 +565,11 @@ const LiveIframeMockup: React.FC<{ src: string }> = ({ src }) => {
     const updateScale = () => {
       const rect = el.getBoundingClientRect();
       const width = rect.width;
-      const height = rect.height;
-      const mobileMode = width < 768;
-      
-      if (mobileMode) {
-        // Load the iframe at a standard mobile width (375px)
-        const vWidth = 375;
-        // The virtual height should match the aspect ratio of the container (vHeight = vWidth * height/width)
-        const vHeight = vWidth * (height / width);
-        setVirtualWidth(vWidth);
-        setVirtualHeight(vHeight);
-        setScale(width / vWidth);
-      } else {
-        setVirtualWidth(1920);
-        setVirtualHeight(876);
-        setScale(width / 1920);
-      }
+      const vWidth = 1366; // True Desktop Browser Resolution
+      const vHeight = 820;
+      setVirtualWidth(vWidth);
+      setVirtualHeight(vHeight);
+      setScale(width / vWidth);
     };
 
     updateScale();
@@ -634,8 +622,8 @@ interface DemoFrameProps {
 }
 
 const BADGE_CONFIG = {
-  live:    { dotColor: "#28C840", text: "LIVE DEMO" },
-  demo:    { dotColor: "#C05800", text: "DEMO" },
+  live: { dotColor: "#28C840", text: "LIVE DEMO" },
+  demo: { dotColor: "#C05800", text: "DEMO" },
   preview: { dotColor: "#C05800", text: "PREVIEW" },
 };
 
@@ -690,31 +678,28 @@ const DemoFrame: React.FC<DemoFrameProps> = ({ id, mediaType, mediaSrc, urlBarTe
         <div className="flex bg-mock-surfaceLight border-b border-mock-border px-4 py-1.5 gap-2 select-none relative z-20 overflow-x-auto whitespace-nowrap flex-nowrap scrollbar-none">
           <button
             onClick={() => setViewMode("video")}
-            className={`flex-shrink-0 font-mono text-[0.55rem] tracking-wider uppercase px-2.5 py-1 rounded transition-colors cursor-none ${
-              viewMode === "video"
+            className={`flex-shrink-0 font-mono text-[0.55rem] tracking-wider uppercase px-2.5 py-1 rounded transition-colors cursor-none ${viewMode === "video"
                 ? "text-amber bg-bark/5 border border-bark/10"
                 : "text-bark/40 hover:text-bark/70 border border-transparent"
-            }`}
+              }`}
           >
             📹 Demo Video
           </button>
           <button
             onClick={() => setViewMode("live")}
-            className={`flex-shrink-0 font-mono text-[0.55rem] tracking-wider uppercase px-2.5 py-1 rounded transition-colors cursor-none ${
-              viewMode === "live"
+            className={`flex-shrink-0 font-mono text-[0.55rem] tracking-wider uppercase px-2.5 py-1 rounded transition-colors cursor-none ${viewMode === "live"
                 ? "text-amber bg-bark/5 border border-bark/10"
                 : "text-bark/40 hover:text-bark/70 border border-transparent"
-            }`}
+              }`}
           >
             🌐 Live Website
           </button>
           <button
             onClick={() => setViewMode("interactive")}
-            className={`flex-shrink-0 font-mono text-[0.55rem] tracking-wider uppercase px-2.5 py-1 rounded transition-colors cursor-none ${
-              viewMode === "interactive"
+            className={`flex-shrink-0 font-mono text-[0.55rem] tracking-wider uppercase px-2.5 py-1 rounded transition-colors cursor-none ${viewMode === "interactive"
                 ? "text-amber bg-bark/5 border border-bark/10"
                 : "text-bark/40 hover:text-bark/70 border border-transparent"
-            }`}
+              }`}
           >
             💬 Interactive Simulator
           </button>
@@ -724,7 +709,7 @@ const DemoFrame: React.FC<DemoFrameProps> = ({ id, mediaType, mediaSrc, urlBarTe
       {/* Media area — dynamic aspect ratio depending on project */}
       <div
         className="relative overflow-hidden bg-[#0A0A0B]"
-        style={{ aspectRatio: id === "proj-01" ? (isMobile ? "16 / 13" : "1920 / 876") : "16 / 9" }}
+        style={{ aspectRatio: "16 / 10" }}
       >
         {id === "proj-01" ? (
           viewMode === "interactive" ? (
@@ -771,8 +756,6 @@ const DemoFrame: React.FC<DemoFrameProps> = ({ id, mediaType, mediaSrc, urlBarTe
             className="w-full h-full object-cover screenshot-pan hover:scale-[1.03] transition-transform duration-[500ms] ease-out"
           />
         )}
-        {/* Bottom gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
       </div>
     </div>
   );
@@ -784,7 +767,7 @@ const DemoFrame: React.FC<DemoFrameProps> = ({ id, mediaType, mediaSrc, urlBarTe
 const ArchitectureStrip: React.FC = () => {
   const steps = [
     { icon: MessageSquare, label: "Query" },
-    { icon: Database,      label: "Retrieval" },
+    { icon: Database, label: "Retrieval" },
     { icon: MessageSquare, label: "Response" },
   ];
 
@@ -1009,7 +992,7 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({ project, onOpenCaseStudy })
                   transition-all duration-300 cursor-none
                   inline-flex items-center gap-2"
               >
-                Source Code 
+                Source Code
                 <ExternalLink size={12} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform duration-300" />
               </a>
             </div>
@@ -1108,7 +1091,7 @@ const SecondaryCard: React.FC<{ project: ProjectData; revealDelay?: number }> = 
                 transition-all duration-300 cursor-none
                 inline-flex items-center gap-2"
             >
-              Source Code 
+              Source Code
               <ExternalLink size={11} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform duration-300" />
             </a>
           </div>
@@ -1257,11 +1240,11 @@ const CaseStudyRagChatbot: React.FC<CaseStudyRagChatbotProps> = ({ onClose, proj
   useEffect(() => {
     // Reset scroll to top when opened
     scrollRef.current?.scrollTo({ top: 0 });
-    
+
     // Lock background scroll
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    
+
     return () => {
       document.body.style.overflow = prevOverflow;
     };
@@ -1328,7 +1311,7 @@ const CaseStudyRagChatbot: React.FC<CaseStudyRagChatbotProps> = ({ onClose, proj
             <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-bark/55">The Problem</span>
             <span className="h-px flex-1 bg-bark/10" />
           </div>
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-10 lg:gap-14 items-start">
             <div className="max-w-[680px] space-y-4">
               <h2 className="font-display font-light text-bark text-2xl sm:text-3xl tracking-tight">
@@ -1344,19 +1327,19 @@ const CaseStudyRagChatbot: React.FC<CaseStudyRagChatbotProps> = ({ onClose, proj
                 That gap became the brief: build something that could sit between a student's question and the university's information, and close that distance to a single response. I worked on this as part of a four-person team during my internship, and took on the system's frontend, the end-to-end pipeline build, and the API integration connecting Flask backend to the chat interface, while a teammate handled data cleaning and vector database conversion.
               </p>
             </div>
-            
+
             {/* Premium Screenshot Showcase */}
             <div className="relative w-full rounded-xl border border-mock-border bg-mock-surface overflow-hidden group hover:border-amber/30 transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.6),_0_0_30px_rgba(192,88,0,0.05)]">
               {/* Image wrapper to contain scale effect */}
               <div className="overflow-hidden relative w-full">
-                <img 
-                  src="/proof/chatbot.png" 
-                  alt="Panjab University Admission Bot UI Chat Interface" 
+                <img
+                  src="/proof/chatbot.png"
+                  alt="Panjab University Admission Bot UI Chat Interface"
                   className="w-full h-auto block transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                 />
                 {/* Grid pattern overlay (subtle futuristic aesthetic) */}
                 <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none opacity-60" />
-                
+
                 {/* Subtle ambient lighting gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-60 pointer-events-none" />
               </div>
@@ -1493,7 +1476,7 @@ const CaseStudyRagChatbot: React.FC<CaseStudyRagChatbotProps> = ({ onClose, proj
                   Compared to manually searching and browsing through the official university website.
                 </p>
               </div>
-              
+
               <div className="bg-bark/[0.01] border border-bark/10 rounded-xl p-6 text-center md:text-left hover:border-amber/20 transition-all duration-300">
                 <div className="font-display text-4xl sm:text-5xl text-amber font-light tracking-tight mb-2">~95%</div>
                 <div className="font-mono text-[0.58rem] tracking-[0.15em] uppercase text-bark/40 mb-2">Data Consistency</div>
@@ -1591,7 +1574,7 @@ const CaseStudyRagChatbot: React.FC<CaseStudyRagChatbotProps> = ({ onClose, proj
    ═══════════════════════════════════════════════════════════ */
 const Projects: React.FC = () => {
   const featured = PROJECTS.find((p) => p.featured) || PROJECTS[0];
-  const rest     = featured ? PROJECTS.filter((p) => p.id !== featured.id) : PROJECTS;
+  const rest = featured ? PROJECTS.filter((p) => p.id !== featured.id) : PROJECTS;
   const [showCaseStudy, setShowCaseStudy] = useState(false);
 
   useEffect(() => {

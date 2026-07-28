@@ -6,6 +6,7 @@ import { Sun, Moon } from "lucide-react";
 
 
 const LINKS = [
+  { label: "Home",     path: "/"         },
   { label: "About",    path: "/about"    },
   { label: "Skills",   path: "/skills"   },
   { label: "Work",     path: "/work"     },
@@ -113,7 +114,7 @@ const Navbar: React.FC = () => {
         </ul>
 
         {/* Action Group */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3 sm:gap-6">
           {/* Music Player */}
           <MusicPlayer />
 
@@ -132,7 +133,9 @@ const Navbar: React.FC = () => {
 
           {/* Desktop Contact CTA */}
           <a
-            href="mailto:nikhilkaundal1257@gmail.com"
+            href="https://mail.google.com/mail/?view=cm&fs=1&to=nikhilkaundal1257@gmail.com"
+            target="_blank"
+            rel="noopener noreferrer"
             className="hidden sm:inline-block font-mono text-[0.62rem] tracking-[0.15em] uppercase text-amber border border-amber/30 px-5 py-2.5 cursor-none
               hover:bg-amber hover:text-night hover:border-amber hover:shadow-[0_0_30px_rgba(192,88,0,0.3)]
               transition-all duration-400"
@@ -211,7 +214,9 @@ const Navbar: React.FC = () => {
         <div className="flex flex-col gap-6">
           {/* Mobile CTA inside Drawer */}
           <a
-            href="mailto:nikhilkaundal1257@gmail.com"
+            href="https://mail.google.com/mail/?view=cm&fs=1&to=nikhilkaundal1257@gmail.com"
+            target="_blank"
+            rel="noopener noreferrer"
             className="w-full text-center font-mono text-[0.72rem] tracking-[0.15em] uppercase text-amber border border-amber/30 py-4 cursor-none
               hover:bg-amber hover:text-night hover:border-amber hover:shadow-[0_0_30px_rgba(192,88,0,0.3)]
               transition-all duration-400"

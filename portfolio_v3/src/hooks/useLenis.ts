@@ -11,9 +11,11 @@ export function useLenis() {
       if (!isMounted) return;
       const Lenis = mod.default;
       lenis = new Lenis({
-        duration: 1.3,
+        duration: 1.2,
         easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       });
+
+      (window as any).__lenis = lenis;
 
       const raf = (time: number) => {
         if (!isMounted) return;
@@ -45,7 +47,10 @@ export function useLenis() {
     return () => {
       isMounted = false;
       if (rafId) cancelAnimationFrame(rafId);
-      if (lenis) lenis.destroy();
+      if (lenis) {
+        delete (window as any).__lenis;
+        lenis.destroy();
+      }
       document.removeEventListener("click", handleClick);
     };
   }, []);

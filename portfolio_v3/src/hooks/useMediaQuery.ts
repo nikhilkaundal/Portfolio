@@ -1,36 +1,30 @@
 import { useState, useEffect } from "react";
 
 export function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState(() => {
-    // Check if window is defined (for server-side rendering safety)
+  const [matches, setMatches] = useState<boolean>(() => {
     if (typeof window !== "undefined") {
       return window.matchMedia(query).matches;
     }
-    return false;
+    return true;
   });
 
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     const media = window.matchMedia(query);
-    
-    // Set initial match state
-    if (media.matches !== matches) {
-      setMatches(media.matches);
-    }
+    setMatches(media.matches);
 
-    const listener = () => setMatches(media.matches);
+    const listener = (e: MediaQueryListEvent) => setMatches(e.matches);
     
-    // Support modern and older browsers for matchMedia listener
     if (media.addEventListener) {
       media.addEventListener("change", listener);
       return () => media.removeEventListener("change", listener);
     } else {
-      // Fallback for older browsers
+      // Fallback for legacy browsers
       media.addListener(listener);
       return () => media.removeListener(listener);
     }
-  }, [matches, query]);
+  }, [query]);
 
   return matches;
 }

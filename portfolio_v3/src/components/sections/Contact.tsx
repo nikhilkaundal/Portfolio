@@ -176,7 +176,7 @@ const Contact: React.FC = () => {
   }, []);
 
   return (
-    <section id="contact" className="relative min-h-[90vh] flex flex-col justify-center bg-night overflow-hidden py-24 select-none">
+    <section id="contact" className="relative min-h-[90vh] flex flex-col justify-center bg-night border-t border-bark/10 overflow-hidden py-24 select-none">
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none opacity-50" />
 
       <div className="relative z-10 max-w-4xl mx-auto px-8 text-center reveal" data-reveal>
@@ -195,20 +195,22 @@ const Contact: React.FC = () => {
         </h2>
 
         <p className="font-body text-bark/60 max-w-lg mx-auto mb-12 text-[1rem] leading-relaxed">
-          Actively seeking full-stack developer roles. If you're building something ambitious or have an opening, let's work together.
+          Building ambitious web applications, RAG AI systems, and interactive digital experiences. Let's collaborate.
         </p>
 
         <div className="mb-14">
           <a
             ref={emailRef}
-            href="mailto:nikhilkaundal1257@gmail.com"
+            href="https://mail.google.com/mail/?view=cm&fs=1&to=nikhilkaundal1257@gmail.com"
+            target="_blank"
+            rel="noopener noreferrer"
             onMouseMove={onEmailMove}
             onMouseLeave={onEmailLeave}
             className="font-mono text-[0.8rem] tracking-[0.15em] uppercase
-              inline-block border border-amber/30 text-amber px-10 py-4.5
-              bg-surface/50 backdrop-blur-md rounded-none cursor-none
-              hover:border-amber-glow hover:text-amber-glow dark:hover:text-white transition-all duration-300
-              hover:shadow-[0_0_40px_rgba(255,122,26,0.25)]"
+              inline-block border border-amber/40 text-amber px-10 py-4.5
+              bg-amber/5 rounded-none cursor-none
+              hover:bg-amber hover:text-night hover:border-amber transition-all duration-300
+              hover:shadow-[0_0_40px_rgba(192,88,0,0.3)]"
           >
             nikhilkaundal1257@gmail.com
           </a>

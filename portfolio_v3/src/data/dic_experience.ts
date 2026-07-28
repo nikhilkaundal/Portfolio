@@ -45,7 +45,6 @@ export const DIC_EXP = {
     {
       id: "mod-rag-pipeline",
       name: "RAG Pipeline Architecture",
-      emoji: "🧠",
       shortDesc: "Retrieval-Augmented Generation: scrape → index → retrieve → generate",
       details: [
         "Scraped Panjab University official admission website for structured course, fee, and deadline data",
@@ -61,7 +60,6 @@ export const DIC_EXP = {
     {
       id: "mod-chatbot-frontend",
       name: "Chatbot Frontend (React.js)",
-      emoji: "💬",
       shortDesc: "Interactive chat UI: message bubbles, feedback buttons, quick replies",
       details: [
         "Built complete chatbot UI in React.js: conversational message bubble layout with sent/received states",
@@ -77,7 +75,6 @@ export const DIC_EXP = {
     {
       id: "mod-flask-backend",
       name: "Flask Backend & API Integration",
-      emoji: "⚙️",
       shortDesc: "REST API layer connecting React frontend to RAG pipeline",
       details: [
         "Built Flask REST API server: single endpoint receiving user query, returning formatted LLM response",
@@ -93,7 +90,6 @@ export const DIC_EXP = {
     {
       id: "mod-link-mapping",
       name: "Intent-to-Link Mapping System",
-      emoji: "🔗",
       shortDesc: "Ensures exactly one verified official PU link per response",
       details: [
         "Identified core problem: users were shown multiple/irrelevant hyperlinks causing confusion and mistrust",
@@ -108,7 +104,6 @@ export const DIC_EXP = {
     {
       id: "mod-data-pipeline",
       name: "Data Scraping & Indexing Pipeline",
-      emoji: "🗃️",
       shortDesc: "Automated PU website scraping → cleaning → vector indexing",
       details: [
         "Week 1 task: collected PU admission website data covering courses, fees, eligibility, deadlines, contacts",
@@ -123,7 +118,6 @@ export const DIC_EXP = {
     {
       id: "mod-deployment",
       name: "Full-Stack Deployment",
-      emoji: "🚀",
       shortDesc: "Vercel (frontend) + Fly.io + Render (backend) under memory constraints",
       details: [
         "Frontend deployed on Vercel: zero-config React deployment with custom domain and environment variables",
@@ -139,7 +133,6 @@ export const DIC_EXP = {
     {
       id: "mod-testing",
       name: "Testing & Validation",
-      emoji: "🧪",
       shortDesc: "End-to-end query testing: accuracy, link validation, performance",
       details: [
         "Tested chatbot on 20+ real admission queries: courses, eligibility, fees, deadlines, department contacts",
