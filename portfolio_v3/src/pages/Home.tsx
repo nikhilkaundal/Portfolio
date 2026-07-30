@@ -13,7 +13,11 @@ import {
   Bot,
   User,
   ArrowUpRight,
-  Sparkles
+  Sparkles,
+  MapPin,
+  GraduationCap,
+  Layers,
+  Camera
 } from "lucide-react";
 
 const FEATURED_CAPSULE_PROJECTS = [
@@ -147,59 +151,120 @@ const Home: React.FC = () => {
               </div>
             </motion.div>
 
-            {/* Right Column: Developer Passport / Identity Card */}
+            {/* Right Column: Developer Passport / Identity Card with Photo Integration */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.15 }}
+              transition={{ duration: 0.75, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
               className="lg:col-span-5"
             >
-              <div className="group relative bg-night-light border border-bark/10 hover:border-amber/40 rounded-3xl p-7 sm:p-8 transition-all duration-500 hover:shadow-[0_0_50px_rgba(192,88,0,0.12)] overflow-hidden cursor-none">
-                
-                {/* Top Profile Header */}
-                <div className="flex items-center gap-5 mb-7 relative z-10">
-                  <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-2xl bg-amber/10 border border-amber/30 flex items-center justify-center text-amber font-display text-2xl font-light group-hover:bg-amber group-hover:text-night transition-all duration-500 flex-shrink-0 shadow-md">
-                    NK
+              <motion.div
+                whileHover={{ y: -6, scale: 1.015 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="group relative bg-night-light/95 backdrop-blur-xl border border-bark/15 hover:border-amber/50 rounded-3xl p-6 sm:p-8 transition-all duration-500 hover:shadow-[0_0_60px_rgba(235,94,0,0.18)] overflow-hidden cursor-none"
+              >
+                {/* Background Ambient Radial Glow Blobs */}
+                <div className="absolute -top-24 -right-24 w-60 h-60 rounded-full bg-amber/10 blur-[70px] pointer-events-none group-hover:bg-amber/25 transition-all duration-700" />
+                <div className="absolute -bottom-24 -left-24 w-60 h-60 rounded-full bg-amber/[0.04] blur-[70px] pointer-events-none group-hover:bg-amber/15 transition-all duration-700" />
+
+                {/* Top Profile Header with Photo */}
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 mb-7 relative z-10">
+                  {/* Photo Container with Camera Viewfinder Frame */}
+                  <div className="relative group/photo flex-shrink-0">
+                    <div className="w-24 h-28 sm:w-28 sm:h-32 rounded-2xl overflow-hidden border-2 border-amber/30 group-hover:border-amber bg-gradient-to-b from-amber/20 via-night-light to-night shadow-xl relative transition-all duration-500">
+                      {/* Photo Image */}
+                      <img
+                        src="/proof/mee.png"
+                        alt="Nikhil Kaundal"
+                        className="w-full h-full object-cover object-top group-hover:scale-108 transition-transform duration-700 ease-out"
+                      />
+                      
+                      {/* Dark Vignette Gradient Overlay at Bottom */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-night/85 via-transparent to-transparent pointer-events-none" />
+
+                      {/* Camera Viewfinder Reticle Corners */}
+                      <div className="absolute top-1.5 left-1.5 w-2.5 h-2.5 border-t-2 border-l-2 border-amber/80 opacity-80" />
+                      <div className="absolute top-1.5 right-1.5 w-2.5 h-2.5 border-t-2 border-r-2 border-amber/80 opacity-80" />
+                      <div className="absolute bottom-1.5 left-1.5 w-2.5 h-2.5 border-b-2 border-l-2 border-amber/80 opacity-80" />
+                      <div className="absolute bottom-1.5 right-1.5 w-2.5 h-2.5 border-b-2 border-r-2 border-amber/80 opacity-80" />
+
+                      {/* Micro Camera Tag */}
+                      <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-night/90 border border-amber/40 px-2 py-0.5 rounded-full flex items-center gap-1 opacity-0 group-hover/photo:opacity-100 transition-opacity duration-300 shadow-md">
+                        <Camera size={9} className="text-amber" />
+                        <span className="font-mono text-[0.5rem] text-amber tracking-tighter uppercase font-semibold">PORTRAIT</span>
+                      </div>
+                    </div>
+
+                    {/* Monogram NK Seal Badge */}
+                    <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-xl bg-amber border-2 border-night text-night flex items-center justify-center font-display font-bold text-xs shadow-lg group-hover:rotate-12 transition-transform duration-300">
+                      NK
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-display text-2xl text-bark font-light leading-tight mb-1">Nikhil Kaundal</h3>
-                    <p className="font-mono text-[0.68rem] text-amber tracking-wider uppercase mb-2.5">Full-Stack &amp; RAG AI Engineer</p>
+
+                  {/* Info Header Details */}
+                  <div className="text-center sm:text-left flex-1">
+                    <h3 className="font-display text-2xl sm:text-3xl text-bark font-light leading-tight mb-1 tracking-tight">
+                      Nikhil Kaundal
+                    </h3>
+                    <p className="font-mono text-[0.68rem] text-amber tracking-wider uppercase mb-3 font-semibold">
+                      Full-Stack &amp; RAG AI Engineer
+                    </p>
                     
-                    {/* Status Pill */}
-                    <div className="inline-flex items-center gap-2 bg-amber/10 border border-amber/25 px-3 py-1 rounded-full">
-                      <span className="w-2 h-2 rounded-full bg-amber shadow-[0_0_8px_rgba(235,94,0,0.9)] animate-pulse" />
-                      <span className="font-mono text-[0.58rem] text-amber tracking-widest uppercase font-medium">Systems &amp; AI Specialist</span>
+                    {/* Status Pills */}
+                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                      <div className="inline-flex items-center gap-2 bg-amber/10 border border-amber/30 px-3 py-1 rounded-full">
+                        <span className="w-2 h-2 rounded-full bg-amber shadow-[0_0_8px_rgba(235,94,0,0.9)] animate-pulse" />
+                        <span className="font-mono text-[0.58rem] text-amber tracking-widest uppercase font-medium">
+                          Systems &amp; AI Specialist
+                        </span>
+                      </div>
+
+                      <div className="inline-flex items-center gap-1.5 bg-bark/5 border border-bark/15 px-2.5 py-1 rounded-full text-bark/60">
+                        <Camera size={10} className="text-amber/80" />
+                        <span className="font-mono text-[0.56rem] tracking-wider uppercase">Visual Artist</span>
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Specs List */}
-                <div className="space-y-2.5 font-mono text-[0.72rem] mb-7 relative z-10">
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-bark/5 border border-bark/10">
-                    <span className="text-bark/40 uppercase">Location</span>
+                <div className="space-y-2.5 font-mono text-[0.72rem] mb-6 relative z-10">
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-bark/[0.04] border border-bark/10 group-hover:border-amber/20 transition-colors duration-300">
+                    <div className="flex items-center gap-2 text-bark/40 uppercase">
+                      <MapPin size={12} className="text-amber/70" />
+                      <span>Location</span>
+                    </div>
                     <span className="text-bark font-medium">Chandigarh, IN</span>
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-bark/5 border border-bark/10">
-                    <span className="text-bark/40 uppercase">Education</span>
+                  
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-bark/[0.04] border border-bark/10 group-hover:border-amber/20 transition-colors duration-300">
+                    <div className="flex items-center gap-2 text-bark/40 uppercase">
+                      <GraduationCap size={12} className="text-amber/70" />
+                      <span>Education</span>
+                    </div>
                     <span className="text-bark font-medium">Panjab University (UIET)</span>
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-bark/5 border border-bark/10">
-                    <span className="text-bark/40 uppercase">Core Stack</span>
+                  
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-bark/[0.04] border border-bark/10 group-hover:border-amber/20 transition-colors duration-300">
+                    <div className="flex items-center gap-2 text-bark/40 uppercase">
+                      <Layers size={12} className="text-amber/70" />
+                      <span>Core Stack</span>
+                    </div>
                     <span className="text-amber font-medium">React 19 · Next.js · Node · AI</span>
                   </div>
                 </div>
 
                 {/* Developer Quote Banner */}
                 <div className="relative z-10 p-4 rounded-2xl bg-amber/8 border border-amber/20 text-bark/80">
-                  <p className="font-serif italic text-xs leading-relaxed text-bark/90">
+                  <p className="font-serif italic text-xs sm:text-[0.82rem] leading-relaxed text-bark/90">
                     "I write code the way I shoot photos until every line and detail feels exactly right."
                   </p>
                 </div>
 
                 {/* Hover Accent Glow Line */}
-                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-amber/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
-              </div>
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-amber/60 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
+              </motion.div>
             </motion.div>
 
           </div>
