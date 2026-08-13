@@ -6,13 +6,22 @@ export function useLenis() {
 
   useEffect(() => {
     const lenis = (window as any).__lenis;
-    if (lenis) {
-      if (location.pathname === "/assistant" || location.pathname === "/chat") {
-        lenis.stop();
-      } else {
-        lenis.start();
-      }
+    const isAssistant = location.pathname === "/assistant" || location.pathname === "/chat";
+
+    if (isAssistant) {
+      if (lenis) lenis.stop();
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    } else {
+      if (lenis) lenis.start();
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
     }
+
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    };
   }, [location.pathname]);
 
   useEffect(() => {

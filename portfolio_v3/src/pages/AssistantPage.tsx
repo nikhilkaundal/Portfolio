@@ -1005,13 +1005,13 @@ Nikhil Kaundal is a **Full Stack Developer & Data Engineer** from UIET Panjab Un
           data-lenis-prevent="true"
           data-lenis-prevent-wheel="true"
           data-lenis-prevent-touch="true"
-          className={`flex-1 px-3 sm:px-6 relative pointer-events-auto transition-all duration-300 ${
+          className={`flex-1 px-3 sm:px-6 relative pointer-events-auto transition-all duration-300 overflow-y-auto scrollbar-thin ${
             messages.length === 0
-              ? "h-full flex flex-col items-center justify-center overflow-hidden py-2"
-              : "overflow-y-auto py-4 sm:py-6 scrollbar-thin"
+              ? "py-2 sm:py-4 flex flex-col justify-center min-h-0"
+              : "py-4 sm:py-6"
           }`}
         >
-          <div className={`w-full max-w-3xl lg:max-w-4xl mx-auto ${messages.length === 0 ? "h-full flex flex-col items-center justify-center" : "space-y-4 sm:space-y-6"}`}>
+          <div className={`w-full max-w-3xl lg:max-w-4xl mx-auto ${messages.length === 0 ? "min-h-full flex flex-col items-center justify-center" : "space-y-4 sm:space-y-6"}`}>
             
             {/* Empty State Greetings (Claude / Mobile Optimized) */}
             {messages.length === 0 && !isLoading && (

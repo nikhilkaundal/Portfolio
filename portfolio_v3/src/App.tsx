@@ -50,13 +50,15 @@ const App: React.FC = () => {
     return () => clearTimeout(timer);
   }, [location.pathname]);
 
+  const isAssistantPage = location.pathname === "/assistant" || location.pathname === "/chat";
+
   return (
     <>
       <Cursor />
       {!loaded && <Preloader onComplete={handleLoaded} />}
       <div className="transition-opacity duration-500" style={{ opacity: loaded ? 1 : 0 }}>
-        <Navbar />
-        <main className="min-h-[85vh]">
+        {!isAssistantPage && <Navbar />}
+        <main className={isAssistantPage ? "h-[100dvh] w-full overflow-hidden" : "min-h-[85vh]"}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<AboutPage />} />
@@ -67,7 +69,7 @@ const App: React.FC = () => {
             <Route path="/chat" element={<AssistantPage />} />
           </Routes>
         </main>
-        <Footer />
+        {!isAssistantPage && <Footer />}
       </div>
       <Analytics />
       <SpeedInsights />
