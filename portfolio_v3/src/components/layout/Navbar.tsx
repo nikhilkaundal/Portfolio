@@ -11,6 +11,7 @@ const LINKS = [
   { label: "Skills",   path: "/skills"   },
   { label: "Work",     path: "/work"     },
   { label: "Projects", path: "/projects" },
+  { label: "Ask AI ", path: "/assistant" },
   { label: "Contact",  path: "#contact"  },
 ];
 
@@ -52,6 +53,10 @@ const Navbar: React.FC = () => {
       document.body.style.overflow = "";
     };
   }, [isOpen]);
+
+  if (location.pathname === "/assistant" || location.pathname === "/chat") {
+    return null;
+  }
 
   return (
     <>

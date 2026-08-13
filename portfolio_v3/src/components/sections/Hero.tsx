@@ -311,7 +311,7 @@ const Hero: React.FC = () => {
               style={{ opacity: 0, transform: "translateY(16px)" }}
             >
               <MagneticBtn href="/proof/resume_16.pdf" variant="filled" target="_blank" rel="noopener noreferrer">View Resume</MagneticBtn>
-              <MagneticBtn href="#contact" variant="outline">Get in Touch</MagneticBtn>
+              <MagneticBtn href="/assistant" variant="outline">Ask Me Anything</MagneticBtn>
             </div>
           </motion.div>
 

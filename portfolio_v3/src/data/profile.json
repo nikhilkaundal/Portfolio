@@ -1,0 +1,266 @@
+{
+  "basics": {
+    "name": "Nikhil Kaundal",
+    "role": "Full Stack Developer & Data Engineer",
+    "tagline": "Full Stack Developer skilled in React.js, Node.js, Express.js, Flask, and MySQL/PostgreSQL, with hands-on experience shipping end-to-end web applications.",
+    "location": "Chandigarh, India",
+    "hometown": "Hamirpur, Himachal Pradesh",
+    "hometownDetails": "Currently residing in Chandigarh, India for studies & work; native hometown is Hamirpur, Himachal Pradesh.",
+    "phone": "+91 9592729319",
+    "email": "nikhilkaundal1257@gmail.com",
+    "education": "B.E in Computer Science and Engineering, UIET Panjab University, Chandigarh (2022 – 2026)",
+    "status": "AVAILABLE FOR OPPORTUNITIES · Full Stack Developer & Data Engineer",
+    "portfolio": "nikhilkaundal.space",
+    "professionalSummary": "Full Stack Developer skilled in React.js, Node.js, Express.js, Flask, and MySQL/PostgreSQL, with hands-on experience shipping end-to-end web applications. Delivered RESTful APIs, automated data ingestion workflows, and KPI dashboards that reduced manual effort by ~40%. Combines full-stack development with data engineering and web content management to enable data-driven product decisions at scale."
+  },
+  "skills": {
+    "coreStack": [
+      "React.js",
+      "Node.js",
+      "Express.js",
+      "Next.js",
+      "Flask (Python)",
+      "JavaScript (ES6+)",
+      "TypeScript",
+      "HTML5",
+      "CSS3"
+    ],
+    "apisAndArchitecture": [
+      "RESTful API Design",
+      "MVC Pattern",
+      "JWT Authentication",
+      "Role-Based Access Control (RBAC)"
+    ],
+    "databases": [
+      "MySQL",
+      "Supabase (PostgreSQL)",
+      "ChromaDB",
+      "Data Modeling",
+      "Query Optimization"
+    ],
+    "languages": [
+      "JavaScript",
+      "TypeScript",
+      "Python",
+      "SQL"
+    ],
+    "tools": [
+      "Git",
+      "GitHub",
+      "Postman",
+      "npm",
+      "Turborepo",
+      "Process Automation"
+    ],
+    "supporting": [
+      "Pandas",
+      "NumPy",
+      "Matplotlib",
+      "Power BI",
+      "Tableau",
+      "MS Excel (Power Query, Pivot Tables)"
+    ],
+    "concepts": [
+      "ETL Pipelines",
+      "Vector Indexing",
+      "LlamaIndex",
+      "RAG",
+      "Responsive Design",
+      "ARIMA Forecasting"
+    ],
+    "aiTools": [
+      "Claude Code (CLI)",
+      "Antigravity",
+      "Prompt Engineering",
+      "LLM-assisted Development",
+      "RAG Systems"
+    ],
+    "frontend": [
+      "React.js",
+      "Next.js 15",
+      "TypeScript",
+      "Tailwind CSS",
+      "JavaScript (ES6+)",
+      "HTML5 / CSS3",
+      "Three.js",
+      "Spline 3D",
+      "Lenis Smooth Scroll"
+    ],
+    "backend": [
+      "Node.js",
+      "Express.js",
+      "Flask",
+      "Python",
+      "REST APIs",
+      "JWT Auth",
+      "RBAC"
+    ],
+    "database": [
+      "Supabase (PostgreSQL, RLS, Realtime, Storage)",
+      "PostgreSQL",
+      "MySQL",
+      "ChromaDB (Vector DB)"
+    ],
+    "ai": [
+      "RAG Systems",
+      "LlamaIndex",
+      "Groq API (LLM inference)",
+      "HuggingFace Embeddings",
+      "Prompt Engineering",
+      "CrossEncoder Reranking"
+    ],
+    "mobile": [
+      "React Native",
+      "Expo",
+      "Expo Router",
+      "NativeWind"
+    ],
+    "devops": [
+      "Turborepo (Monorepo)",
+      "Git / GitHub",
+      "Vercel Deployment",
+      "Postman",
+      "Render / Fly.io"
+    ],
+    "data": [
+      "Pandas",
+      "Power BI",
+      "ARIMA",
+      "LSTM",
+      "ETL Ingestion Pipelines"
+    ]
+  },
+  "experience": [
+    {
+      "company": "Dystinction Technology Pvt. Ltd. (OkQuoted)",
+      "role": "Software Trainee Intern – Full Stack Developer",
+      "period": "Jan 2026 – Jun 2026",
+      "location": "Chandigarh, India",
+      "highlights": [
+        "Engineered 5+ production modules including RFQ & Negotiation workflows, Buyer/Vendor dashboards with role-based KPI tracking, Web CMS with content authoring and 3-layer RBAC for non-technical users, and Vendor KYC system with document upload & tax compliance using Next.js, React, TypeScript, Supabase (PostgreSQL), and REST APIs.",
+        "Implemented JWT authentication and Row-Level Security (RLS) for role-based data access; contributed to Turborepo monorepo architecture (Next.js + React Native/Expo); resolved hydration errors and session race conditions, improving app stability."
+      ]
+    },
+    {
+      "company": "Design Innovation Centre (DIC), Panjab University",
+      "role": "Full Stack & Data Engineering Intern",
+      "period": "Jun 2025 – Jul 2025",
+      "location": "Chandigarh, India",
+      "highlights": [
+        "Developed Python (Flask) REST APIs integrated with React dashboards; improved internal data reporting efficiency by ~35% across 3 engineering teams, cutting weekly reporting time from ~5 hours to ~3 hours.",
+        "Built automated data ingestion and validation pipelines with vector indexing, reducing manual preprocessing effort by ~40%; designed real-time KPI dashboards tracking 10+ business metrics."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "OkQuoted — B2B Procurement SaaS Platform",
+      "tech": "Next.js, React, TypeScript, Supabase (PostgreSQL), REST APIs, Turborepo",
+      "context": "Software Trainee Intern at Dystinction Technology (Jan–Jun 2026)",
+      "problem": "Production SaaS platform needed negotiation, validation, and quoting workflows across buyer/vendor/admin roles",
+      "contributions": [
+        "Engineered 5+ production modules including RFQ & Negotiation workflows, Buyer/Vendor dashboards with role-based KPI tracking",
+        "Built Web CMS with content authoring and 3-layer RBAC for non-technical users",
+        "Built Vendor KYC system with document upload & tax compliance using Next.js, React, TypeScript, Supabase (PostgreSQL), and REST APIs",
+        "Implemented JWT authentication and Row-Level Security (RLS) for role-based data access across Turborepo monorepo architecture (Next.js + React Native/Expo)",
+        "Resolved hydration errors and session race conditions, improving app stability"
+      ],
+      "stack": ["Next.js 15", "TypeScript", "Supabase", "PostgreSQL", "Turborepo", "React Native", "Expo", "Zustand"]
+    },
+    {
+      "name": "Salary Management System",
+      "tech": "React.js, Node.js, Express.js, MySQL",
+      "link": "https://github.com/nikhilkaundal",
+      "problem": "End-to-end payroll management requiring secure authentication, employee records tracking, and automated salary calculations",
+      "contributions": [
+        "Built an end-to-end payroll application with automated salary computation, secure JWT-based authentication, role-based access control (RBAC), employee management, and data validation, leveraging React.js, Node.js, Express.js, and MySQL."
+      ],
+      "stack": ["React.js", "Node.js", "Express.js", "MySQL", "JWT Auth", "RBAC"]
+    },
+    {
+      "name": "RAG Chatbot for Panjab University",
+      "tech": "Python, Flask, LlamaIndex, ChromaDB",
+      "link": "https://github.com/nikhilkaundal",
+      "context": "Panjab University Design Innovation Centre (Jun–Jul 2025)",
+      "problem": "Students needed a conversational assistant to query university admission information with high accuracy",
+      "contributions": [
+        "Developed full-stack Retrieval-Augmented Generation (RAG) chatbot with automated data pipeline for vector indexing via ChromaDB",
+        "Reduced query resolution time by ~60%, maintained ~95% data consistency, and built accuracy monitoring dashboard",
+        "Integrated Groq API for fast LLM inference and built intent-to-link verification pipeline"
+      ],
+      "stack": ["Python", "Flask", "LlamaIndex", "ChromaDB", "Groq API", "HuggingFace", "React", "TypeScript"]
+    },
+    {
+      "name": "Business & Financial Data Analysis (S&P 500)",
+      "tech": "Python, Pandas, Flask, Power BI",
+      "link": "https://github.com/nikhilkaundal",
+      "problem": "Financial market dataset analysis and stock volatility forecasting for quantitative insights",
+      "contributions": [
+        "Automated data pipeline processing 500+ stock records",
+        "Built Power BI dashboards for sector and volatility analysis",
+        "Implemented ARIMA forecasting achieving ~80% directional accuracy, validated via A/B testing"
+      ],
+      "stack": ["Python", "Pandas", "Flask", "Power BI", "ARIMA", "A/B Testing"]
+    },
+    {
+      "name": "Road Accident Hotspot Analysis",
+      "tech": "Python, Pandas, Data Visualization",
+      "problem": "Identify accident-prone zones using real government data for road safety awareness",
+      "contributions": [
+        "Analyzed MoRTH (Ministry of Road Transport & Highways) datasets",
+        "Built data visualizations and analytics reports for portfolio presentation"
+      ],
+      "stack": ["Python", "Pandas", "Data Analysis"]
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.E in Computer Science and Engineering",
+      "institution": "UIET, Panjab University, Chandigarh",
+      "period": "2022 – 2026"
+    }
+  ],
+  "leadership": [
+    {
+      "organization": "Society of Automotive Engineers",
+      "role": "Media Lead",
+      "description": "Led 12-member content team; introduced workflow automation tools that improved task turnaround speed and reporting efficiency across team operations."
+    },
+    {
+      "organization": "Annual College Fest – Goonj",
+      "role": "Social Media Head",
+      "description": "Executed analytics-driven social media campaigns achieving 30% increase in online visibility – the highest social reach recorded across 3 consecutive years."
+    }
+  ],
+  "aboutMe": {
+    "summary": "Nikhil Kaundal is a Full Stack Developer & Data Engineer currently completing B.E in Computer Science and Engineering at UIET Panjab University, Chandigarh (Class of 2026). Delivered RESTful APIs, automated data ingestion workflows, and KPI dashboards that reduced manual effort by ~40%. Combines full-stack development (React.js, Next.js 15, Node.js, Express.js, Supabase, MySQL) with data engineering (Flask, Python, ChromaDB, LlamaIndex, Power BI, ARIMA) and web content management. Completed an off-campus software trainee internship at Dystinction Technology on OkQuoted (a live B2B SaaS procurement platform), shipping 5+ production modules including multi-round negotiation systems, 3-layer RBAC, and KYC workflows. In addition to software engineering, he is an award-winning photographer (1st place at Spectrum fest, PEC Chandigarh) and led student media and social media teams (SAE India Media Lead, Goonj Social Media Head).",
+    "personalInterests": [
+      "Photography & Visual Storytelling (@capturedvisionnn)",
+      "Listening to music while coding & Vinyl/Lofi aesthetics",
+      "Night coding & deep-focus development",
+      "Creative Direction & User Interface Design",
+      "Guitar"
+    ],
+    "achievements": [
+      "1st Place at Spectrum Photography Fest · PEC Chandigarh",
+      "AISOC Chatbot University Certification · Panjab University",
+      "Imagen Photography Club Core Member · UIET",
+      "SAE India Media Lead · Led 12-member team & automated workflows",
+      "Goonj Social Media Head · 3 years, 30% online reach increase"
+    ]
+  },
+  "contact": {
+    "email": "nikhilkaundal1257@gmail.com",
+    "linkedin": "https://linkedin.com/in/nikhilkaundal",
+    "github": "https://github.com/nikhilkaundal",
+    "instagram": "https://instagram.com/capturedvisionnn",
+    "twitter": null,
+    "phone": "+91 9592729319",
+    "location": "Chandigarh, India",
+    "portfolio": "nikhilkaundal.space"
+  },
+  "socialProof": {
+    "resumeLink": "/proof/resume_16.pdf",
+    "metaDescription": "Nikhil Kaundal - Full Stack Developer & Data Engineer Portfolio. Specializing in React, Next.js 15, Node.js, Express.js, Supabase, and RAG/AI systems."
+  }
+}

@@ -18,6 +18,7 @@ import AboutPage     from "./pages/AboutPage";
 import SkillsPage    from "./pages/SkillsPage";
 import WorkPage      from "./pages/WorkPage";
 import ProjectsPage  from "./pages/ProjectsPage";
+import AssistantPage from "./pages/AssistantPage";
 
 // Hooks
 import { useLenis }        from "./hooks/useLenis";
@@ -62,6 +63,8 @@ const App: React.FC = () => {
             <Route path="/skills" element={<SkillsPage />} />
             <Route path="/work" element={<WorkPage />} />
             <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/assistant" element={<AssistantPage />} />
+            <Route path="/chat" element={<AssistantPage />} />
           </Routes>
         </main>
         <Footer />

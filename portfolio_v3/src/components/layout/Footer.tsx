@@ -1,9 +1,16 @@
 import React, { useCallback } from "react";
+import { useLocation } from "react-router-dom";
 
 const Footer: React.FC = () => {
+  const location = useLocation();
+
   const scrollToTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
+
+  if (location.pathname === "/assistant" || location.pathname === "/chat") {
+    return null;
+  }
 
   return (
     <footer className="relative border-t border-bark/10 px-8 md:px-16 py-8 flex flex-col md:flex-row items-center justify-between bg-night gap-4">

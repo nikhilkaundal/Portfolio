@@ -1,6 +1,20 @@
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 export function useLenis() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const lenis = (window as any).__lenis;
+    if (lenis) {
+      if (location.pathname === "/assistant" || location.pathname === "/chat") {
+        lenis.stop();
+      } else {
+        lenis.start();
+      }
+    }
+  }, [location.pathname]);
+
   useEffect(() => {
     let lenis: any;
     let rafId: number;
