@@ -1,0 +1,187 @@
+{
+  "basics": {
+    "name": "Nikhil Kaundal",
+    "tagline": "I don't wait for opportunities. I build them.",
+    "role": "Full Stack Developer & Data Engineer",
+    "location": "Chandigarh, IN",
+    "education": "Final-year B.E. Computer Science, UIET Panjab University (Class of 2026)",
+    "status": "AVAILABLE FOR PROJECTS · Actively looking for Full Stack / Frontend roles in Tricity, Gurugram, or Remote",
+    "portfolio": "nikhilkaundal.space"
+  },
+  "skills": {
+    "frontend": [
+      "React.js",
+      "Next.js 15",
+      "TypeScript",
+      "Tailwind CSS",
+      "JavaScript (ES6+)",
+      "HTML5 / CSS3",
+      "Three.js",
+      "Spline 3D",
+      "Lenis Smooth Scroll"
+    ],
+    "backend": [
+      "Node.js",
+      "Express.js",
+      "Flask",
+      "Python",
+      "REST APIs",
+      "JWT Auth",
+      "RBAC"
+    ],
+    "database": [
+      "Supabase (PostgreSQL, RLS, Realtime, Storage)",
+      "PostgreSQL",
+      "MySQL",
+      "ChromaDB (Vector DB)"
+    ],
+    "ai": [
+      "RAG Systems",
+      "LlamaIndex",
+      "Groq API (LLM inference)",
+      "HuggingFace Embeddings",
+      "Prompt Engineering",
+      "CrossEncoder Reranking"
+    ],
+    "mobile": [
+      "React Native",
+      "Expo",
+      "Expo Router",
+      "NativeWind"
+    ],
+    "devops": [
+      "Turborepo (Monorepo)",
+      "Git / GitHub",
+      "Vercel Deployment",
+      "Postman",
+      "Render / Fly.io"
+    ],
+    "data": [
+      "Pandas",
+      "Power BI",
+      "ARIMA",
+      "LSTM",
+      "ETL Ingestion Pipelines"
+    ]
+  },
+  "projects": [
+    {
+      "name": "OkQuoted — B2B Procurement SaaS Platform",
+      "context": "Software Trainee Intern at Dystinction Technology (Jan–Jun 2026)",
+      "problem": "Production SaaS platform needed negotiation, validation, and quoting workflows across buyer/vendor/admin roles",
+      "contributions": [
+        "Engineered 5+ production modules end-to-end",
+        "Built a 3-round Smart Negotiation System (buyer/admin/vendor flows, gap logic, audit logging, extra-round requests)",
+        "Built a Physical/Product Validation Engine (PVR/PVE) across admin, vendor, and buyer portals",
+        "Built Quote Edit Request workflow using Supabase Realtime",
+        "Implemented RBAC and semantic notification systems",
+        "Improved mobile responsiveness and Kanban/pipeline UI",
+        "Handled RFQ attachments, invoice PDF generation, vendor KYC onboarding modal"
+      ],
+      "stack": ["Next.js 15", "TypeScript", "Supabase", "PostgreSQL", "Turborepo", "React Native", "Expo", "Zustand"]
+    },
+    {
+      "name": "PU-Assistant — RAG Chatbot",
+      "context": "Panjab University Design Innovation Centre (Jun–Jul 2025), 4-person team (led frontend/pipeline)",
+      "problem": "Students needed a conversational assistant to query university admission information with high accuracy",
+      "contributions": [
+        "Led frontend UI and data retrieval pipeline",
+        "Built retrieval pipeline with LlamaIndex + ChromaDB + HuggingFace embeddings",
+        "Integrated Groq API for fast LLM inference (~60% query time reduction)",
+        "Built intent-to-link mapping ensuring one verified PU hyperlink per response (~95% data consistency)",
+        "Deployed on Vercel (frontend) + Render/Fly.io (backend)"
+      ],
+      "stack": ["Flask", "React", "TypeScript", "LlamaIndex", "ChromaDB", "Groq API", "HuggingFace"]
+    },
+    {
+      "name": "Road Accident Hotspot Analysis",
+      "problem": "Identify accident-prone zones using real government data for road safety awareness",
+      "contributions": [
+        "Analyzed MoRTH (Ministry of Road Transport & Highways) datasets",
+        "Built data visualizations and analytics reports for portfolio presentation"
+      ],
+      "stack": ["Python", "Pandas", "Data Analysis"]
+    },
+    {
+      "name": "S&P 500 Predictor",
+      "problem": "Forecast stock index trends using time-series and deep learning models",
+      "contributions": [
+        "Built LSTM-based prediction model with ~80% directional accuracy",
+        "Created interactive Streamlit dashboard for quantitative investment analysis"
+      ],
+      "stack": ["Python", "ARIMA", "LSTM", "Streamlit", "Pandas", "yfinance"]
+    },
+    {
+      "name": "Salary Manager App",
+      "problem": "Parse financial SMS alerts using regex/NLP to auto-categorize expenses without manual entry",
+      "contributions": [
+        "Built automatic transaction SMS parser and categorization engine (~80% detection accuracy)",
+        "Created interactive budget and expense analytics dashboard"
+      ],
+      "stack": ["React Native", "Expo", "Flask", "MySQL", "Regex", "NLP"]
+    },
+    {
+      "name": "Library Management System",
+      "problem": "Manage library book inventory and student issue tracking without spreadsheets",
+      "contributions": [
+        "Designed full CRUD system for book inventory, student allocations, and records management"
+      ],
+      "stack": ["Flask", "MySQL", "HTML/CSS", "Jinja"]
+    }
+  ],
+  "experience": [
+    {
+      "company": "Dystinction Technology · OkQuoted",
+      "role": "Software Trainee Intern (Full Stack Developer)",
+      "period": "Jan 2026 – Jun 2026",
+      "location": "Chandigarh, India",
+      "highlights": [
+        "Engineered 5+ production modules end-to-end: RFQ & Negotiation, Buyer/Vendor dashboards, Web CMS with 3-layer RBAC, Vendor KYC",
+        "Built 3-round multi-role negotiation system with price revision tracking and audit logging",
+        "Implemented JWT auth + Row-Level Security (RLS) across Turborepo monorepo (Next.js + React Native/Expo)",
+        "Resolved critical hydration errors and session race conditions"
+      ]
+    },
+    {
+      "company": "Design Innovation Centre · Panjab University",
+      "role": "Full Stack & AI Intern",
+      "period": "Jun 2025 – Jul 2025",
+      "location": "Chandigarh, India",
+      "highlights": [
+        "Built Flask REST APIs + React dashboards, improving internal reporting efficiency ~35%",
+        "Automated data ingestion pipelines with vector indexing, cutting manual preprocessing by ~40%",
+        "Built RAG-based admission chatbot reducing query resolution time by ~60%"
+      ]
+    }
+  ],
+  "aboutMe": {
+    "summary": "Nikhil Kaundal is a final-year Computer Science student at UIET Panjab University, Chandigarh. Starting with fundamental web technologies and projects like a Netflix clone and Pratibimb (a live news site pulling external APIs), he progressed to leading the frontend and data pipeline for AISOC's university-certified RAG-based admission chatbot for Panjab University. He completed an off-campus full-stack software trainee internship at Dystinction Technology on OkQuoted (a live B2B SaaS procurement platform), shipping 5+ production modules including multi-round negotiation systems, role-based dashboards, and KYC workflows. In addition to software engineering, he is an award-winning photographer (1st place at Spectrum fest, PEC Chandigarh), led student media and social media teams (SAE India, Goonj), and shoots under @capturedvisionnn.",
+    "personalInterests": [
+      "Photography & Visual Storytelling (@capturedvisionnn)",
+      "Listening to music while coding & Vinyl/Lofi aesthetics",
+      "Night coding & deep-focus development",
+      "Creative Direction & User Interface Design",
+      "Guitar"
+    ],
+    "achievements": [
+      "1st Place at Spectrum Photography Fest · PEC Chandigarh",
+      "AISOC Chatbot University Certification · Panjab University",
+      "Imagen Photography Club Core Member · UIET",
+      "SAE India Media Lead · Managed 12-member team",
+      "Goonj Social Media Head · 3 years, 30% reach increase"
+    ]
+  },
+  "contact": {
+    "email": "nikhilkaundal1257@gmail.com",
+    "linkedin": "https://linkedin.com/in/nikhilkaundal",
+    "github": "https://github.com/nikhilkaundal",
+    "instagram": "https://instagram.com/capturedvisionnn",
+    "twitter": null,
+    "phone": "+91-9592729319",
+    "portfolio": "nikhilkaundal.space"
+  },
+  "socialProof": {
+    "resumeLink": "/proof/resume_16.pdf",
+    "metaDescription": "Nikhil Kaundal - Full Stack Developer & Data Engineer Portfolio. Specializing in React, Next.js 15, Node.js, Supabase, and RAG/AI systems."
+  }
+}
