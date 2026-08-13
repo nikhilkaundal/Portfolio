@@ -739,7 +739,7 @@ Nikhil Kaundal is a **Full Stack Developer & Data Engineer** from UIET Panjab Un
   };
 
   return (
-    <div className="h-screen w-screen overflow-hidden flex bg-night text-bark font-body">
+    <div className="h-[100dvh] w-full max-w-full overflow-hidden flex bg-night text-bark font-body relative">
       
       {/* ── 1. CLAUDE-STYLE DUAL-MODE LEFT SIDEBAR (Expanded w-64 vs Collapsed w-16 Rail) ── */}
       <aside
@@ -962,33 +962,35 @@ Nikhil Kaundal is a **Full Stack Developer & Data Engineer** from UIET Panjab Un
       {/* ── 2. MAIN APPLICATION WORKSPACE ── */}
       <main className="flex-1 h-full flex flex-col min-w-0 bg-night relative">
         
-        {/* Top Header Navigation Bar (Claude Style) */}
-        <header className="h-14 px-3 sm:px-6 border-b border-bark/10 bg-night/90 backdrop-blur-md flex items-center justify-between flex-shrink-0 z-10 select-none">
-          <div className="flex items-center gap-2 sm:gap-3">
+        {/* Top Header Navigation Bar (Claude / Industrial Mobile Responsive) */}
+        <header className="h-12 sm:h-14 px-2.5 sm:px-6 border-b border-bark/10 bg-night/90 backdrop-blur-md flex items-center justify-between flex-shrink-0 z-20 select-none w-full min-w-0">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
             {/* Mobile Sidebar Toggle Menu Button */}
             <button
               onClick={() => setSidebarOpen(true)}
-              className="md:hidden p-2 rounded-xl text-bark/80 hover:text-amber bg-surface/80 border border-bark/15 transition-colors cursor-none"
+              className="md:hidden p-1.5 rounded-xl text-bark/80 hover:text-amber bg-surface/80 border border-bark/15 transition-colors cursor-none flex-shrink-0"
               title="Open Sidebar"
             >
-              <PanelLeft size={18} />
+              <PanelLeft size={16} />
             </button>
 
-            <span className="font-mono text-xs sm:text-xs text-bark/90 font-medium truncate max-w-[170px] sm:max-w-none">
-              Portfolio Chatbot with LLM <span className="text-bark/30 ml-1 hidden sm:inline">▾</span>
+            <span className="font-mono text-xs text-bark/90 font-medium truncate">
+              <span className="hidden sm:inline">Portfolio Chatbot with LLM</span>
+              <span className="sm:hidden font-semibold text-amber">NK AI Assistant</span>
             </span>
           </div>
 
           {/* Center/Right Status Pill & Exit */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 rounded-full border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 font-mono text-[0.55rem] sm:text-[0.6rem] uppercase tracking-wider">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>AI ASSISTANT ONLINE</span>
+          <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
+            <div className="flex items-center gap-1.5 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 font-mono text-[0.52rem] sm:text-[0.6rem] uppercase tracking-wider">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
+              <span className="hidden sm:inline">AI ASSISTANT ONLINE</span>
+              <span className="sm:hidden">ONLINE</span>
             </div>
 
             <Link
               to="/"
-              className="inline-flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-full border border-bark/15 font-mono text-[0.6rem] sm:text-[0.62rem] text-bark/70 hover:text-amber hover:border-amber/30 transition-colors uppercase cursor-none"
+              className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full border border-bark/15 font-mono text-[0.6rem] sm:text-[0.62rem] text-bark/70 hover:text-amber hover:border-amber/30 transition-colors uppercase cursor-none flex-shrink-0"
             >
               <span className="hidden sm:inline">Exit to Site</span>
               <X size={14} className="sm:hidden" />
@@ -1011,38 +1013,38 @@ Nikhil Kaundal is a **Full Stack Developer & Data Engineer** from UIET Panjab Un
         >
           <div className={`w-full max-w-3xl lg:max-w-4xl mx-auto ${messages.length === 0 ? "h-full flex flex-col items-center justify-center" : "space-y-4 sm:space-y-6"}`}>
             
-            {/* Empty State Greetings (Claude Style) */}
+            {/* Empty State Greetings (Claude / Mobile Optimized) */}
             {messages.length === 0 && !isLoading && (
-              <div className="flex flex-col items-center text-center select-none my-auto">
+              <div className="flex flex-col items-center text-center select-none my-auto py-2 sm:py-4">
                 {/* Nikhil Kaundal Official Logo Badge */}
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-surface/80 border border-amber/30 flex items-center justify-center p-3 mb-4 sm:mb-5 shadow-[0_0_30px_rgba(235,94,0,0.25)] group hover:scale-105 hover:border-amber transition-all duration-300">
+                <div className="w-10 h-10 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-surface/80 border border-amber/30 flex items-center justify-center p-2 sm:p-3 mb-2 sm:mb-5 shadow-[0_0_30px_rgba(235,94,0,0.25)] group hover:scale-105 hover:border-amber transition-all duration-300">
                   <img src="/favicon.svg" alt="Nikhil Kaundal Logo" className="w-full h-full object-contain" />
                 </div>
 
-                <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl text-bark font-light mb-2 sm:mb-3 px-2">
+                <h1 className="font-display text-xl sm:text-3xl lg:text-4xl text-bark font-light mb-1 sm:mb-3 px-2 leading-tight">
                   What would you like to <span className="text-amber italic">know about Nikhil</span> today?
                 </h1>
-                <p className="font-body text-bark/60 text-xs sm:text-sm max-w-xl mb-6 sm:mb-8 font-light leading-relaxed px-4">
+                <p className="font-body text-bark/60 text-[0.75rem] sm:text-sm max-w-xl mb-3 sm:mb-8 font-light leading-relaxed px-2 sm:px-4">
                   Get instant, structured answers on production SaaS modules at OkQuoted, RAG AI systems, full-stack monorepos, awards, or contact details.
                 </p>
 
                 {/* Claude Starter Prompt Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 w-full max-w-2xl text-left">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 w-full max-w-2xl text-left">
                   {CLAUDE_STARTERS.map((s, i) => (
                     <button
                       key={i}
                       onClick={() => sendMessage(s.prompt)}
-                      className="p-3 sm:p-4 rounded-2xl border border-bark/10 bg-surface/40 hover:bg-amber/10 hover:border-amber/40 transition-all duration-300 cursor-none group flex flex-col justify-between"
+                      className="p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-bark/10 bg-surface/40 hover:bg-amber/10 hover:border-amber/40 transition-all duration-300 cursor-none group flex flex-col justify-between"
                     >
                       <div>
-                        <span className="font-body font-semibold text-bark group-hover:text-amber text-xs sm:text-sm block mb-1 transition-colors">
+                        <span className="font-body font-semibold text-bark group-hover:text-amber text-xs sm:text-sm block mb-0.5 sm:mb-1 transition-colors">
                           {s.title}
                         </span>
-                        <span className="font-body text-[0.7rem] sm:text-xs text-bark/50 font-light block leading-relaxed">
+                        <span className="font-body text-[0.68rem] sm:text-xs text-bark/50 font-light block leading-snug">
                           {s.desc}
                         </span>
                       </div>
-                      <span className="font-mono text-[0.58rem] sm:text-[0.6rem] text-amber opacity-0 group-hover:opacity-100 transition-opacity mt-2.5 sm:mt-3 block">
+                      <span className="font-mono text-[0.55rem] sm:text-[0.6rem] text-amber opacity-80 sm:opacity-0 group-hover:opacity-100 transition-opacity mt-1.5 sm:mt-3 block">
                         Ask query →
                       </span>
                     </button>
