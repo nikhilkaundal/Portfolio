@@ -9,7 +9,25 @@
     "phone": "+91 9592729319",
     "email": "nikhilkaundal1257@gmail.com",
     "education": "B.E in Computer Science and Engineering, UIET Panjab University, Chandigarh (2022 – 2026)",
-    "status": "AVAILABLE FOR OPPORTUNITIES · Full Stack Developer & Data Engineer",
+    "schooling": "10th Grade: Kendriya Vidyalaya Nadaun | 11th & 12th Grade (Senior Secondary): Kendriya Vidyalaya Suranussi (Jalandhar)",
+    "status": "AVAILABLE FOR OPPORTUNITIES · Ready to Join in 5–10 Days",
+    "targetRoles": [
+      "Full Stack Developer",
+      "Software Developer",
+      "Frontend Developer",
+      "Data Analyst",
+      "AI / ML Engineer"
+    ],
+    "preferredLocations": [
+      "Gurugram",
+      "Delhi NCR",
+      "Noida",
+      "Chandigarh",
+      "Mohali",
+      "Open to relocate anywhere"
+    ],
+    "availability": "Ready to join in 5 to 10 days",
+    "languagesSpoken": ["English (Professional)", "Hindi (Native)"],
     "portfolio": "nikhilkaundal.space",
     "professionalSummary": "Full Stack Developer skilled in React.js, Node.js, Express.js, Flask, and MySQL/PostgreSQL, with hands-on experience shipping end-to-end web applications. Delivered RESTful APIs, automated data ingestion workflows, and KPI dashboards that reduced manual effort by ~40%. Combines full-stack development with data engineering and web content management to enable data-driven product decisions at scale."
   },
@@ -218,6 +236,16 @@
       "degree": "B.E in Computer Science and Engineering",
       "institution": "UIET, Panjab University, Chandigarh",
       "period": "2022 – 2026"
+    },
+    {
+      "degree": "Senior Secondary Education (11th & 12th Grade / 10+2)",
+      "institution": "Kendriya Vidyalaya Suranussi, Jalandhar",
+      "period": "2020 – 2022"
+    },
+    {
+      "degree": "High School / Matriculation (10th Grade)",
+      "institution": "Kendriya Vidyalaya Nadaun",
+      "period": "2020"
     }
   ],
   "leadership": [
@@ -235,11 +263,17 @@
   "aboutMe": {
     "summary": "Nikhil Kaundal is a Full Stack Developer & Data Engineer currently completing B.E in Computer Science and Engineering at UIET Panjab University, Chandigarh (Class of 2026). Delivered RESTful APIs, automated data ingestion workflows, and KPI dashboards that reduced manual effort by ~40%. Combines full-stack development (React.js, Next.js 15, Node.js, Express.js, Supabase, MySQL) with data engineering (Flask, Python, ChromaDB, LlamaIndex, Power BI, ARIMA) and web content management. Completed an off-campus software trainee internship at Dystinction Technology on OkQuoted (a live B2B SaaS procurement platform), shipping 5+ production modules including multi-round negotiation systems, 3-layer RBAC, and KYC workflows. In addition to software engineering, he is an award-winning photographer (1st place at Spectrum fest, PEC Chandigarh) and led student media and social media teams (SAE India Media Lead, Goonj Social Media Head).",
     "personalInterests": [
-      "Photography & Visual Storytelling (@capturedvisionnn)",
+      "Photography & Cinematography (@capturedvisionnn)",
+      "Gaming (Passionate gamer · Favorite Game: Call of Duty)",
       "Listening to music while coding & Vinyl/Lofi aesthetics",
       "Night coding & deep-focus development",
       "Creative Direction & User Interface Design",
       "Guitar"
+    ],
+    "strengths": [
+      "Fast Learner: Quickly picks up & masters new tech stacks and tools even if completely new.",
+      "Systematic Problem Solver: Breaks down complex problem statements into logical chunks and solves them chunk-by-chunk.",
+      "Responsible & Hardworking: Highly dependable, takes full ownership of deliverables."
     ],
     "achievements": [
       "1st Place at Spectrum Photography Fest · PEC Chandigarh",
