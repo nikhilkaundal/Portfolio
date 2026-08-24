@@ -34,6 +34,7 @@ interface ChatMessage {
   role: "user" | "assistant";
   content: string;
   timestamp: string;
+  isStreaming?: boolean;
 }
 
 const TOPIC_PRESETS = [
@@ -123,6 +124,98 @@ const isHinglishQuery = (text: string): boolean => {
 
   return false;
 };
+
+function getSmartFallbackAnswer(userQuery: string): string {
+  const q = userQuery.toLowerCase();
+
+  if (q.includes("role") || q.includes("looking") || q.includes("joining") || q.includes("available") || q.includes("hire") || q.includes("job")) {
+    return `### **Roles & Joining Availability**
+
+Nikhil Kaundal is actively looking for full-time or internship roles as a **Full Stack Developer, Software Developer, Frontend Developer, Data Engineer, or AI/ML Systems Engineer**.
+
+- ⏱️ **Joining Availability**: Ready to join in **5 to 10 days**!
+- 📍 **Location & Relocation**: Currently based in Chandigarh, India. Fully open and ready to relocate to **Gurugram, Delhi NCR, Noida, Chandigarh, Mohali**, or any location across India.
+
+📁 **Download Resume**: [View PDF Resume](/proof/resume_16.pdf)  
+📬 **Direct Contact**: [nikhilkaundal1257@gmail.com](mailto:nikhilkaundal1257@gmail.com) | +91 9592729319 | [LinkedIn](https://linkedin.com/in/nikhilkaundal)`;
+  }
+
+  if (q.includes("panjab university") || q.includes("dic") || q.includes("internship") || q.includes("build") || q.includes("built") || q.includes("rag") || q.includes("admission")) {
+    return `### **Panjab University (DIC) Internship Contributions**
+
+During his Full Stack & Data Engineering Internship at **Design Innovation Centre (DIC), Panjab University**, Nikhil built:
+
+- 🤖 **AISOC RAG Admission Chatbot**: Built an AI-powered admission chatbot using Python, LlamaIndex, ChromaDB, and Groq API, reducing query response time by **~60%** and maintaining **~95% data consistency**.
+- ⚙️ **Flask REST APIs & Dashboards**: Engineered high-throughput REST APIs and React analytics dashboards, boosting data reporting efficiency by **~35%**.
+- 🔄 **Automated Data Pipelines**: Created automated vector indexing pipelines that cut manual data preprocessing time by **~40%**.
+
+📁 **Project Details**: [View Projects Page](/projects)`;
+  }
+
+  if (q.includes("school") || q.includes("10th") || q.includes("12th") || q.includes("kv") || q.includes("kendriya") || q.includes("education")) {
+    return `### **Educational Background & Schooling**
+
+Nikhil Kaundal is currently pursuing his **B.E. in Computer Science & Engineering** at **UIET Panjab University, Chandigarh** (Class of 2026).
+
+- 🏫 **10th Grade (Matriculation)**: Completed at **Kendriya Vidyalaya Nadaun**.
+- 🏫 **11th & 12th Grade (Senior Secondary)**: Completed at **Kendriya Vidyalaya Suranussi (Jalandhar)**.
+- 💡 **Execution Focus**: Nikhil prioritizes practical software engineering execution and shipping real-world production applications over raw academic metrics.
+
+📁 **View Resume**: [View PDF Resume](/proof/resume_16.pdf)`;
+  }
+
+  if (q.includes("okquoted") || q.includes("dystinction") || q.includes("saas") || q.includes("experience") || q.includes("work")) {
+    return `### **Production SaaS Experience (Dystinction Tech - OkQuoted)**
+
+As a Software Trainee Intern (Full Stack Developer) at **Dystinction Technology**, Nikhil:
+
+- 📦 **Shipped 5+ Production Modules**: Built RFQ modules, a 3-round Smart Negotiation Engine, and Buyer/Vendor management dashboards.
+- 🔒 **3-Layer RBAC Web CMS & KYC**: Developed a content authoring Web CMS with 3-layer RBAC and a vendor KYC onboarding workflow with tax compliance.
+- ⚡ **Turborepo & Supabase Stack**: Utilized Next.js 15, React Native/Expo, Supabase PostgreSQL, and JWT authentication across a Turborepo monorepo.
+
+📁 **View Experience**: [View Work History](/experience)`;
+  }
+
+  if (q.includes("skill") || q.includes("tech") || q.includes("stack") || q.includes("react") || q.includes("node") || q.includes("python")) {
+    return `### **Technical Skills & Capabilities**
+
+Nikhil's core engineering tech stack includes:
+
+- 💻 **Frontend**: React 19, Next.js 15, TypeScript, Tailwind CSS, Three.js, Spline 3D
+- ⚙️ **Backend & APIs**: Node.js, Express.js, Python (Flask), REST APIs, JWT Auth, RBAC
+- 🗄️ **Databases & Vector DB**: Supabase (PostgreSQL, RLS), MySQL, ChromaDB
+- 🤖 **AI & Data Systems**: RAG Architectures, LlamaIndex, Groq API, Pandas, Power BI
+- 📱 **Mobile**: React Native, Expo, Expo Router
+
+📁 **Skills Showcase**: [Explore All Skills](/skills)`;
+  }
+
+  if (q.includes("contact") || q.includes("email") || q.includes("phone") || q.includes("linkedin") || q.includes("github") || q.includes("reach") || q.includes("resume")) {
+    return `### **Direct Contact Information**
+
+You can reach Nikhil Kaundal directly via:
+
+- 📧 **Email**: [nikhilkaundal1257@gmail.com](mailto:nikhilkaundal1257@gmail.com)
+- 📞 **Phone**: [+91 9592729319](tel:+919592729319)
+- 💼 **LinkedIn**: [linkedin.com/in/nikhilkaundal](https://linkedin.com/in/nikhilkaundal)
+- 🐙 **GitHub**: [github.com/nikhilkaundal](https://github.com/nikhilkaundal)
+- 📄 **Resume**: [Download PDF Resume](/proof/resume_16.pdf)
+
+Nikhil is ready to join in **5-10 days**!`;
+  }
+
+  return `### **Nikhil Kaundal — Verified Profile Overview**
+
+Nikhil Kaundal is a **Full Stack Developer & Data Engineer** from UIET Panjab University, Chandigarh (Class of 2026).
+
+- 🎓 **Education & Schooling**: B.E. Computer Science at UIET Panjab University (2022-2026) | 10th from **Kendriya Vidyalaya Nadaun** | 11th & 12th from **Kendriya Vidyalaya Suranussi (Jalandhar)**.
+- 🚀 **Production SaaS Experience**: Shipped 5+ production modules at OkQuoted (Dystinction Tech), including 3-round Negotiation Engine, 3-layer RBAC Web CMS, and Vendor KYC onboarding.
+- 🎓 **RAG AI Admission Assistant**: Built AISOC Panjab University RAG admission chatbot (~60% query speed reduction, ~95% data consistency).
+- 🏆 **Awards**: 1st Place Spectrum Photography Fest (PEC), SAE Media Lead, Goonj Social Media Head.
+
+📁 **Download Resume**: [View PDF Resume](/proof/resume_16.pdf)  
+📬 **Direct Contact**: [nikhilkaundal1257@gmail.com](mailto:nikhilkaundal1257@gmail.com) | +91 9592729319 | [LinkedIn](https://linkedin.com/in/nikhilkaundal)`;
+}
 
 function buildDevSystemPrompt(isHinglish: boolean): string {
   const languageMandate = isHinglish
@@ -460,16 +553,27 @@ const AssistantPage: React.FC = () => {
     payloadMessages: any[]
   ): Promise<string> => {
     const apiKey =
+      (import.meta as any).env?.VITE_GROQ_API_KEY ||
+      (import.meta as any).env?.REACT_APP_GROQ_API_KEY ||
       process.env.REACT_APP_GROQ_API_KEY ||
       process.env.GROQ_API_KEY ||
+      process.env.VITE_GROQ_API_KEY ||
       "";
 
+    const lastUserMsgObj = [...payloadMessages].reverse().find((m) => m.role === "user");
+    const userQuery = lastUserMsgObj ? lastUserMsgObj.content : "";
+
+    if (!apiKey) {
+      console.warn("Groq API Key not found in environment variables. Falling back to local RAG knowledge base.");
+      return getSmartFallbackAnswer(userQuery);
+    }
+
     const models = [
-      "llama-3.1-8b-instant",
-      "llama-3.3-70b-versatile",
-      "llama3-8b-8192",
-      "mixtral-8x7b-32768",
-      "gemma2-9b-it",
+      "groq/compound-mini",
+      "groq/compound",
+      "openai/gpt-oss-20b",
+      "openai/gpt-oss-120b",
+      "qwen/qwen3.6-27b",
     ];
 
     let lastErrorMsg = "";
@@ -495,8 +599,12 @@ const AssistantPage: React.FC = () => {
 
         if (res.ok) {
           const data = await res.json();
-          const content = data?.choices?.[0]?.message?.content?.trim();
-          if (content) return content;
+          let content = data?.choices?.[0]?.message?.content?.trim();
+          if (content) {
+            // Strip any chain-of-thought <think>...</think> tags returned by reasoning models
+            content = content.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+            if (content) return content;
+          }
         } else {
           const errData = await res.json().catch(() => ({}));
           console.warn(`Groq model ${modelName} returned ${res.status}:`, errData);
@@ -508,19 +616,47 @@ const AssistantPage: React.FC = () => {
       }
     }
 
-    // Graceful verified fallback answer if all API quotas are exhausted
-    return `### **Nikhil Kaundal — Verified Profile Overview**
-
-Nikhil Kaundal is a **Full Stack Developer & Data Engineer** from UIET Panjab University, Chandigarh (Class of 2026).
-
-- 🎓 **Education & Schooling**: B.E. Computer Science at UIET Panjab University (2022-2026) | 10th from **Kendriya Vidyalaya Nadaun** | 11th & 12th from **Kendriya Vidyalaya Suranussi (Jalandhar)**.
-- 🚀 **Production SaaS Experience**: Shipped 5+ production modules at OkQuoted (Dystinction Tech), including 3-round Negotiation Engine, 3-layer RBAC Web CMS, and Vendor KYC onboarding.
-- 🎓 **RAG AI Admission Assistant**: Built AISOC Panjab University RAG admission chatbot (~60% query speed reduction, ~95% data consistency).
-- 🏆 **Awards**: 1st Place Spectrum Photography Fest (PEC), SAE Media Lead, Goonj Social Media Head.
-
-📁 **Download Resume**: [View PDF Resume](/proof/resume_16.pdf)  
-📬 **Direct Contact**: [nikhilkaundal1257@gmail.com](mailto:nikhilkaundal1257@gmail.com) | +91 9592729319 | [LinkedIn](https://linkedin.com/in/nikhilkaundal)`;
+    return getSmartFallbackAnswer(userQuery);
   };
+
+  // High-performance token streaming typewriter engine for AI responses
+  const streamAssistantResponse = useCallback(
+    (fullText: string, botMsgId: string, timestamp: string) => {
+      // 1. Append assistant message entry with empty content and isStreaming: true
+      setMessages((prev) => [
+        ...prev,
+        { id: botMsgId, role: "assistant", content: "", timestamp, isStreaming: true },
+      ]);
+
+      // 2. Tokenize by space/words for natural human typing speed (~16ms per token)
+      const tokens = fullText.match(/(\s+|\S+)/g) || [fullText];
+      let tokenIdx = 0;
+      let accumulated = "";
+
+      const timer = setInterval(() => {
+        if (tokenIdx < tokens.length) {
+          accumulated += tokens[tokenIdx];
+          tokenIdx++;
+          const currentText = accumulated;
+
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === botMsgId
+                ? { ...m, content: currentText, isStreaming: tokenIdx < tokens.length }
+                : m
+            )
+          );
+          scrollToBottom();
+        } else {
+          clearInterval(timer);
+          setMessages((prev) =>
+            prev.map((m) => (m.id === botMsgId ? { ...m, isStreaming: false } : m))
+          );
+        }
+      }, 16);
+    },
+    [scrollToBottom]
+  );
 
   const submitEditedMsg = async (msgId: string) => {
     const trimmed = editingText.trim();
@@ -553,19 +689,14 @@ Nikhil Kaundal is a **Full Stack Developer & Data Engineer** from UIET Panjab Un
       ];
 
       const replyContent = await fetchGroqWithModelCascade(payloadMessages);
+      setIsLoading(false);
 
-      const assistantMsg: ChatMessage = {
-        id: `assistant-${Date.now()}`,
-        role: "assistant",
-        content: replyContent,
-        timestamp: getCurrentTime(),
-      };
-
-      setMessages((prev) => [...prev, assistantMsg]);
+      const botMsgId = `assistant-${Date.now()}`;
+      const timestamp = getCurrentTime();
+      streamAssistantResponse(replyContent, botMsgId, timestamp);
     } catch (err: any) {
       console.error("Chat error:", err);
       setError(err.message || "Something went wrong. Please try again.");
-    } finally {
       setIsLoading(false);
     }
   };
@@ -599,17 +730,13 @@ Nikhil Kaundal is a **Full Stack Developer & Data Engineer** from UIET Panjab Un
       ];
 
       const replyContent = await fetchGroqWithModelCascade(payloadMessages);
+      setIsLoading(false);
 
-      const botMsg: ChatMessage = {
-        id: `bot-${Date.now()}`,
-        role: "assistant",
-        content: replyContent,
-        timestamp: getCurrentTime(),
-      };
-      setMessages((prev) => [...prev, botMsg]);
+      const botMsgId = `bot-${Date.now()}`;
+      const timestamp = getCurrentTime();
+      streamAssistantResponse(replyContent, botMsgId, timestamp);
     } catch (err: any) {
       setError(err.message || "Something went wrong — please try again.");
-    } finally {
       setIsLoading(false);
     }
   };
@@ -621,8 +748,6 @@ Nikhil Kaundal is a **Full Stack Developer & Data Engineer** from UIET Panjab Un
     }
   };
 
-      // Contact questions format rule
-      "- Contact questions → return contact info formatted as Markdown links (e.g. [nikhilkaundal1257@gmail.com](mailto:nikhilkaundal1257@gmail.com), [LinkedIn](https://linkedin.com/in/nikhilkaundal), [GitHub](https://github.com/nikhilkaundal), [Resume](/proof/resume_16.pdf)).";
 
   // Enhanced Markdown & Link Renderer: parses markdown headers, bold (**), bullets (-/*), URLs, emails, relative links
   const renderFormattedMessage = (text: string) => {
@@ -1090,93 +1215,109 @@ Nikhil Kaundal is a **Full Stack Developer & Data Engineer** from UIET Panjab Un
 
                 <div
                   className={`
-                    group relative max-w-[92%] sm:max-w-[82%] rounded-2xl p-3.5 sm:p-5 shadow-md transition-all duration-200
-                    ${
-                      msg.role === "user"
-                        ? "bg-amber/15 border border-amber/30 text-bark rounded-tr-none min-w-[260px] sm:min-w-[400px]"
-                        : "bg-night-light border border-bark/15 text-bark rounded-tl-none"
-                    }
-                    ${editingMsgId === msg.id ? "w-full sm:w-[500px]" : ""}
+                    group flex flex-col ${
+                      msg.role === "user" ? "items-end" : "items-start"
+                    } max-w-[90%] sm:max-w-[80%]
                   `}
                 >
-                  {/* Copy button for assistant responses */}
-                  {msg.role === "assistant" && (
-                    <button
-                      onClick={() => copyToClipboard(msg.content, msg.id)}
-                      className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 p-1.5 rounded-lg bg-bark/5 hover:bg-amber/20 text-bark/50 hover:text-amber transition-colors opacity-100 sm:opacity-0 group-hover:opacity-100 cursor-none select-none"
-                      title="Copy response"
-                    >
-                      {copiedId === msg.id ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
-                    </button>
-                  )}
-
-                  {/* Header info */}
-                  <div className="flex items-center gap-2 font-mono text-[0.55rem] text-bark/40 mb-2 border-b border-bark/10 pb-1.5 select-none">
-                    <span className="uppercase font-semibold">
+                  {/* Header info OUTSIDE above the bubble box */}
+                  <div className="flex items-center gap-2 font-mono text-[0.56rem] text-bark/40 mb-1 px-1 select-none">
+                    <span className="uppercase font-semibold text-bark/60">
                       {msg.role === "user" ? "You" : "Nikhil's AI Assistant"}
                     </span>
                     <span>• {msg.timestamp}</span>
                   </div>
 
-                  {msg.role === "assistant" ? (
-                    renderFormattedMessage(msg.content)
-                  ) : editingMsgId === msg.id ? (
-                    /* ── IN-LINE EDITING MODE INSIDE USER QUESTION BUBBLE ── */
-                    <div className="flex flex-col gap-2.5 mt-1 w-full">
-                      <textarea
-                        value={editingText}
-                        onChange={(e) => setEditingText(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" && !e.shiftKey) {
-                            e.preventDefault();
-                            submitEditedMsg(msg.id);
-                          } else if (e.key === "Escape") {
-                            cancelEditingMsg();
-                          }
-                        }}
-                        rows={3}
-                        autoFocus
-                        className="w-full min-w-[240px] sm:min-w-[420px] bg-night/90 border border-amber/50 rounded-xl p-3 text-bark outline-none font-body text-xs sm:text-sm resize-none shadow-inner leading-relaxed"
-                      />
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={cancelEditingMsg}
-                          className="px-2.5 py-1 rounded-lg border border-bark/20 text-bark/70 hover:text-bark text-[0.68rem] font-mono cursor-none"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          onClick={() => submitEditedMsg(msg.id)}
-                          disabled={!editingText.trim() || isLoading}
-                          className="px-3 py-1 rounded-lg bg-amber text-night font-bold text-[0.68rem] font-mono hover:bg-amber-glow cursor-none transition-all"
-                        >
-                          Save & Submit ↵
-                        </button>
+                  {/* Modern Tight Chat Bubble */}
+                  <div
+                    className={`
+                      relative p-3.5 sm:p-4 rounded-2xl text-bark shadow-sm transition-all duration-200 w-fit max-w-full
+                      ${
+                        msg.role === "user"
+                          ? "bg-amber/15 border border-amber/35 text-bark rounded-tr-sm"
+                          : "bg-night-light border border-bark/15 text-bark rounded-tl-sm"
+                      }
+                      ${editingMsgId === msg.id ? "w-full sm:w-[480px]" : ""}
+                    `}
+                  >
+                    {/* Copy button for assistant responses */}
+                    {msg.role === "assistant" && (
+                      <button
+                        onClick={() => copyToClipboard(msg.content, msg.id)}
+                        className="absolute top-2 right-2 p-1.5 rounded-lg bg-bark/5 hover:bg-amber/20 text-bark/50 hover:text-amber transition-colors opacity-100 sm:opacity-0 group-hover:opacity-100 cursor-none select-none"
+                        title="Copy response"
+                      >
+                        {copiedId === msg.id ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
+                      </button>
+                    )}
+
+                    {msg.role === "assistant" ? (
+                      <>
+                        {renderFormattedMessage(msg.content)}
+                        {msg.isStreaming && (
+                          <span className="inline-flex items-center ml-1 text-amber animate-pulse font-mono font-bold text-sm select-none">
+                            ▋
+                          </span>
+                        )}
+                      </>
+                    ) : editingMsgId === msg.id ? (
+                      /* ── IN-LINE EDITING MODE INSIDE USER QUESTION BUBBLE ── */
+                      <div className="flex flex-col gap-2.5 mt-1 w-full">
+                        <textarea
+                          value={editingText}
+                          onChange={(e) => setEditingText(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" && !e.shiftKey) {
+                              e.preventDefault();
+                              submitEditedMsg(msg.id);
+                            } else if (e.key === "Escape") {
+                              cancelEditingMsg();
+                            }
+                          }}
+                          rows={2}
+                          autoFocus
+                          className="w-full bg-night/90 border border-amber/50 rounded-xl p-3 text-bark outline-none font-body text-xs sm:text-sm resize-none leading-relaxed"
+                        />
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={cancelEditingMsg}
+                            className="px-2.5 py-1 rounded-lg border border-bark/20 text-bark/70 hover:text-bark text-[0.68rem] font-mono cursor-none"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={() => submitEditedMsg(msg.id)}
+                            disabled={!editingText.trim() || isLoading}
+                            className="px-3 py-1 rounded-lg bg-amber text-night font-bold text-[0.68rem] font-mono hover:bg-amber-glow cursor-none transition-all"
+                          >
+                            Save &amp; Submit ↵
+                          </button>
+                        </div>
                       </div>
+                    ) : (
+                      <p className="text-xs sm:text-[0.95rem] leading-relaxed break-words">{msg.content}</p>
+                    )}
+                  </div>
+
+                  {/* Copy & Edit Action Toolbar OUTSIDE below User Question Bubble */}
+                  {msg.role === "user" && editingMsgId !== msg.id && (
+                    <div className="flex items-center gap-1.5 mt-1 px-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity select-none">
+                      <button
+                        onClick={() => copyToClipboard(msg.content, msg.id)}
+                        className="p-1 rounded-md hover:bg-amber/20 text-bark/40 hover:text-amber transition-colors cursor-none"
+                        title="Copy Question"
+                      >
+                        {copiedId === msg.id ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+                      </button>
+
+                      <button
+                        onClick={() => startEditingMsg(msg)}
+                        className="p-1 rounded-md hover:bg-amber/20 text-bark/40 hover:text-amber transition-colors cursor-none"
+                        title="Edit Question"
+                      >
+                        <Pencil size={12} />
+                      </button>
                     </div>
-                  ) : (
-                    <>
-                      <p className="text-xs sm:text-[0.95rem] leading-relaxed">{msg.content}</p>
-
-                      {/* Copy & Edit Action Toolbar at the BOTTOM of the User Question Box */}
-                      <div className="flex items-center justify-end gap-1.5 mt-2 pt-1.5 border-t border-bark/10 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity select-none">
-                        <button
-                          onClick={() => copyToClipboard(msg.content, msg.id)}
-                          className="p-1 rounded-md hover:bg-amber/20 text-bark/50 hover:text-amber transition-colors cursor-none"
-                          title="Copy Question"
-                        >
-                          {copiedId === msg.id ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
-                        </button>
-
-                        <button
-                          onClick={() => startEditingMsg(msg)}
-                          className="p-1 rounded-md hover:bg-amber/20 text-bark/50 hover:text-amber transition-colors cursor-none"
-                          title="Edit Question"
-                        >
-                          <Pencil size={13} />
-                        </button>
-                      </div>
-                    </>
                   )}
                 </div>
 

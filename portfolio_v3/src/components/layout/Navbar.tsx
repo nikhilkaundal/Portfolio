@@ -71,14 +71,14 @@ const Navbar: React.FC = () => {
       <header
         className={`fixed top-0 left-0 right-0 z-[100] flex items-center justify-between transition-all duration-500 select-none
           ${scrolled
-            ? "px-6 lg:px-14 py-3 bg-night/80 backdrop-blur-2xl border-b border-bark/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
-            : "px-6 lg:px-14 py-6"
+            ? "px-4 sm:px-6 lg:px-14 py-2.5 sm:py-3 bg-night/85 backdrop-blur-2xl border-b border-bark/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
+            : "px-4 sm:px-6 lg:px-14 py-4 sm:py-6"
           }`}
       >
         {/* Minimal Logo */}
         <Link
           to="/"
-          className="font-display text-xl font-light tracking-[0.2em] text-bark group cursor-none relative z-10 flex items-center gap-1"
+          className="font-display text-lg sm:text-xl font-light tracking-[0.18em] text-bark group cursor-none relative z-10 flex items-center gap-1"
           onClick={() => setIsOpen(false)}
         >
           <span>NK</span>
@@ -172,7 +172,7 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Action Controls Group */}
-        <div className="flex items-center gap-3 sm:gap-4 relative z-10">
+        <div className="flex items-center gap-2 sm:gap-3.5 relative z-10">
           {/* Music Player */}
           <MusicPlayer />
 
@@ -181,13 +181,13 @@ const Navbar: React.FC = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={toggleTheme}
-            className="flex items-center justify-center p-2.5 rounded-full border border-bark/15 text-bark/70 hover:text-amber hover:border-amber/40 transition-all duration-300 focus:outline-none cursor-none bg-night-light/60 backdrop-blur-xl shadow-sm"
+            className="flex items-center justify-center p-2 sm:p-2.5 rounded-full border border-bark/15 text-bark/70 hover:text-amber hover:border-amber/40 transition-all duration-300 focus:outline-none cursor-none bg-night-light/60 backdrop-blur-xl shadow-sm"
             aria-label="Toggle theme"
           >
             {isDark ? (
-              <Sun size={14} className="transition-transform duration-500 hover:rotate-45" />
+              <Sun size={13} className="transition-transform duration-500 hover:rotate-45" />
             ) : (
-              <Moon size={14} className="transition-transform duration-500 hover:-rotate-12" />
+              <Moon size={13} className="transition-transform duration-500 hover:-rotate-12" />
             )}
           </motion.button>
 
@@ -208,12 +208,12 @@ const Navbar: React.FC = () => {
           {/* Mobile Hamburger */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden flex flex-col justify-between w-6 h-3.5 bg-transparent border-0 cursor-none relative z-[110] focus:outline-none"
+            className="md:hidden flex flex-col justify-between w-5 h-3.5 bg-transparent border-0 cursor-none relative z-[110] focus:outline-none ml-0.5"
             aria-label="Toggle Menu"
           >
-            <span className={`w-6 h-[1.5px] bg-bark transition-all duration-300 ${isOpen ? "rotate-45 translate-y-[6px] bg-amber" : ""}`} />
-            <span className={`w-6 h-[1.5px] bg-bark transition-all duration-300 ${isOpen ? "opacity-0 scale-x-0" : ""}`} />
-            <span className={`w-6 h-[1.5px] bg-bark transition-all duration-300 ${isOpen ? "-rotate-45 -translate-y-[6px] bg-amber" : ""}`} />
+            <span className={`w-5 h-[1.5px] bg-bark transition-all duration-300 ${isOpen ? "rotate-45 translate-y-[6px] bg-amber" : ""}`} />
+            <span className={`w-5 h-[1.5px] bg-bark transition-all duration-300 ${isOpen ? "opacity-0 scale-x-0" : ""}`} />
+            <span className={`w-5 h-[1.5px] bg-bark transition-all duration-300 ${isOpen ? "-rotate-45 -translate-y-[6px] bg-amber" : ""}`} />
           </button>
         </div>
       </header>

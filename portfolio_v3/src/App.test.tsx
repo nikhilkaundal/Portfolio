@@ -27,12 +27,26 @@ jest.mock('./hooks/useScrollReveal', () => ({
   useScrollReveal: jest.fn(),
 }));
 
-test('renders main portfolio components', () => {
-  render(
-    <MemoryRouter>
-      <App />
-    </MemoryRouter>
-  );
-  const logoElements = screen.getAllByText(/NK/i);
-  expect(logoElements.length).toBeGreaterThan(0);
+describe('Portfolio App Tests', () => {
+  test('renders main portfolio components on home route', () => {
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    );
+    const logoElements = screen.getAllByText(/NK/i);
+    expect(logoElements.length).toBeGreaterThan(0);
+    expect(screen.getByTestId('mock-home')).toBeInTheDocument();
+  });
+
+  test('renders assistant route without errors', () => {
+    render(
+      <MemoryRouter initialEntries={['/assistant']}>
+        <App />
+      </MemoryRouter>
+    );
+    const logoElements = screen.getAllByText(/NK/i);
+    expect(logoElements.length).toBeGreaterThan(0);
+  });
 });
+

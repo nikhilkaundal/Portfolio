@@ -29,10 +29,10 @@ const MagneticBtn: React.FC<{ href: string; children: React.ReactNode; variant?:
     if (ref.current) ref.current.style.transform = "";
   }, []);
 
-  const base = "font-mono text-[0.68rem] sm:text-[0.72rem] tracking-[0.15em] uppercase px-7 sm:px-8 py-3.5 sm:py-4 rounded-full transition-all duration-300 w-full sm:w-auto text-center flex justify-center items-center gap-2 group font-semibold cursor-none";
+  const base = "font-mono text-[0.65rem] sm:text-[0.72rem] tracking-[0.14em] sm:tracking-[0.15em] uppercase px-6 sm:px-8 py-3 sm:py-4 rounded-full transition-all duration-300 w-full sm:w-auto text-center flex justify-center items-center gap-2 group font-semibold cursor-none";
   const styles = variant === "filled"
-    ? `${base} bg-amber text-night shadow-[0_0_30px_rgba(235,94,0,0.4)] hover:shadow-[0_0_50px_rgba(235,94,0,0.7)] hover:bg-amber-glow`
-    : `${base} bg-bark/5 border border-bark/30 text-bark hover:border-amber hover:bg-amber/15 hover:text-amber shadow-sm`;
+    ? `${base} bg-amber text-night shadow-[0_0_25px_rgba(235,94,0,0.35)] hover:shadow-[0_0_45px_rgba(235,94,0,0.65)] hover:bg-amber-glow`
+    : `${base} bg-bark/5 border border-bark/25 text-bark hover:border-amber hover:bg-amber/15 hover:text-amber shadow-sm`;
 
   return (
     <a ref={ref} href={href} className={styles} onMouseMove={onMove} onMouseLeave={onLeave} target={target} rel={rel}>
@@ -96,12 +96,18 @@ const Hero: React.FC = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    let renderer: THREE.WebGLRenderer;
+    let renderer: THREE.WebGLRenderer | undefined;
     let animId: number;
     let onMouse: (e: MouseEvent) => void;
     let onResize: () => void;
     let geo: THREE.BufferGeometry;
     let mat: THREE.PointsMaterial;
+
+    const handleContextLost = (e: Event) => {
+      e.preventDefault();
+      if (animId) cancelAnimationFrame(animId);
+    };
+    canvas.addEventListener("webglcontextlost", handleContextLost, false);
 
     try {
       renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
@@ -175,7 +181,7 @@ const Hero: React.FC = () => {
       onResize = () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        if (renderer) renderer.setSize(window.innerWidth, window.innerHeight);
       };
       window.addEventListener("resize", onResize);
 
@@ -188,7 +194,7 @@ const Hero: React.FC = () => {
         ring1.rotation.z = t0 * 0.35;
         ring2.rotation.z = -t0 * 0.2;
         ring2.rotation.y = t0 * 0.12;
-        renderer.render(scene, camera);
+        if (renderer) renderer.render(scene, camera);
       };
       animate();
     } catch (e) {
@@ -196,6 +202,7 @@ const Hero: React.FC = () => {
     }
 
     return () => {
+      canvas.removeEventListener("webglcontextlost", handleContextLost);
       if (animId) cancelAnimationFrame(animId);
       if (onMouse) window.removeEventListener("mousemove", onMouse);
       if (onResize) window.removeEventListener("resize", onResize);
@@ -220,10 +227,10 @@ const Hero: React.FC = () => {
         .to(".hero-scroll", { opacity: 1, duration: 0.4 }, "-=0.2");
     }, containerRef);
 
-    // Guaranteed fallback: ensures text is 100% visible even if GSAP timeline is interrupted on route change
+    // Guaranteed fallback: ensures text & 3D room are 100% visible even if GSAP timeline is interrupted
     const fallbackTimer = setTimeout(() => {
       if (containerRef.current) {
-        const els = containerRef.current.querySelectorAll(".hero-line, .hero-eyebrow, .hero-n1, .hero-n2, .hero-sub, .hero-ctas, .hero-side, .hero-scroll");
+        const els = containerRef.current.querySelectorAll(".hero-line, .hero-eyebrow, .hero-n1, .hero-n2, .hero-room, .hero-sub, .hero-ctas, .hero-side, .hero-scroll");
         els.forEach((el) => {
           (el as HTMLElement).style.opacity = "1";
           (el as HTMLElement).style.transform = "none";
@@ -238,78 +245,77 @@ const Hero: React.FC = () => {
   }, []);
 
   // Determine section layout parameters natively in CSS classes to prevent hydration issues
-  const sectionClass = "relative min-h-[82vh] lg:min-h-screen lg:h-screen bg-night overflow-hidden flex items-center justify-center pt-20 sm:pt-24 pb-10 lg:py-0 select-none";
-  const pinChildClass = "relative w-full h-auto lg:h-full flex items-center justify-center overflow-visible";
-
-
+  const sectionClass = "relative min-h-[88dvh] sm:min-h-[88vh] lg:min-h-screen lg:h-screen bg-night overflow-hidden flex flex-col items-center justify-center px-5 sm:px-8 lg:px-14 pt-24 sm:pt-28 pb-12 sm:pb-20 lg:py-0 select-none";
 
   return (
     <section id="hero" ref={containerRef} className={sectionClass}>
-      <div className={pinChildClass}>
+      {/* Full-bleed background layer */}
+      <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
         {/* Three.js background canvas */}
-        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-500 opacity-[var(--hero-canvas-opacity)]" />
+        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-500 opacity-90 sm:opacity-[var(--hero-canvas-opacity)] z-0" />
 
         {/* Ambient Glowing Motion Orbs */}
         <motion.div
           animate={{ scale: [1, 1.15, 1], opacity: [0.25, 0.45, 0.25] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[18%] left-[5%] w-[450px] h-[450px] rounded-full bg-gradient-to-br from-amber-400/30 via-orange-300/20 to-transparent blur-[120px] pointer-events-none z-0"
+          className="absolute top-[8%] sm:top-[18%] left-[5%] w-[320px] sm:w-[450px] h-[320px] sm:h-[450px] rounded-full bg-gradient-to-br from-amber-400/35 via-orange-300/20 to-transparent blur-[90px] sm:blur-[120px] pointer-events-none z-0"
         />
         <motion.div
           animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute bottom-[10%] right-[8%] w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-amber-500/25 via-amber-200/15 to-transparent blur-[140px] pointer-events-none z-0"
+          className="absolute bottom-[10%] right-[8%] w-[320px] sm:w-[500px] h-[320px] sm:h-[500px] rounded-full bg-gradient-to-tr from-amber-500/25 via-amber-200/15 to-transparent blur-[100px] sm:blur-[140px] pointer-events-none z-0"
         />
 
         {/* Dark radial vignette wrapper */}
         <div
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-0 pointer-events-none z-0"
           style={{
             background:
               "radial-gradient(ellipse 60% 60% at 70% 50%, rgba(var(--night-rgb),0.3) 0%, rgba(var(--night-rgb),0.85) 60%, rgba(var(--night-rgb),0.97) 80%)",
           }}
         />
+      </div>
 
-        {/* Primary layout container */}
-        <div className="grid grid-cols-12 gap-6 w-full px-6 sm:px-8 lg:px-14 max-w-7xl mx-auto relative h-full items-center justify-center z-10">
-          {/* Left Column: Text */}
-          <motion.div
-            className="col-span-12 lg:col-span-6 select-none relative z-10 pointer-events-auto flex flex-col justify-center items-center lg:items-start text-center lg:text-left py-0 lg:py-0"
-          >
+      {/* Primary layout container */}
+      <div className="grid grid-cols-12 gap-4 sm:gap-6 w-full max-w-7xl mx-auto relative items-center justify-center z-10">
+        {/* Left Column: Text */}
+        <motion.div
+          className="col-span-12 lg:col-span-6 select-none relative z-10 pointer-events-auto flex flex-col justify-center items-center lg:items-start text-center lg:text-left py-4 sm:py-6 lg:py-0"
+        >
             {/* Decorative line */}
             <div
-              className="hero-line h-px w-14 sm:w-16 bg-amber/50 mb-3 sm:mb-4 origin-center lg:origin-left"
+              className="hero-line h-px w-14 sm:w-16 bg-amber/50 mb-4 sm:mb-5 origin-center lg:origin-left"
               style={{ opacity: 0, transform: "scaleX(0)" }}
             />
 
             {/* Eyebrow & Status Badge Row */}
-            <div className="flex flex-wrap items-center gap-3 mb-3 sm:mb-4 justify-center lg:justify-start">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4 sm:mb-5 justify-center lg:justify-start">
               <TextEffect
                 per="word"
                 as="div"
-                className="hero-eyebrow font-mono text-[0.6rem] sm:text-[0.64rem] tracking-[0.25em] uppercase text-amber font-semibold"
+                className="hero-eyebrow font-mono text-[0.6rem] sm:text-[0.64rem] tracking-[0.2em] sm:tracking-[0.25em] uppercase text-amber font-semibold"
               >
                 ENGINEERING SCALABLE WEB &amp; AI SYSTEMS
               </TextEffect>
 
               {/* Status Dot */}
-              <div className="inline-flex items-center gap-2 bg-amber/10 border border-amber/25 px-2.5 py-0.5 rounded-full">
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-amber/10 border border-amber/25 px-2.5 py-0.5 rounded-full">
                 <span className="relative flex h-1.5 w-1.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber opacity-75" />
                   <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-amber" />
                 </span>
-                <span className="font-mono text-[0.55rem] text-amber tracking-wider uppercase font-semibold">
+                <span className="font-mono text-[0.52rem] sm:text-[0.55rem] text-amber tracking-wider uppercase font-semibold">
                   AVAILABLE
                 </span>
               </div>
             </div>
 
             {/* Name */}
-            <div className="overflow-hidden mb-0.5">
+            <div className="overflow-hidden mb-1">
               <span
-                className="hero-n1 font-display block leading-[0.88] tracking-[-0.03em] text-bark"
+                className="hero-n1 font-display block leading-[0.92] sm:leading-[0.88] tracking-[-0.03em] text-bark"
                 style={{
-                  fontSize: "clamp(3.2rem, 8.5vw, 7.5rem)",
+                  fontSize: "clamp(3.2rem, 13vw, 7.5rem)",
                   fontWeight: 300,
                   opacity: 0,
                   transform: "translateY(110%)",
@@ -318,11 +324,11 @@ const Hero: React.FC = () => {
                 NIKHIL
               </span>
             </div>
-            <div className="overflow-hidden">
+            <div className="overflow-hidden mb-2">
               <span
-                className="hero-n2 font-display italic block leading-[0.88] tracking-[-0.03em] text-transparent bg-clip-text bg-gradient-to-r from-amber via-amber-glow to-amber"
+                className="hero-n2 font-display italic block leading-[0.92] sm:leading-[0.88] tracking-[-0.03em] text-transparent bg-clip-text bg-gradient-to-r from-amber via-amber-glow to-amber"
                 style={{
-                  fontSize: "clamp(3.2rem, 8.5vw, 7.5rem)",
+                  fontSize: "clamp(3.2rem, 13vw, 7.5rem)",
                   fontWeight: 300,
                   opacity: 0,
                   transform: "translateY(110%)",
@@ -334,7 +340,7 @@ const Hero: React.FC = () => {
 
             {/* Subtitle */}
             <p
-              className="hero-sub font-body font-medium text-bark/70 tracking-[0.14em] uppercase mt-2.5 sm:mt-4 text-xs sm:text-xs"
+              className="hero-sub font-body font-medium text-bark/70 tracking-[0.12em] sm:tracking-[0.14em] uppercase mt-4 sm:mt-5 text-[0.68rem] sm:text-xs max-w-sm leading-relaxed"
               style={{ opacity: 0 }}
             >
               React 19 &nbsp;·&nbsp; Next.js 15 &nbsp;·&nbsp; Node.js &nbsp;·&nbsp; RAG AI Systems
@@ -342,18 +348,24 @@ const Hero: React.FC = () => {
 
             {/* CTAs */}
             <div
-              className="hero-ctas flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 mt-7 sm:mt-9 pointer-events-auto w-full sm:w-auto max-w-xs sm:max-w-none mx-auto lg:mx-0"
+              className="hero-ctas flex flex-row items-center justify-center lg:justify-start gap-3.5 sm:gap-4 mt-7 sm:mt-9 pointer-events-auto w-full sm:w-auto max-w-xs sm:max-w-none mx-auto lg:mx-0"
               style={{ opacity: 0, transform: "translateY(16px)" }}
             >
               <MagneticBtn href="/proof/resume_16.pdf" variant="filled" target="_blank" rel="noopener noreferrer">View Resume</MagneticBtn>
               <MagneticBtn href="/assistant" variant="outline">Ask Me Anything</MagneticBtn>
+            </div>
+
+            {/* Mobile Capabilities Badge Row */}
+            <div className="flex sm:hidden flex-wrap items-center justify-center gap-2 mt-8 pt-5 border-t border-amber/15 w-full max-w-xs">
+              <span className="font-mono text-[0.56rem] text-bark/60 bg-amber/5 border border-amber/20 px-2.5 py-1 rounded-full uppercase tracking-wider font-semibold">⚡ React 19 &amp; Next.js 15</span>
+              <span className="font-mono text-[0.56rem] text-bark/60 bg-amber/5 border border-amber/20 px-2.5 py-1 rounded-full uppercase tracking-wider font-semibold">🤖 RAG AI Architect</span>
             </div>
           </motion.div>
 
           {/* Right Column: Interactive 3D Spline Room */}
           <motion.div
             style={{ background: "transparent" }}
-            className="hidden md:flex col-span-12 lg:col-span-6 w-full lg:w-[52vw] h-full z-20 overflow-visible absolute right-0 top-0 bottom-0 items-center justify-center pointer-events-auto"
+            className="hidden md:flex col-span-12 lg:col-span-6 w-full lg:w-[52vw] h-[500px] lg:h-[650px] z-20 overflow-visible relative lg:absolute lg:right-0 lg:top-0 lg:bottom-0 items-center justify-center pointer-events-auto"
           >
             {/* GSAP Entrance Wrapper */}
             <div
@@ -569,10 +581,10 @@ const Hero: React.FC = () => {
           <span className="font-mono text-[0.55rem] text-bark/20">001</span>
         </div>
 
-        {/* Desktop Scroll indicator */}
-        <div className="hero-scroll absolute bottom-8 left-8 lg:left-20 hidden sm:flex items-center gap-3" style={{ opacity: 0 }}>
-          <div className="w-px h-12 bg-gradient-to-b from-amber/40 to-transparent animate-pulse" />
-          <span className="font-mono text-[0.55rem] tracking-[0.2em] uppercase text-bark/25">Scroll</span>
+        {/* Scroll indicator */}
+        <div className="hero-scroll absolute bottom-5 sm:bottom-8 left-1/2 -translate-x-1/2 sm:left-8 sm:translate-x-0 lg:left-20 flex items-center gap-2.5 z-20" style={{ opacity: 0 }}>
+          <div className="w-px h-10 sm:h-12 bg-gradient-to-b from-amber/50 to-transparent animate-pulse" />
+          <span className="font-mono text-[0.55rem] tracking-[0.2em] uppercase text-bark/40 font-semibold">Scroll</span>
         </div>
 
         {/* Coordinates - bottom right */}
@@ -581,7 +593,9 @@ const Hero: React.FC = () => {
             30.7333° N<br />76.7794° E<br />Chandigarh, IN
           </p>
         </div>
-      </div>
+
+        {/* Ambient bottom gradient blend to eliminate canvas cutoff edge */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 sm:h-44 bg-gradient-to-t from-night via-night/90 to-transparent pointer-events-none z-20" />
     </section>
   );
 };

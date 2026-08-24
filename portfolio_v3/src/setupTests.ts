@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { TextEncoder, TextDecoder as NodeTextDecoder } from 'util';
 
 if (typeof global.TextEncoder === 'undefined') {
-  global.TextEncoder = TextEncoder;
+  global.TextEncoder = TextEncoder as unknown as typeof global.TextEncoder;
 }
 if (typeof global.TextDecoder === 'undefined') {
   global.TextDecoder = NodeTextDecoder as unknown as typeof global.TextDecoder;
@@ -56,3 +56,9 @@ Object.defineProperty(window, 'ResizeObserver', {
 // Mock HTMLMediaElement play/pause
 window.HTMLMediaElement.prototype.play = jest.fn().mockImplementation(() => Promise.resolve());
 window.HTMLMediaElement.prototype.pause = jest.fn();
+
+// Mock window.scrollTo and scrollIntoView
+window.scrollTo = jest.fn();
+window.Element.prototype.scrollIntoView = jest.fn();
+
+

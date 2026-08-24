@@ -90,7 +90,7 @@ const MusicPlayer: React.FC = () => {
             setOpen(o => !o);
             setShowHint(false);
           }}
-          className="flex items-center gap-2 px-2.5 py-1.5 cursor-none
+          className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-2.5 py-1.5 cursor-none
             border border-transparent hover:border-[var(--border)] hover:bg-[var(--accent)]/5
             transition-all duration-300 group rounded-sm select-none"
         >
@@ -118,9 +118,9 @@ const MusicPlayer: React.FC = () => {
 
           <EqBars playing={mp.playing} />
 
-          <span className="font-mono text-[0.58rem] tracking-[0.1em] uppercase
+          <span className="font-mono text-[0.56rem] sm:text-[0.58rem] tracking-[0.08em] uppercase
             text-[var(--text-muted)] group-hover:text-[var(--text-primary)]
-            transition-colors duration-200 max-w-[100px] truncate hidden sm:block">
+            transition-colors duration-200 max-w-[70px] sm:max-w-[100px] truncate hidden sm:block">
             {shortName}
           </span>
 
@@ -141,16 +141,16 @@ const MusicPlayer: React.FC = () => {
               exit={{ opacity: 0, y: -6, scale: 0.95 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
               onClick={() => setShowHint(false)}
-              className="absolute top-[calc(100%+12px)] right-0 z-50 bg-night-light/95 backdrop-blur-xl border border-amber/40 shadow-[0_8px_30px_rgba(0,0,0,0.4)] px-3 py-2 rounded-xl text-left select-none cursor-none w-[210px] sm:w-[230px]"
+              className="absolute top-[calc(100%+12px)] right-[-10px] sm:right-0 z-50 bg-night-light/95 backdrop-blur-xl border border-amber/40 shadow-[0_8px_30px_rgba(0,0,0,0.4)] px-3 py-2 rounded-xl text-left select-none cursor-none w-[200px] sm:w-[230px]"
             >
               <div className="flex items-start gap-2">
                 <span className="text-amber text-xs mt-0.5 animate-bounce flex-shrink-0">🎵</span>
                 <div className="flex-1">
                   <p className="font-mono text-[0.58rem] font-bold text-bark leading-tight">
-                    Background Music Playing
+                    Background Music
                   </p>
                   <p className="font-mono text-[0.52rem] text-bark/70 mt-0.5 leading-snug">
-                    If you want to turn off this music, you can toggle it here.
+                    Toggle audio playback anytime here.
                   </p>
                 </div>
                 <button
@@ -164,16 +164,16 @@ const MusicPlayer: React.FC = () => {
                 </button>
               </div>
               {/* Pointer Arrow */}
-              <div className="absolute -top-1.5 right-6 w-3 h-3 bg-night-light border-t border-l border-amber/40 rotate-45" />
+              <div className="absolute -top-1.5 right-5 w-3 h-3 bg-night-light border-t border-l border-amber/40 rotate-45" />
             </motion.div>
           )}
         </AnimatePresence>
 
         {/* ── EXPANDED PANEL ── */}
         <div
-          className="absolute top-[calc(100%+12px)] right-[-48px] sm:right-0 w-[270px] sm:w-[280px] z-50
+          className="absolute top-[calc(100%+12px)] right-[-25px] sm:right-0 w-[260px] sm:w-[280px] z-50
             bg-[var(--bg-secondary)] border border-[var(--border)]
-            transition-all duration-300 origin-top-right"
+            transition-all duration-300 origin-top-right shadow-2xl"
           style={{
             opacity:    open ? 1 : 0,
             transform:  open ? "translateY(0) scale(1)" : "translateY(-8px) scale(0.97)",

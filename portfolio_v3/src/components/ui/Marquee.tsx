@@ -12,20 +12,20 @@ const ROW2 = [
 const MarqueeRow: React.FC<{ items: string[]; reverse?: boolean; speed?: string; outline?: boolean }> = ({
   items, reverse = false, speed = "28s", outline = false
 }) => (
-  <div className="overflow-hidden py-2">
+  <div className="overflow-hidden py-1.5 sm:py-2">
     <div
-      className="flex gap-0 whitespace-nowrap"
+      className="flex gap-0 whitespace-nowrap items-center"
       style={{ animation: `${reverse ? "marqueeRev" : "marquee"} ${speed} linear infinite`, width: "max-content" }}
     >
       {[...items, ...items].map((item, i) => (
         <React.Fragment key={i}>
           <span
-            className={`font-display italic text-lg lg:text-xl font-light px-6 lg:px-8 tracking-wide transition-all duration-300
-              ${outline ? "text-stroke text-transparent" : "text-bark/55"}`}
+            className={`font-mono text-xs sm:text-sm uppercase tracking-[0.2em] font-medium px-4 sm:px-6 lg:px-8 transition-all duration-300
+              ${outline ? "text-amber/80 font-semibold" : "text-bark/60 hover:text-bark"}`}
           >
             {item}
           </span>
-          <span className="text-amber/55 self-center text-xs">◆</span>
+          <span className="text-amber/55 self-center text-[0.65rem] sm:text-xs">◆</span>
         </React.Fragment>
       ))}
     </div>

@@ -43,7 +43,7 @@ const FEATURED_CAPSULE_PROJECTS = [
     desc: "Context-aware AI assistant built with a Retrieval-Augmented Generation (RAG) pipeline to answer university admission queries with document grounding and ~60% faster resolution.",
     metric: "~60% Faster Query Resolution",
     tags: ["Python", "LlamaIndex", "ChromaDB", "Groq API", "Flask", "React.js"],
-    imageSrc: "/proof/chtbot1.png",
+    imageSrc: "/proof/Chtbot1.png",
     link: "/projects",
   },
   {
@@ -90,7 +90,7 @@ const Home: React.FC = () => {
       <Marquee />
 
       {/* 2. About Overview Section */}
-      <section id="about" className="py-24 lg:py-36 bg-night border-t border-bark/10 relative overflow-hidden">
+      <section id="about" className="py-16 sm:py-24 lg:py-36 bg-night border-t border-bark/10 relative overflow-hidden">
         {/* Background Subtle Grid & Ambient Glow */}
         <div className="absolute inset-0 pointer-events-none select-none z-0" aria-hidden>
           <div
@@ -285,7 +285,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* 3. Skills Overview Section */}
-      <section id="skills" className="py-24 lg:py-36 bg-night border-t border-bark/10 relative overflow-hidden">
+      <section id="skills" className="py-16 sm:py-24 lg:py-36 bg-night border-t border-bark/10 relative overflow-hidden">
         {/* Background Grid & Ambient Glows */}
         <div className="absolute inset-0 pointer-events-none select-none z-0" aria-hidden>
           <div
@@ -457,7 +457,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* 4. Work / Experience Overview Section */}
-      <section id="experience" className="py-24 lg:py-36 bg-night border-t border-bark/10 relative overflow-hidden">
+      <section id="experience" className="py-16 sm:py-24 lg:py-36 bg-night border-t border-bark/10 relative overflow-hidden">
 
         {/* Decorative Grid Lines */}
         <div className="absolute inset-0 pointer-events-none select-none z-0" aria-hidden>
@@ -647,7 +647,7 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      <section id="projects" ref={projectsRef} className="py-24 lg:py-36 bg-night border-t border-bark/10 relative overflow-hidden">
+      <section id="projects" ref={projectsRef} className="py-16 sm:py-24 lg:py-36 bg-night border-t border-bark/10 relative overflow-hidden">
         {/* Sticky Pinned Highlighted Parallax Background Watermark Text "WORK" */}
         <div className="absolute inset-0 pointer-events-none select-none z-0 overflow-hidden">
           <div className="sticky top-[26vh] w-full flex items-center justify-center">
