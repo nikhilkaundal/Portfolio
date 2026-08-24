@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import App from './App';
 
 // Mock components that use WebGL/Three.js or Canvas 2D to avoid JSDOM compatibility issues
@@ -8,6 +9,15 @@ jest.mock('./components/sections/About', () => () => <div data-testid="mock-abou
 jest.mock('./components/sections/Projects', () => () => <div data-testid="mock-projects">Projects Component</div>);
 jest.mock('./components/sections/Contact', () => () => <div data-testid="mock-contact">Contact Component</div>);
 jest.mock('./components/ui/Cursor', () => () => <div data-testid="mock-cursor">Cursor Component</div>);
+jest.mock('./pages/Home', () => () => <div data-testid="mock-home">Home Page</div>);
+
+// Mock Vercel analytics
+jest.mock('@vercel/analytics/react', () => ({
+  Analytics: () => null,
+}));
+jest.mock('@vercel/speed-insights/react', () => ({
+  SpeedInsights: () => null,
+}));
 
 // Mock hooks that dynamically import ESM packages which Jest cannot transform by default
 jest.mock('./hooks/useLenis', () => ({
@@ -18,7 +28,11 @@ jest.mock('./hooks/useScrollReveal', () => ({
 }));
 
 test('renders main portfolio components', () => {
-  render(<App />);
+  render(
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>
+  );
   const logoElements = screen.getAllByText(/NK/i);
   expect(logoElements.length).toBeGreaterThan(0);
 });

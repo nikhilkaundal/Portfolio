@@ -3,6 +3,7 @@ import React, { Component, ErrorInfo, ReactNode } from "react";
 interface Props {
   fallback: ReactNode;
   children: ReactNode;
+  onError?: () => void;
 }
 
 interface State {
@@ -20,6 +21,9 @@ class SplineErrorBoundary extends Component<Props, State> {
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("Spline rendering error caught by boundary:", error, errorInfo);
+    if (this.props.onError) {
+      this.props.onError();
+    }
   }
 
   public render() {
@@ -32,3 +36,4 @@ class SplineErrorBoundary extends Component<Props, State> {
 }
 
 export default SplineErrorBoundary;
+

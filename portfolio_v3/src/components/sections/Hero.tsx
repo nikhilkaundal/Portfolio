@@ -51,6 +51,7 @@ const Hero: React.FC = () => {
   // State management for Spline load lifecycle and interactivity
   const [isSplineLoaded, setIsSplineLoaded] = useState(false);
   const [isSplineTimeout, setIsSplineTimeout] = useState(false);
+  const [isSplineError, setIsSplineError] = useState(false);
   const [isLaptopOpen, setIsLaptopOpen] = useState(false);
 
   // Spline instance reference
@@ -59,20 +60,25 @@ const Hero: React.FC = () => {
   const handleSplineLoad = useCallback((splineApp: any) => {
     splineRef.current = splineApp;
     setIsSplineLoaded(true);
+    setIsSplineError(false);
+  }, []);
+
+  const handleSplineError = useCallback(() => {
+    setIsSplineError(true);
   }, []);
 
   // Graceful load timeout fallback (e.g. adblocker, network failures)
   useEffect(() => {
-    if (isTabletOrDesktop && !isSplineLoaded) {
+    if (isTabletOrDesktop && !isSplineLoaded && !isSplineError) {
       const timer = setTimeout(() => {
         if (!isSplineLoaded) {
-          console.warn("Spline loading timed out. Falling back to static image.");
+          console.warn("Spline loading timed out. Switching to interactive workspace fallback.");
           setIsSplineTimeout(true);
         }
-      }, 30000);
+      }, 10000);
       return () => clearTimeout(timer);
     }
-  }, [isTabletOrDesktop, isSplineLoaded]);
+  }, [isTabletOrDesktop, isSplineLoaded, isSplineError]);
 
   /* ── Keyboard listener to close projects modal ── */
   useEffect(() => {
@@ -354,21 +360,55 @@ const Hero: React.FC = () => {
               className="w-full h-full relative hero-room flex items-center justify-center overflow-visible"
               style={{ opacity: 0, transform: "translateY(24px)", background: "transparent" }}
             >
-              <SplineErrorBoundary fallback={<RoomSkeleton />}>
-                <Suspense fallback={<RoomSkeleton />}>
-                  <RoomScene onLoad={handleSplineLoad} />
-                </Suspense>
-
-                {/* Fade out loading skeleton once Spline load confirms */}
-                <div
-                  className="absolute inset-0 transition-opacity duration-700 ease-out-quad pointer-events-none z-30"
-                  style={{
-                    opacity: isSplineLoaded ? 0 : 1,
-                    visibility: isSplineLoaded ? "hidden" : "visible",
-                  }}
-                >
-                  <RoomSkeleton />
-                </div>
+              <SplineErrorBoundary
+                onError={handleSplineError}
+                fallback={
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-30">
+                    <div className="p-6 rounded-2xl border border-amber/30 bg-surface/80 backdrop-blur-xl shadow-2xl max-w-sm">
+                      <Sparkles className="w-8 h-8 text-amber mx-auto mb-3 animate-pulse" />
+                      <h3 className="font-display text-xl text-bark mb-1">Interactive 3D Workspace</h3>
+                      <p className="font-sans text-xs text-bark/60 mb-5 leading-relaxed">
+                        Full-Stack Dev &amp; AI Systems Hub. Explore production projects, technical skills, or start an AI conversation.
+                      </p>
+                      <div className="flex flex-wrap items-center justify-center gap-3">
+                        <a href="/projects" className="px-4 py-2 text-xs font-mono uppercase bg-amber text-night font-bold rounded-lg hover:bg-amber-glow transition-all">Projects</a>
+                        <a href="/skills" className="px-4 py-2 text-xs font-mono uppercase border border-amber/30 text-amber rounded-lg hover:bg-amber/10 transition-all">Skills</a>
+                        <button onClick={() => { setIsSplineError(false); setIsSplineTimeout(false); }} className="px-3 py-2 text-xs font-mono text-bark/50 hover:text-bark transition-all">Retry 3D</button>
+                      </div>
+                    </div>
+                  </div>
+                }
+              >
+                {!isSplineError && !isSplineTimeout ? (
+                  <>
+                    <RoomScene onLoad={handleSplineLoad} onError={handleSplineError} />
+                    {/* Fade out loading skeleton once Spline load confirms */}
+                    <div
+                      className="absolute inset-0 transition-opacity duration-700 ease-out pointer-events-none z-30"
+                      style={{
+                        opacity: isSplineLoaded ? 0 : 1,
+                        visibility: isSplineLoaded ? "hidden" : "visible",
+                      }}
+                    >
+                      <RoomSkeleton />
+                    </div>
+                  </>
+                ) : (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-30">
+                    <div className="p-6 rounded-2xl border border-amber/30 bg-surface/80 backdrop-blur-xl shadow-2xl max-w-sm">
+                      <Sparkles className="w-8 h-8 text-amber mx-auto mb-3 animate-pulse" />
+                      <h3 className="font-display text-xl text-bark mb-1">Interactive 3D Workspace</h3>
+                      <p className="font-sans text-xs text-bark/60 mb-5 leading-relaxed">
+                        Full-Stack Dev &amp; AI Systems Hub. Explore production projects, technical skills, or start an AI conversation.
+                      </p>
+                      <div className="flex flex-wrap items-center justify-center gap-3">
+                        <a href="/projects" className="px-4 py-2 text-xs font-mono uppercase bg-amber text-night font-bold rounded-lg hover:bg-amber-glow transition-all">Projects</a>
+                        <a href="/skills" className="px-4 py-2 text-xs font-mono uppercase border border-amber/30 text-amber rounded-lg hover:bg-amber/10 transition-all">Skills</a>
+                        <button onClick={() => { setIsSplineError(false); setIsSplineTimeout(false); }} className="px-3 py-2 text-xs font-mono text-bark/50 hover:text-bark transition-all">Retry 3D</button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </SplineErrorBoundary>
             </div>
           </motion.div>
