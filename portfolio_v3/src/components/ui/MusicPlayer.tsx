@@ -1,5 +1,5 @@
-// src/components/ui/MusicPlayer.tsx
 import React, { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useMusicPlayer, TRACKS } from "../../hooks/useMusicPlayer";
 
 // ── SVG Icons (inline — no icon library needed) ──────────────────
@@ -33,11 +33,20 @@ const EqBars: React.FC<{ playing: boolean }> = ({ playing }) => (
 
 // ── Main component ────────────────────────────────────────────────
 const MusicPlayer: React.FC = () => {
-  const [open, setOpen]     = useState(false);
-  const [plOpen, setPlOpen] = useState(false);
-  const wrapRef             = useRef<HTMLDivElement>(null);
+  const [open, setOpen]         = useState(false);
+  const [plOpen, setPlOpen]     = useState(false);
+  const [showHint, setShowHint] = useState(true);
+  const wrapRef                 = useRef<HTMLDivElement>(null);
 
   const mp = useMusicPlayer();
+
+  // Auto-dismiss notification hint badge after 4 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowHint(false);
+    }, 4000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Close on outside click
   useEffect(() => {
@@ -77,7 +86,10 @@ const MusicPlayer: React.FC = () => {
 
         {/* ── COLLAPSED PILL ── */}
         <div
-          onClick={() => setOpen(o => !o)}
+          onClick={() => {
+            setOpen(o => !o);
+            setShowHint(false);
+          }}
           className="flex items-center gap-2 px-2.5 py-1.5 cursor-none
             border border-transparent hover:border-[var(--border)] hover:bg-[var(--accent)]/5
             transition-all duration-300 group rounded-sm select-none"
@@ -87,6 +99,7 @@ const MusicPlayer: React.FC = () => {
             onClick={(e) => {
               e.stopPropagation();
               mp.togglePlay();
+              setShowHint(false);
             }}
             aria-label={mp.playing ? "Pause" : "Play"}
             className="p-1 cursor-none text-[var(--text-muted)]/60 hover:text-[var(--accent)] transition-colors relative group/pill-btn"
@@ -118,6 +131,43 @@ const MusicPlayer: React.FC = () => {
             ▾
           </span>
         </div>
+
+        {/* ── AUTO-DISMISS HINT TOOLTIP (Appears for 4 seconds on site load) ── */}
+        <AnimatePresence>
+          {showHint && (
+            <motion.div
+              initial={{ opacity: 0, y: -6, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -6, scale: 0.95 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              onClick={() => setShowHint(false)}
+              className="absolute top-[calc(100%+12px)] right-0 z-50 bg-night-light/95 backdrop-blur-xl border border-amber/40 shadow-[0_8px_30px_rgba(0,0,0,0.4)] px-3 py-2 rounded-xl text-left select-none cursor-none w-[210px] sm:w-[230px]"
+            >
+              <div className="flex items-start gap-2">
+                <span className="text-amber text-xs mt-0.5 animate-bounce flex-shrink-0">🎵</span>
+                <div className="flex-1">
+                  <p className="font-mono text-[0.58rem] font-bold text-bark leading-tight">
+                    Background Music Playing
+                  </p>
+                  <p className="font-mono text-[0.52rem] text-bark/70 mt-0.5 leading-snug">
+                    If you want to turn off this music, you can toggle it here.
+                  </p>
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowHint(false);
+                  }}
+                  className="text-bark/40 hover:text-amber text-[10px] ml-1 flex-shrink-0"
+                >
+                  ✕
+                </button>
+              </div>
+              {/* Pointer Arrow */}
+              <div className="absolute -top-1.5 right-6 w-3 h-3 bg-night-light border-t border-l border-amber/40 rotate-45" />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* ── EXPANDED PANEL ── */}
         <div

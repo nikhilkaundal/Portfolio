@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { PROJECTS, MORE_PROJECTS } from "../../data/portfolio";
 import type { ProjectData } from "../../data/portfolio";
+import TextEffect from "../ui/text-effect";
 import {
   MessageSquare,
   Database,
@@ -10,6 +11,7 @@ import {
   ExternalLink,
   Lock,
   ChevronRight,
+  ChevronLeft,
   Play,
   X,
   Globe,
@@ -18,6 +20,11 @@ import {
   FileText,
   Search,
   Sparkles,
+  MapPin,
+  ShieldCheck,
+  Layers,
+  Copy,
+  Check,
 } from "lucide-react";
 
 /* GitHub brand icon (not in lucide-react) */
@@ -323,8 +330,8 @@ const InteractiveChatMockup: React.FC = () => {
             <div key={idx} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
               <div
                 className={`max-w-[85%] rounded-lg p-2.5 leading-relaxed whitespace-pre-line text-[0.7rem] ${msg.sender === "user"
-                    ? "bg-mock-accent-bg text-mock-accent-text border border-mock-borderLight"
-                    : "bg-mock-surfaceLight text-bark/80 border border-mock-border"
+                  ? "bg-mock-accent-bg text-mock-accent-text border border-mock-borderLight"
+                  : "bg-mock-surfaceLight text-bark/80 border border-mock-border"
                   }`}
               >
                 {msg.text}
@@ -476,7 +483,134 @@ const SalaryManagerMockup: React.FC = () => {
 };
 
 /* ═══════════════════════════════════════════════════════════
-   3. SP500PredictorMockup — Live interactive stock chart
+   3. CelebrationCafeMockup — Interactive photo slideshow & controls
+   ═══════════════════════════════════════════════════════════ */
+const CelebrationCafeMockup: React.FC = () => {
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [isAutoPlay, setIsAutoPlay] = useState(true);
+
+  const slides = [
+    {
+      src: "/proof/Cafe1.png",
+      title: "Interactive Food Menu & Dynamic Cart",
+      desc: "Categorized items, custom add-ons, and responsive cart summary.",
+      tag: "Next.js 16 App Router",
+    },
+    {
+      src: "/proof/Cafe2.png",
+      title: "GPS Pin Precision & Geofence Engine",
+      desc: "Leaflet & OpenStreetMap address pinning & 12km delivery zone validation.",
+      tag: "Leaflet / OSM Geofencing",
+    },
+    {
+      src: "/proof/Cafe3.png",
+      title: "Multi-Address & Persistence Layer",
+      desc: "Saved delivery locations with hybrid offline local caching.",
+      tag: "Supabase PostgreSQL & RLS",
+    },
+    {
+      src: "/proof/Cafe4.png",
+      title: "Real-Time Order Tracking & Owner Portal",
+      desc: "Live order status pipeline with 3-role access control.",
+      tag: "RBAC (Customer / Staff / Owner)",
+    },
+  ];
+
+  useEffect(() => {
+    if (!isAutoPlay) return;
+    const interval = setInterval(() => {
+      setActiveIdx((prev) => (prev + 1) % slides.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [isAutoPlay, slides.length]);
+
+  return (
+    <div
+      className="w-full h-full bg-[#0E0E10] flex flex-col justify-between select-none relative group/mockup overflow-hidden"
+      onMouseEnter={() => setIsAutoPlay(false)}
+      onMouseLeave={() => setIsAutoPlay(true)}
+    >
+      {/* Top Floating Badges */}
+      <div className="absolute top-3 left-3 right-3 z-20 flex items-center justify-between pointer-events-none">
+        <div className="flex items-center gap-1.5 bg-black/70 backdrop-blur-md border border-amber/30 rounded-full px-2.5 py-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber animate-pulse" />
+          <span className="font-mono text-[0.52rem] tracking-[0.1em] text-amber uppercase font-semibold">
+            12KM GPS GEOFENCE
+          </span>
+        </div>
+        <div className="flex items-center gap-1.5 bg-black/70 backdrop-blur-md border border-emerald-500/30 rounded-full px-2.5 py-1">
+          <ShieldCheck size={10} className="text-emerald-400" />
+          <span className="font-mono text-[0.52rem] tracking-[0.1em] text-emerald-400 uppercase font-semibold">
+            SUPABASE RLS SECURED
+          </span>
+        </div>
+      </div>
+
+      {/* Main Image View */}
+      <div className="relative flex-1 w-full overflow-hidden bg-[#0A0A0C] flex items-center justify-center p-1">
+        {slides.map((slide, i) => (
+          <img
+            key={slide.src}
+            src={slide.src}
+            alt={slide.title}
+            className={`absolute inset-0 w-full h-full object-contain object-top p-1 transition-all duration-700 ease-in-out ${
+              i === activeIdx ? "opacity-100 scale-100 z-10" : "opacity-0 scale-98 z-0 pointer-events-none"
+            }`}
+          />
+        ))}
+
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10 pointer-events-none" />
+
+        {/* Navigation Controls */}
+        <button
+          onClick={() => setActiveIdx((prev) => (prev - 1 + slides.length) % slides.length)}
+          className="absolute left-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/60 hover:bg-amber text-white hover:text-night border border-white/10 flex items-center justify-center transition-all duration-300 opacity-0 group-hover/mockup:opacity-100 cursor-none"
+        >
+          <ChevronLeft size={16} />
+        </button>
+        <button
+          onClick={() => setActiveIdx((prev) => (prev + 1) % slides.length)}
+          className="absolute right-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/60 hover:bg-amber text-white hover:text-night border border-white/10 flex items-center justify-center transition-all duration-300 opacity-0 group-hover/mockup:opacity-100 cursor-none"
+        >
+          <ChevronRight size={16} />
+        </button>
+      </div>
+
+      {/* Footer Info */}
+      <div className="relative z-20 bg-mock-surfaceLight/95 backdrop-blur-md border-t border-mock-border p-3 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <div className="flex-1 min-w-0 text-left">
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-[0.52rem] uppercase tracking-wider text-amber font-bold">
+              {slides[activeIdx].tag}
+            </span>
+            <span className="text-bark/20 text-[0.5rem]">•</span>
+            <span className="font-mono text-[0.5rem] text-bark/40">
+              0{activeIdx + 1} / 0{slides.length}
+            </span>
+          </div>
+          <p className="font-display font-medium text-bark text-xs truncate">
+            {slides[activeIdx].title}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setActiveIdx(i)}
+              className={`h-1.5 rounded-full transition-all duration-300 cursor-none ${
+                i === activeIdx ? "w-6 bg-amber" : "w-1.5 bg-bark/20 hover:bg-bark/40"
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════
+   4. SP500PredictorMockup — Live interactive stock chart
    ═══════════════════════════════════════════════════════════ */
 const SP500PredictorMockup: React.FC = () => {
   return (
@@ -649,8 +783,6 @@ const DemoFrame: React.FC<DemoFrameProps> = ({ id, mediaType, mediaSrc, urlBarTe
     return () => observer.disconnect();
   }, []);
 
-  const isMobile = containerWidth > 0 && containerWidth < 768;
-
   return (
     <div ref={frameRef} className="relative rounded-xl overflow-hidden border border-mock-border bg-mock-surface group/frame transition-shadow duration-500 hover:shadow-2xl hover:shadow-black/60">
       {/* Title bar */}
@@ -674,13 +806,13 @@ const DemoFrame: React.FC<DemoFrameProps> = ({ id, mediaType, mediaSrc, urlBarTe
       </div>
 
       {/* RAG Chatbot Dual Mode tab bar switcher */}
-      {id === "proj-01" && (
+      {id === "proj-02" && (
         <div className="flex bg-mock-surfaceLight border-b border-mock-border px-4 py-1.5 gap-2 select-none relative z-20 overflow-x-auto whitespace-nowrap flex-nowrap scrollbar-none">
           <button
             onClick={() => setViewMode("video")}
             className={`flex-shrink-0 font-mono text-[0.55rem] tracking-wider uppercase px-2.5 py-1 rounded transition-colors cursor-none ${viewMode === "video"
-                ? "text-amber bg-bark/5 border border-bark/10"
-                : "text-bark/40 hover:text-bark/70 border border-transparent"
+              ? "text-amber bg-bark/5 border border-bark/10"
+              : "text-bark/40 hover:text-bark/70 border border-transparent"
               }`}
           >
             📹 Demo Video
@@ -688,8 +820,8 @@ const DemoFrame: React.FC<DemoFrameProps> = ({ id, mediaType, mediaSrc, urlBarTe
           <button
             onClick={() => setViewMode("live")}
             className={`flex-shrink-0 font-mono text-[0.55rem] tracking-wider uppercase px-2.5 py-1 rounded transition-colors cursor-none ${viewMode === "live"
-                ? "text-amber bg-bark/5 border border-bark/10"
-                : "text-bark/40 hover:text-bark/70 border border-transparent"
+              ? "text-amber bg-bark/5 border border-bark/10"
+              : "text-bark/40 hover:text-bark/70 border border-transparent"
               }`}
           >
             🌐 Live Website
@@ -697,8 +829,8 @@ const DemoFrame: React.FC<DemoFrameProps> = ({ id, mediaType, mediaSrc, urlBarTe
           <button
             onClick={() => setViewMode("interactive")}
             className={`flex-shrink-0 font-mono text-[0.55rem] tracking-wider uppercase px-2.5 py-1 rounded transition-colors cursor-none ${viewMode === "interactive"
-                ? "text-amber bg-bark/5 border border-bark/10"
-                : "text-bark/40 hover:text-bark/70 border border-transparent"
+              ? "text-amber bg-bark/5 border border-bark/10"
+              : "text-bark/40 hover:text-bark/70 border border-transparent"
               }`}
           >
             💬 Interactive Simulator
@@ -712,6 +844,8 @@ const DemoFrame: React.FC<DemoFrameProps> = ({ id, mediaType, mediaSrc, urlBarTe
         style={{ aspectRatio: "16 / 10" }}
       >
         {id === "proj-01" ? (
+          <CelebrationCafeMockup />
+        ) : id === "proj-02" ? (
           viewMode === "interactive" ? (
             <InteractiveChatMockup />
           ) : viewMode === "live" ? (
@@ -727,9 +861,9 @@ const DemoFrame: React.FC<DemoFrameProps> = ({ id, mediaType, mediaSrc, urlBarTe
               className="w-full h-full video-fit-contain bg-[#0E0E10] transition-transform duration-[500ms] ease-out hover:scale-[1.03]"
             />
           )
-        ) : id === "proj-02" ? (
-          <SalaryManagerMockup />
         ) : id === "proj-03" ? (
+          <SalaryManagerMockup />
+        ) : id === "proj-04" ? (
           <SP500PredictorMockup />
         ) : mediaError ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
@@ -1013,91 +1147,107 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({ project, onOpenCaseStudy })
    ═══════════════════════════════════════════════════════════ */
 const SecondaryCard: React.FC<{ project: ProjectData; revealDelay?: number }> = ({ project, revealDelay = 0 }) => {
   const revealRef = useProjectReveal();
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const handleLiveDemoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (project.liveUrl) {
+      setShowConfirm(true);
+    }
+  };
 
   return (
-    <div
-      ref={revealRef}
-      className="project-reveal"
-      style={{ transitionDelay: `${revealDelay}ms` }}
-    >
-      <PremiumGlowCard
-        watermark={project.index}
-        watermarkClass="-right-2 -top-4 z-0"
-        className="p-6 sm:p-8 h-full flex flex-col justify-between"
+    <>
+      <div
+        ref={revealRef}
+        className="project-reveal"
+        style={{ transitionDelay: `${revealDelay}ms` }}
       >
-        <div>
-          {/* Demo frame */}
-          <div className="mb-6 relative z-10">
-            <DemoFrame
-              id={project.id}
-              mediaType={project.mediaType}
-              mediaSrc={project.mediaSrc}
-              urlBarText={project.urlBarText}
-              badge={project.badge}
-            />
-          </div>
-
-          {/* Title */}
-          <h3
-            className="font-display font-light text-bark mb-1.5 leading-tight relative z-10 hover:text-amber transition-colors duration-300"
-            style={{ fontSize: "clamp(1.3rem, 2.5vw, 1.8rem)", letterSpacing: "-0.02em" }}
-          >
-            {project.title}
-          </h3>
-          {project.subtitle && (
-            <p className="font-display italic text-amber/50 text-sm font-light mb-3 relative z-10">
-              {project.subtitle}
-            </p>
-          )}
-          <p className="font-body text-[0.85rem] text-bark/70 leading-relaxed mb-5 relative z-10">
-            {project.desc}
-          </p>
-
-          {/* Metric */}
-          {project.metrics.length > 0 && (
-            <div className="grid grid-cols-2 gap-4 mb-5 relative z-10">
-              {project.metrics.map((m) => (
-                <MetricCounter key={m.label} val={m.val} label={m.label} />
-              ))}
+        <PremiumGlowCard
+          watermark={project.index}
+          watermarkClass="-right-2 -top-4 z-0"
+          className="p-6 sm:p-8 h-full flex flex-col justify-between"
+        >
+          <div>
+            {/* Demo frame */}
+            <div className="mb-6 relative z-10">
+              <DemoFrame
+                id={project.id}
+                mediaType={project.mediaType}
+                mediaSrc={project.mediaSrc}
+                urlBarText={project.urlBarText}
+                badge={project.badge}
+              />
             </div>
-          )}
-        </div>
 
-        <div>
-          {/* Tags */}
-          <div className="mb-6 relative z-10">
-            <TagList coreStack={project.coreStack} tools={project.tools} />
+            {/* Title */}
+            <h3
+              className="font-display font-light text-bark mb-1.5 leading-tight relative z-10 hover:text-amber transition-colors duration-300"
+              style={{ fontSize: "clamp(1.3rem, 2.5vw, 1.8rem)", letterSpacing: "-0.02em" }}
+            >
+              {project.title}
+            </h3>
+            {project.subtitle && (
+              <p className="font-display italic text-amber/50 text-sm font-light mb-3 relative z-10">
+                {project.subtitle}
+              </p>
+            )}
+            <p className="font-body text-[0.85rem] text-bark/70 leading-relaxed mb-5 relative z-10">
+              {project.desc}
+            </p>
+
+            {/* Metric */}
+            {project.metrics.length > 0 && (
+              <div className="grid grid-cols-2 gap-4 mb-5 relative z-10">
+                {project.metrics.map((m) => (
+                  <MetricCounter key={m.label} val={m.val} label={m.label} />
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* CTAs */}
-          <div className="flex items-center gap-3 flex-wrap relative z-10">
-            <button
-              className="font-mono text-[0.65rem] tracking-[0.1em] uppercase group/btn
-                text-night bg-amber rounded px-5 py-2
-                hover:bg-amber-glow hover:shadow-lg hover:shadow-amber/20
-                transition-all duration-300 cursor-none
-                inline-flex items-center gap-2"
-            >
-              <Play size={11} className="group-hover/btn:scale-110 transition-transform duration-300" />
-              {project.primaryCta}
-            </button>
-            <a
-              href={project.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-mono text-[0.65rem] tracking-[0.1em] uppercase group/btn
-                text-bark/50 border border-bark/10 rounded px-5 py-2
-                hover:border-amber/30 hover:text-amber/70
-                transition-all duration-300 cursor-none
-                inline-flex items-center gap-2"
-            >
-              Source Code
-              <ExternalLink size={11} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform duration-300" />
-            </a>
+          <div>
+            {/* Tags */}
+            <div className="mb-6 relative z-10">
+              <TagList coreStack={project.coreStack} tools={project.tools} />
+            </div>
+
+            {/* CTAs */}
+            <div className="flex items-center gap-3 flex-wrap relative z-10">
+              <button
+                onClick={handleLiveDemoClick}
+                className="font-mono text-[0.65rem] tracking-[0.1em] uppercase group/btn
+                  text-night bg-amber rounded px-5 py-2
+                  hover:bg-amber-glow hover:shadow-lg hover:shadow-amber/20
+                  transition-all duration-300 cursor-none
+                  inline-flex items-center gap-2"
+              >
+                <Play size={11} className="group-hover/btn:scale-110 transition-transform duration-300" />
+                {project.primaryCta}
+              </button>
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-[0.65rem] tracking-[0.1em] uppercase group/btn
+                  text-bark/50 border border-bark/10 rounded px-5 py-2
+                  hover:border-amber/30 hover:text-amber/70
+                  transition-all duration-300 cursor-none
+                  inline-flex items-center gap-2"
+              >
+                Source Code
+                <ExternalLink size={11} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform duration-300" />
+              </a>
+            </div>
           </div>
-        </div>
-      </PremiumGlowCard>
-    </div>
+        </PremiumGlowCard>
+      </div>
+
+      {/* Confirm modal for Live Demo */}
+      {showConfirm && project.liveUrl && (
+        <ConfirmModal url={project.liveUrl} onClose={() => setShowConfirm(false)} />
+      )}
+    </>
   );
 };
 
@@ -1570,19 +1720,394 @@ const CaseStudyRagChatbot: React.FC<CaseStudyRagChatbotProps> = ({ onClose, proj
 };
 
 /* ═══════════════════════════════════════════════════════════
+   CaseStudyCelebrationCafe — full detailed case study view
+   ═══════════════════════════════════════════════════════════ */
+interface CaseStudyCelebrationCafeProps {
+  onClose: () => void;
+  project: ProjectData;
+}
+
+const CaseStudyCelebrationCafe: React.FC<CaseStudyCelebrationCafeProps> = ({ onClose, project }) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [activeImgIdx, setActiveImgIdx] = useState(0);
+  const [copiedResume, setCopiedResume] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const images = [
+    {
+      src: "/proof/Cafe1.png",
+      title: "Interactive Menu & Dynamic Cart Engine",
+      subtitle: "Categorized items, custom add-ons, and responsive cart state.",
+    },
+    {
+      src: "/proof/Cafe2.png",
+      title: "GPS Pin Precision & Geofenced Delivery",
+      subtitle: "Leaflet & OpenStreetMap interactive map picker with automated 12km geofence verification.",
+    },
+    {
+      src: "/proof/Cafe3.png",
+      title: "Multi-Address Management & Hybrid Caching",
+      subtitle: "Stored delivery addresses with offline LocalStorage fallback & Supabase RLS sync.",
+    },
+    {
+      src: "/proof/Cafe4.png",
+      title: "Real-Time Order Tracking & Owner Admin Portal",
+      subtitle: "Live kitchen order workflow, status updates, item availability toggle & sales metrics.",
+    },
+  ];
+
+  const resumeBullets = [
+    "Full-Stack Next.js & TypeScript Architecture: Developed a production-ready food delivery web app using Next.js 16 App Router, TypeScript, and Supabase PostgreSQL, ensuring type safety and fast server-side rendering.",
+    "GPS Pin Precision & Geofenced Delivery Engine: Integrated Leaflet/OpenStreetMap with real-time reverse geocoding APIs to enable interactive address pinning and automated 12km delivery zone validation.",
+    "Multi-Address & Hybrid Persistence Layer: Architected a seamless multi-address management system utilizing custom server-side API routes and Supabase RLS to guarantee zero data loss and fallback offline local caching.",
+    "Role-Based Access Control (RBAC) & OAuth: Implemented unified user authentication (Customer, Staff, Cafe Owner) with Google OAuth 2.0 and mobile access, secured by Supabase Row Level Security (RLS) policies.",
+    "Real-Time Order Pipeline & Staff Admin Portal: Built an end-to-end order workflow featuring live order tracking status updates, customizable menu items, discount coupon validation, and an owner dashboard for full operational control.",
+    "Modern UI/UX & Micro-Animations: Crafted a mobile-first, dark-themed user interface with Tailwind CSS, Framer Motion animations, and custom UI components to maximize user engagement.",
+  ];
+
+  const [isAutoPlay, setIsAutoPlay] = useState(true);
+
+  const handleCopyResumeBullets = () => {
+    const text = resumeBullets.map((b) => `• ${b}`).join("\n\n");
+    navigator.clipboard.writeText(text);
+    setCopiedResume(true);
+    setTimeout(() => setCopiedResume(false), 2500);
+  };
+
+  const handleLiveDemoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowConfirm(true);
+  };
+
+  useEffect(() => {
+    if (!isAutoPlay) return;
+    const interval = setInterval(() => {
+      setActiveImgIdx((prev) => (prev + 1) % images.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [isAutoPlay, images.length]);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: 0 });
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, []);
+
+  return createPortal(
+    <div
+      ref={scrollRef}
+      data-lenis-prevent
+      className="fixed inset-0 z-[90] bg-night overflow-y-auto pt-24 pb-20 case-study-overlay"
+      style={{ scrollBehavior: "smooth" }}
+    >
+      {/* Top Back Row */}
+      <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12 mb-8">
+        <button
+          onClick={onClose}
+          className="font-mono text-[0.68rem] tracking-[0.12em] uppercase text-bark/50 hover:text-amber inline-flex items-center gap-2 transition-colors cursor-none"
+        >
+          ← Back to all projects
+        </button>
+      </div>
+
+      <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12 space-y-24">
+        {/* A. Hero Section */}
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[0.55rem] tracking-[0.2em] uppercase text-amber bg-amber/10 border border-amber/20 px-2.5 py-1 rounded">
+                Case Study · 01
+              </span>
+              <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded">
+                Production Application
+              </span>
+            </div>
+
+            <h1
+              className="font-display font-light text-bark"
+              style={{ fontSize: "clamp(2.5rem, 4.5vw, 4.5rem)", letterSpacing: "-0.02em", lineHeight: 1.05 }}
+            >
+              {project.title}
+            </h1>
+            <p className="font-display italic text-amber/70 text-xl sm:text-2xl font-light">
+              {project.subtitle}
+            </p>
+            <div className="font-mono text-[0.58rem] sm:text-[0.65rem] tracking-[0.05em] text-bark/40 pt-1">
+              Full-Stack Application · Next.js 16 (App Router) · Supabase PostgreSQL & RLS · Leaflet GPS
+            </div>
+          </div>
+
+          {/* Quick Metrics Cards Header */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
+            <div className="bg-bark/[0.02] border border-bark/10 p-4 rounded-xl text-left">
+              <p className="font-display text-2xl sm:text-3xl text-amber font-light">12km</p>
+              <p className="font-mono text-[0.55rem] uppercase text-bark/40 tracking-wider">GPS Geofence Zone</p>
+            </div>
+            <div className="bg-bark/[0.02] border border-bark/10 p-4 rounded-xl text-left">
+              <p className="font-display text-2xl sm:text-3xl text-bark font-light">Next.js 16</p>
+              <p className="font-mono text-[0.55rem] uppercase text-bark/40 tracking-wider">App Router & React 19</p>
+            </div>
+            <div className="bg-bark/[0.02] border border-bark/10 p-4 rounded-xl text-left">
+              <p className="font-display text-2xl sm:text-3xl text-amber font-light">3 Roles</p>
+              <p className="font-mono text-[0.55rem] uppercase text-bark/40 tracking-wider">RBAC (Customer/Staff/Owner)</p>
+            </div>
+            <div className="bg-bark/[0.02] border border-bark/10 p-4 rounded-xl text-left">
+              <p className="font-display text-2xl sm:text-3xl text-bark font-light">100%</p>
+              <p className="font-mono text-[0.55rem] uppercase text-bark/40 tracking-wider">Real-Time Sync</p>
+            </div>
+          </div>
+        </div>
+
+        {/* B. Interactive Photo Gallery Slideshow */}
+        <div className="space-y-6 border-t border-bark/10 pt-14">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-bark/55">
+                Product Showcase Gallery
+              </span>
+              <span className="h-px w-16 bg-bark/10" />
+            </div>
+            <button
+              onClick={handleLiveDemoClick}
+              className="font-mono text-[0.65rem] tracking-[0.1em] uppercase text-amber hover:text-amber-glow inline-flex items-center gap-1.5"
+            >
+              Launch Live App ↗
+            </button>
+          </div>
+
+          {/* Featured Screenshot Container */}
+          <div
+            className="relative rounded-2xl border border-mock-border bg-[#0A0A0C] overflow-hidden group hover:border-amber/30 transition-all duration-500 shadow-2xl"
+            onMouseEnter={() => setIsAutoPlay(false)}
+            onMouseLeave={() => setIsAutoPlay(true)}
+          >
+            <div className="relative w-full aspect-[16/10] overflow-hidden bg-[#08080A] flex items-center justify-center p-2 sm:p-3">
+              {images.map((img, i) => (
+                <img
+                  key={img.src}
+                  src={img.src}
+                  alt={img.title}
+                  className={`absolute inset-0 w-full h-full object-contain object-top p-2 transition-all duration-700 ease-in-out ${
+                    i === activeImgIdx ? "opacity-100 scale-100 z-10" : "opacity-0 scale-98 z-0 pointer-events-none"
+                  }`}
+                />
+              ))}
+
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent z-10 pointer-events-none" />
+
+              {/* Prev / Next overlay arrows */}
+              <button
+                onClick={() => setActiveImgIdx((prev) => (prev - 1 + images.length) % images.length)}
+                className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/75 hover:bg-amber text-white hover:text-night border border-white/15 flex items-center justify-center transition-all cursor-none shadow-lg opacity-80 group-hover:opacity-100"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button
+                onClick={() => setActiveImgIdx((prev) => (prev + 1) % images.length)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/75 hover:bg-amber text-white hover:text-night border border-white/15 flex items-center justify-center transition-all cursor-none shadow-lg opacity-80 group-hover:opacity-100"
+              >
+                <ChevronRight size={20} />
+              </button>
+            </div>
+
+            {/* Active Screenshot Caption */}
+            <div className="bg-mock-surfaceLight border-t border-mock-border p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-amber animate-pulse" />
+                  <span className="font-mono text-[0.6rem] tracking-[0.12em] uppercase text-bark/50">
+                    SCREENSHOT {activeImgIdx + 1} OF {images.length} (AUTO-SWIPING 4S)
+                  </span>
+                </div>
+                <h3 className="font-display font-medium text-bark text-base sm:text-lg">
+                  {images[activeImgIdx].title}
+                </h3>
+              </div>
+
+              {/* Image Selector Thumbnails */}
+              <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
+                {images.map((img, idx) => (
+                  <button
+                    key={img.src}
+                    onClick={() => setActiveImgIdx(idx)}
+                    className={`relative w-16 h-10 rounded-lg overflow-hidden border-2 transition-all flex-shrink-0 cursor-none ${
+                      idx === activeImgIdx
+                        ? "border-amber scale-105 shadow-md shadow-amber/20"
+                        : "border-transparent opacity-60 hover:opacity-100"
+                    }`}
+                  >
+                    <img src={img.src} alt={img.title} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* C. Executive Problem & Overview */}
+        <div className="space-y-6 border-t border-bark/10 pt-14">
+          <div className="flex items-center gap-4 mb-4">
+            <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-bark/55">Project Architecture & Purpose</span>
+            <span className="h-px flex-1 bg-bark/10" />
+          </div>
+
+          <div className="max-w-[720px] space-y-4">
+            <h2 className="font-display font-light text-bark text-2xl sm:text-3xl tracking-tight">
+              Enterprise Cafe Management Built for Real-World Operations
+            </h2>
+            <p className="font-body text-[0.875rem] text-bark/70 leading-relaxed">
+              Traditional food delivery applications often suffer from static address inputs, zero delivery zone enforcement, and single-tenant operational views that conflate kitchen staff actions with customer ordering.
+            </p>
+            <p className="font-body text-[0.875rem] text-bark/70 leading-relaxed">
+              <strong>Celebration Food Cafe</strong> was engineered as a production-grade full-stack solution to solve these exact operational friction points. Built with Next.js 16 (App Router), TypeScript, and Supabase (PostgreSQL & Auth), it unifies precision GPS map pin selection with automated reverse-geocoding, 12km delivery zone validation, local-first offline caching, and 3-tier Role-Based Access Control (RBAC).
+            </p>
+          </div>
+        </div>
+
+        {/* D. Engineering Deep Dives (4 Grid Cards) */}
+        <div className="space-y-6 border-t border-bark/10 pt-14">
+          <div className="flex items-center gap-4 mb-4">
+            <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-bark/55">Core Technical Modules</span>
+            <span className="h-px flex-1 bg-bark/10" />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Module 1: GPS Pin & Geofencing */}
+            <div className="bg-bark/[0.01] border border-bark/10 rounded-2xl p-6 hover:border-amber/30 transition-all duration-300">
+              <div className="w-9 h-9 rounded-xl bg-amber/10 border border-amber/20 flex items-center justify-center text-amber mb-4">
+                <MapPin size={18} />
+              </div>
+              <h3 className="font-display font-medium text-bark text-lg mb-2">
+                GPS Pin Precision & Geofence Engine
+              </h3>
+              <p className="font-body text-[0.82rem] text-bark/65 leading-relaxed">
+                Integrated OpenStreetMap and Leaflet to enable interactive map pin dragging. Implemented real-time reverse-geocoding to resolve raw latitude/longitude into human-readable street addresses, coupled with Haversine formula distance calculations enforcing a strict 12km cafe delivery boundary before cart checkout.
+              </p>
+            </div>
+
+            {/* Module 2: Supabase RBAC & Security */}
+            <div className="bg-bark/[0.01] border border-bark/10 rounded-2xl p-6 hover:border-amber/30 transition-all duration-300">
+              <div className="w-9 h-9 rounded-xl bg-amber/10 border border-amber/20 flex items-center justify-center text-amber mb-4">
+                <ShieldCheck size={18} />
+              </div>
+              <h3 className="font-display font-medium text-bark text-lg mb-2">
+                Supabase RLS & Role-Based Access Control
+              </h3>
+              <p className="font-body text-[0.82rem] text-bark/65 leading-relaxed">
+                Architected a unified authentication model (Google OAuth 2.0 + Synthetic Phone Auth) with PostgreSQL Row Level Security (RLS) policies. Isolates 3 distinct user roles: Customers (order history & addresses), Staff (live kitchen pipeline), and Cafe Owners (analytics, inventory & discount toggles).
+              </p>
+            </div>
+
+            {/* Module 3: Hybrid Persistence Layer */}
+            <div className="bg-bark/[0.01] border border-bark/10 rounded-2xl p-6 hover:border-amber/30 transition-all duration-300">
+              <div className="w-9 h-9 rounded-xl bg-amber/10 border border-amber/20 flex items-center justify-center text-amber mb-4">
+                <Layers size={18} />
+              </div>
+              <h3 className="font-display font-medium text-bark text-lg mb-2">
+                Multi-Address & Hybrid Persistence
+              </h3>
+              <p className="font-body text-[0.82rem] text-bark/65 leading-relaxed">
+                Designed a resilient multi-address management system combining client-side local caching with server-side database persistence. Guarantees zero cart data loss during connection drops while syncing address updates automatically upon user authentication.
+              </p>
+            </div>
+
+            {/* Module 4: Order Pipeline & Admin Portal */}
+            <div className="bg-bark/[0.01] border border-bark/10 rounded-2xl p-6 hover:border-amber/30 transition-all duration-300">
+              <div className="w-9 h-9 rounded-xl bg-amber/10 border border-amber/20 flex items-center justify-center text-amber mb-4">
+                <Sparkles size={18} />
+              </div>
+              <h3 className="font-display font-medium text-bark text-lg mb-2">
+                Real-Time Order Workflow & Coupon Engine
+              </h3>
+              <p className="font-body text-[0.82rem] text-bark/65 leading-relaxed">
+                Built an end-to-end order tracking workflow with live state transitions (Pending → Preparing → Out for Delivery → Delivered). Included customizable menu items with add-ons, dynamic promotional coupon validation engines, and full operational control for cafe owners.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* E. Resume Key Points (Copyable) */}
+        <div className="space-y-6 border-t border-bark/10 pt-14">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-bark/55">
+                Resume Bullet Points (Ready to Copy)
+              </span>
+              <span className="h-px w-12 bg-bark/10" />
+            </div>
+            <button
+              onClick={handleCopyResumeBullets}
+              className="font-mono text-[0.65rem] tracking-[0.1em] uppercase text-amber border border-amber/30 rounded-lg px-3.5 py-1.5 hover:bg-amber hover:text-night transition-all cursor-none inline-flex items-center gap-1.5"
+            >
+              {copiedResume ? <Check size={12} /> : <Copy size={12} />}
+              <span>{copiedResume ? "Copied to Clipboard!" : "Copy Resume Bullets"}</span>
+            </button>
+          </div>
+
+          <div className="bg-bark/[0.02] border border-bark/10 rounded-2xl p-6 space-y-4">
+            {resumeBullets.map((bullet, idx) => (
+              <div key={idx} className="flex items-start gap-3 text-bark/85 text-[0.85rem] leading-relaxed">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber mt-2 flex-shrink-0" />
+                <span>{bullet}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* F. Footer CTA */}
+        <div className="border-t border-bark/10 pt-14 pb-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <button
+            onClick={handleLiveDemoClick}
+            className="font-mono text-[0.68rem] tracking-[0.12em] uppercase text-night bg-amber hover:bg-[#D46200] rounded-full px-8 py-3.5 inline-flex items-center gap-2 transition-all cursor-none"
+          >
+            Launch Live Demo ↗
+          </button>
+          <a
+            href={project.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-mono text-[0.68rem] tracking-[0.12em] uppercase text-bark/60 border border-bark/15 hover:border-amber/40 hover:text-amber rounded-full px-8 py-3.5 inline-flex items-center gap-2 transition-all cursor-none"
+          >
+            Source Code ↗
+          </a>
+          <button
+            onClick={onClose}
+            className="font-mono text-[0.68rem] tracking-[0.12em] uppercase text-bark/40 hover:text-bark rounded-full px-6 py-3.5 transition-all cursor-none"
+          >
+            ← Back to Projects
+          </button>
+        </div>
+      </div>
+
+      {/* Confirm modal for Live Demo in Case Study */}
+      {showConfirm && project.liveUrl && (
+        <ConfirmModal url={project.liveUrl} onClose={() => setShowConfirm(false)} />
+      )}
+    </div>,
+    document.body
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════
    Projects — main section
    ═══════════════════════════════════════════════════════════ */
 const Projects: React.FC = () => {
-  const featured = PROJECTS.find((p) => p.featured) || PROJECTS[0];
-  const rest = featured ? PROJECTS.filter((p) => p.id !== featured.id) : PROJECTS;
-  const [showCaseStudy, setShowCaseStudy] = useState(false);
+  const featuredProjects = PROJECTS.filter((p) => p.featured);
+  const restProjects = PROJECTS.filter((p) => !p.featured);
+  const [activeCaseStudyId, setActiveCaseStudyId] = useState<string | null>(null);
 
   useEffect(() => {
     const handleHashChange = () => {
-      if (window.location.hash === "#case-study-rag-chatbot") {
-        setShowCaseStudy(true);
+      const hash = window.location.hash;
+      if (hash === "#case-study-celebration-cafe") {
+        setActiveCaseStudyId("proj-01");
+      } else if (hash === "#case-study-rag-chatbot") {
+        setActiveCaseStudyId("proj-02");
       } else {
-        setShowCaseStudy(false);
+        setActiveCaseStudyId(null);
       }
     };
 
@@ -1591,7 +2116,13 @@ const Projects: React.FC = () => {
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
-  if (!featured) return null;
+  const openCaseStudyFor = (projId: string) => {
+    if (projId === "proj-01") {
+      window.location.hash = "case-study-celebration-cafe";
+    } else if (projId === "proj-02") {
+      window.location.hash = "case-study-rag-chatbot";
+    }
+  };
 
   return (
     <section id="projects" className="py-28 lg:py-36 bg-night">
@@ -1606,33 +2137,36 @@ const Projects: React.FC = () => {
           data-reveal
           style={{ fontSize: "clamp(2.8rem, 5vw, 5rem)", letterSpacing: "-0.02em", lineHeight: 1.0 }}
         >
-          Things I've<br />
+          <TextEffect per="word" as="span">Things I've</TextEffect><br />
           <em className="italic text-amber">built &amp; shipped</em>
         </h2>
 
         <p className="font-body text-[0.95rem] sm:text-[1.05rem] text-bark/70 leading-relaxed max-w-[680px] mb-12 reveal" data-reveal>
-          I don't just ship features, I think in systems. Every project here started as a real constraint, not a tutorial: a university with no way to answer student questions at scale, an internship dashboard that needed three way negotiation logic, a phone full of bank SMS that no one wanted to sort manually. I care less about using the trendiest stack and more about whether the thing actually holds up, proper data flow, no hardcoded shortcuts, edge cases considered before they bite someone in production. What's below is a mix of internship work and personal builds, picked because each one taught me something I couldn't have learned by following a guide.
+          I don't just ship features, I think in systems. Every project here started as a real constraint, not a tutorial: an enterprise food delivery platform needing GPS geofencing &amp; multi-role access, a university with no way to answer student questions at scale, a phone full of bank SMS that no one wanted to sort manually. Below is a complete showcase of production applications and systems I've designed and delivered.
         </p>
 
-        {/* Featured project */}
-        <FeaturedCard
-          project={featured}
-          onOpenCaseStudy={() => {
-            window.location.hash = "case-study-rag-chatbot";
-          }}
-        />
+        {/* Featured projects list — Top Hero Cards */}
+        <div className="space-y-12 mb-16">
+          {featuredProjects.map((p) => (
+            <FeaturedCard
+              key={p.id}
+              project={p}
+              onOpenCaseStudy={() => openCaseStudyFor(p.id)}
+            />
+          ))}
+        </div>
 
         {/* Other projects label */}
         <div className="flex items-center gap-4 mb-6 mt-14 reveal" data-reveal>
           <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-bark/55">
-            Other Projects
+            More Technical Projects
           </span>
           <span className="h-px flex-1 bg-white/[0.04]" />
         </div>
 
         {/* Secondary project grid - 3 Columns on desktop */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {rest.map((proj, idx) => (
+          {restProjects.map((proj, idx) => (
             <SecondaryCard key={proj.id} project={proj} revealDelay={idx * 100} />
           ))}
         </div>
@@ -1641,10 +2175,19 @@ const Projects: React.FC = () => {
         <MoreProjectsRow />
       </div>
 
-      {/* Case Study Overlay */}
-      {showCaseStudy && (
+      {/* Case Study Overlays */}
+      {activeCaseStudyId === "proj-01" && (
+        <CaseStudyCelebrationCafe
+          project={PROJECTS[0]}
+          onClose={() => {
+            window.location.hash = "";
+          }}
+        />
+      )}
+
+      {activeCaseStudyId === "proj-02" && (
         <CaseStudyRagChatbot
-          project={featured}
+          project={PROJECTS[1]}
           onClose={() => {
             window.location.hash = "";
           }}

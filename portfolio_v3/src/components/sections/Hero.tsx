@@ -8,13 +8,14 @@ import { PROJECTS } from "../../data/portfolio";
 import RoomScene from "../hero/RoomScene";
 import RoomSkeleton from "../hero/RoomSkeleton";
 import SplineErrorBoundary from "../hero/SplineErrorBoundary";
+import TextEffect from "../ui/text-effect";
+import { Code2, Bot, Sparkles, Layers } from "lucide-react";
 
 /* ── Magnetic button component ── */
 const MagneticBtn: React.FC<{ href: string; children: React.ReactNode; variant?: "filled" | "outline"; target?: string; rel?: string }> = ({
   href, children, variant = "filled", target, rel
 }) => {
   const ref = useRef<HTMLAnchorElement>(null);
-  const navigate = useNavigate();
 
   const onMove = useCallback((e: React.MouseEvent) => {
     const el = ref.current;
@@ -28,9 +29,9 @@ const MagneticBtn: React.FC<{ href: string; children: React.ReactNode; variant?:
     if (ref.current) ref.current.style.transform = "";
   }, []);
 
-  const base = "font-mono text-[0.68rem] sm:text-[0.72rem] tracking-[0.15em] uppercase px-7 sm:px-8 py-3.5 sm:py-4 rounded-full transition-all duration-300 w-full sm:w-auto text-center flex justify-center items-center gap-2 group font-semibold";
+  const base = "font-mono text-[0.68rem] sm:text-[0.72rem] tracking-[0.15em] uppercase px-7 sm:px-8 py-3.5 sm:py-4 rounded-full transition-all duration-300 w-full sm:w-auto text-center flex justify-center items-center gap-2 group font-semibold cursor-none";
   const styles = variant === "filled"
-    ? `${base} bg-amber text-night shadow-[0_0_25px_rgba(235,94,0,0.35)] hover:shadow-[0_0_40px_rgba(235,94,0,0.6)] hover:bg-amber-glow`
+    ? `${base} bg-amber text-night shadow-[0_0_30px_rgba(235,94,0,0.4)] hover:shadow-[0_0_50px_rgba(235,94,0,0.7)] hover:bg-amber-glow`
     : `${base} bg-bark/5 border border-bark/30 text-bark hover:border-amber hover:bg-amber/15 hover:text-amber shadow-sm`;
 
   return (
@@ -44,8 +45,8 @@ const Hero: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Responsive device verification
-  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  // Responsive device verification (loads Spline on tablets & laptops 768px+)
+  const isTabletOrDesktop = useMediaQuery("(min-width: 768px)");
 
   // State management for Spline load lifecycle and interactivity
   const [isSplineLoaded, setIsSplineLoaded] = useState(false);
@@ -62,16 +63,16 @@ const Hero: React.FC = () => {
 
   // Graceful load timeout fallback (e.g. adblocker, network failures)
   useEffect(() => {
-    if (isDesktop && !isSplineLoaded) {
+    if (isTabletOrDesktop && !isSplineLoaded) {
       const timer = setTimeout(() => {
         if (!isSplineLoaded) {
           console.warn("Spline loading timed out. Falling back to static image.");
           setIsSplineTimeout(true);
         }
-      }, 30000); // 30 seconds timeout limit
+      }, 30000);
       return () => clearTimeout(timer);
     }
-  }, [isDesktop, isSplineLoaded]);
+  }, [isTabletOrDesktop, isSplineLoaded]);
 
   /* ── Keyboard listener to close projects modal ── */
   useEffect(() => {
@@ -89,101 +90,112 @@ const Hero: React.FC = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x000000, 0);
+    let renderer: THREE.WebGLRenderer;
+    let animId: number;
+    let onMouse: (e: MouseEvent) => void;
+    let onResize: () => void;
+    let geo: THREE.BufferGeometry;
+    let mat: THREE.PointsMaterial;
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 5;
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setClearColor(0x000000, 0);
 
-    /* Particles — amber glow cores on dark */
-    const COUNT = 4200;
-    const geo = new THREE.BufferGeometry();
-    const pos = new Float32Array(COUNT * 3);
-    const col = new Float32Array(COUNT * 3);
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 5;
 
-    for (let i = 0; i < COUNT; i++) {
-      const phi = Math.acos(-1 + (2 * i) / COUNT);
-      const theta = Math.sqrt(COUNT * Math.PI) * phi;
-      const r = 2.8 + (Math.random() - 0.5) * 1.1;
+      /* Particles — amber glow cores on dark */
+      const COUNT = 4200;
+      geo = new THREE.BufferGeometry();
+      const pos = new Float32Array(COUNT * 3);
+      const col = new Float32Array(COUNT * 3);
 
-      pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-      pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-      pos[i * 3 + 2] = r * Math.cos(phi);
+      for (let i = 0; i < COUNT; i++) {
+        const phi = Math.acos(-1 + (2 * i) / COUNT);
+        const theta = Math.sqrt(COUNT * Math.PI) * phi;
+        const r = 2.8 + (Math.random() - 0.5) * 1.1;
 
-      const t = Math.random();
-      if (t > 0.85) {
-        col[i * 3] = 1.0;
-        col[i * 3 + 1] = 0.48;
-        col[i * 3 + 2] = 0.1;
-      } else {
-        col[i * 3] = 0.35 + t * 0.2;
-        col[i * 3 + 1] = 0.18 + t * 0.12;
-        col[i * 3 + 2] = 0.05 + t * 0.05;
+        pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+        pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+        pos[i * 3 + 2] = r * Math.cos(phi);
+
+        const t = Math.random();
+        if (t > 0.85) {
+          col[i * 3] = 1.0;
+          col[i * 3 + 1] = 0.48;
+          col[i * 3 + 2] = 0.1;
+        } else {
+          col[i * 3] = 0.35 + t * 0.2;
+          col[i * 3 + 1] = 0.18 + t * 0.12;
+          col[i * 3 + 2] = 0.05 + t * 0.05;
+        }
       }
+
+      geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+      geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
+
+      mat = new THREE.PointsMaterial({
+        size: 0.02,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.8,
+        sizeAttenuation: true,
+      });
+      const pts = new THREE.Points(geo, mat);
+      scene.add(pts);
+
+      /* Orbit rings */
+      const ringMat1 = new THREE.MeshBasicMaterial({ color: 0xC05800, transparent: true, opacity: 0.12 });
+      const ring1 = new THREE.Mesh(new THREE.TorusGeometry(2.8, 0.003, 2, 180), ringMat1);
+      ring1.rotation.x = Math.PI / 2;
+      scene.add(ring1);
+
+      const ringMat2 = new THREE.MeshBasicMaterial({ color: 0xFF7A1A, transparent: true, opacity: 0.06 });
+      const ring2 = new THREE.Mesh(new THREE.TorusGeometry(2.3, 0.002, 2, 180), ringMat2);
+      ring2.rotation.x = Math.PI / 3.5;
+      scene.add(ring2);
+
+      /* Mouse parallax */
+      let mx = 0, my = 0;
+      onMouse = (e: MouseEvent) => {
+        mx = (e.clientX / window.innerWidth - 0.5) * 2;
+        my = (e.clientY / window.innerHeight - 0.5) * 2;
+      };
+      window.addEventListener("mousemove", onMouse);
+
+      onResize = () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      };
+      window.addEventListener("resize", onResize);
+
+      let t0 = 0;
+      const animate = () => {
+        animId = requestAnimationFrame(animate);
+        t0 += 0.003;
+        pts.rotation.y += 0.001 + mx * 0.0015;
+        pts.rotation.x += 0.0003 + my * 0.0008;
+        ring1.rotation.z = t0 * 0.35;
+        ring2.rotation.z = -t0 * 0.2;
+        ring2.rotation.y = t0 * 0.12;
+        renderer.render(scene, camera);
+      };
+      animate();
+    } catch (e) {
+      console.warn("WebGL background initialization skipped:", e);
     }
 
-    geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-    geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
-
-    const mat = new THREE.PointsMaterial({
-      size: 0.02,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.8,
-      sizeAttenuation: true,
-    });
-    const pts = new THREE.Points(geo, mat);
-    scene.add(pts);
-
-    /* Orbit rings */
-    const ringMat1 = new THREE.MeshBasicMaterial({ color: 0xC05800, transparent: true, opacity: 0.12 });
-    const ring1 = new THREE.Mesh(new THREE.TorusGeometry(2.8, 0.003, 2, 180), ringMat1);
-    ring1.rotation.x = Math.PI / 2;
-    scene.add(ring1);
-
-    const ringMat2 = new THREE.MeshBasicMaterial({ color: 0xFF7A1A, transparent: true, opacity: 0.06 });
-    const ring2 = new THREE.Mesh(new THREE.TorusGeometry(2.3, 0.002, 2, 180), ringMat2);
-    ring2.rotation.x = Math.PI / 3.5;
-    scene.add(ring2);
-
-    /* Mouse parallax */
-    let mx = 0, my = 0;
-    const onMouse = (e: MouseEvent) => {
-      mx = (e.clientX / window.innerWidth - 0.5) * 2;
-      my = (e.clientY / window.innerHeight - 0.5) * 2;
-    };
-    window.addEventListener("mousemove", onMouse);
-
-    const onResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    };
-    window.addEventListener("resize", onResize);
-
-    let t0 = 0, animId: number;
-    const animate = () => {
-      animId = requestAnimationFrame(animate);
-      t0 += 0.003;
-      pts.rotation.y += 0.001 + mx * 0.0015;
-      pts.rotation.x += 0.0003 + my * 0.0008;
-      ring1.rotation.z = t0 * 0.35;
-      ring2.rotation.z = -t0 * 0.2;
-      ring2.rotation.y = t0 * 0.12;
-      renderer.render(scene, camera);
-    };
-    animate();
-
     return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener("mousemove", onMouse);
-      window.removeEventListener("resize", onResize);
-      renderer.dispose();
-      geo.dispose();
-      mat.dispose();
+      if (animId) cancelAnimationFrame(animId);
+      if (onMouse) window.removeEventListener("mousemove", onMouse);
+      if (onResize) window.removeEventListener("resize", onResize);
+      if (renderer) renderer.dispose();
+      if (geo) geo.dispose();
+      if (mat) mat.dispose();
     };
   }, []);
 
@@ -220,19 +232,10 @@ const Hero: React.FC = () => {
   }, []);
 
   // Determine section layout parameters natively in CSS classes to prevent hydration issues
-  const sectionClass = "relative min-h-[82vh] lg:min-h-screen lg:h-screen bg-night overflow-hidden flex items-center justify-center pt-24 sm:pt-28 pb-12 lg:py-0 select-none";
+  const sectionClass = "relative min-h-[82vh] lg:min-h-screen lg:h-screen bg-night overflow-hidden flex items-center justify-center pt-20 sm:pt-24 pb-10 lg:py-0 select-none";
   const pinChildClass = "relative w-full h-auto lg:h-full flex items-center justify-center overflow-visible";
 
-  // Static fallback image render for mobile or slow connections
-  const renderStaticFallback = () => (
-    <div className="w-full h-full flex items-center justify-center p-2 sm:p-4">
-      <img
-        src="/images/room-static.png"
-        alt="Interactive 3D Music Room Studio Illustration"
-        className="w-full max-w-[500px] h-auto object-contain rounded-2xl shadow-xl select-none pointer-events-none border border-bark/10"
-      />
-    </div>
-  );
+
 
   return (
     <section id="hero" ref={containerRef} className={sectionClass}>
@@ -240,41 +243,67 @@ const Hero: React.FC = () => {
         {/* Three.js background canvas */}
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-500 opacity-[var(--hero-canvas-opacity)]" />
 
+        {/* Ambient Glowing Motion Orbs */}
+        <motion.div
+          animate={{ scale: [1, 1.15, 1], opacity: [0.25, 0.45, 0.25] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[18%] left-[5%] w-[450px] h-[450px] rounded-full bg-gradient-to-br from-amber-400/30 via-orange-300/20 to-transparent blur-[120px] pointer-events-none z-0"
+        />
+        <motion.div
+          animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          className="absolute bottom-[10%] right-[8%] w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-amber-500/25 via-amber-200/15 to-transparent blur-[140px] pointer-events-none z-0"
+        />
+
         {/* Dark radial vignette wrapper */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(ellipse 60% 60% at 70% 50%, rgba(var(--night-rgb),0.4) 0%, rgba(var(--night-rgb),0.85) 60%, rgba(var(--night-rgb),0.97) 80%)",
+              "radial-gradient(ellipse 60% 60% at 70% 50%, rgba(var(--night-rgb),0.3) 0%, rgba(var(--night-rgb),0.85) 60%, rgba(var(--night-rgb),0.97) 80%)",
           }}
         />
 
         {/* Primary layout container */}
-        <div className="grid grid-cols-12 gap-6 w-full px-6 sm:px-8 lg:px-16 max-w-7xl mx-auto relative h-full items-center justify-center z-10">
+        <div className="grid grid-cols-12 gap-6 w-full px-6 sm:px-8 lg:px-14 max-w-7xl mx-auto relative h-full items-center justify-center z-10">
           {/* Left Column: Text */}
           <motion.div
             className="col-span-12 lg:col-span-6 select-none relative z-10 pointer-events-auto flex flex-col justify-center items-center lg:items-start text-center lg:text-left py-0 lg:py-0"
           >
             {/* Decorative line */}
             <div
-              className="hero-line h-px w-16 sm:w-20 bg-amber/50 mb-4 sm:mb-8 origin-center lg:origin-left"
+              className="hero-line h-px w-14 sm:w-16 bg-amber/50 mb-3 sm:mb-4 origin-center lg:origin-left"
               style={{ opacity: 0, transform: "scaleX(0)" }}
             />
 
-            {/* Eyebrow */}
-            <div
-              className="hero-eyebrow font-mono text-[0.6rem] sm:text-[0.65rem] tracking-[0.3em] sm:tracking-[0.35em] uppercase text-amber font-semibold mb-3 sm:mb-6"
-              style={{ opacity: 0, transform: "translateY(16px)" }}
-            >
-              ENGINEERING SCALABLE WEB &amp; AI SYSTEMS
+            {/* Eyebrow & Status Badge Row */}
+            <div className="flex flex-wrap items-center gap-3 mb-3 sm:mb-4 justify-center lg:justify-start">
+              <TextEffect
+                per="word"
+                as="div"
+                className="hero-eyebrow font-mono text-[0.6rem] sm:text-[0.64rem] tracking-[0.25em] uppercase text-amber font-semibold"
+              >
+                ENGINEERING SCALABLE WEB &amp; AI SYSTEMS
+              </TextEffect>
+
+              {/* Status Dot */}
+              <div className="inline-flex items-center gap-2 bg-amber/10 border border-amber/25 px-2.5 py-0.5 rounded-full">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber opacity-75" />
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-amber" />
+                </span>
+                <span className="font-mono text-[0.55rem] text-amber tracking-wider uppercase font-semibold">
+                  AVAILABLE
+                </span>
+              </div>
             </div>
 
             {/* Name */}
-            <div className="overflow-hidden mb-1">
+            <div className="overflow-hidden mb-0.5">
               <span
                 className="hero-n1 font-display block leading-[0.88] tracking-[-0.03em] text-bark"
                 style={{
-                  fontSize: "clamp(3.8rem, 11vw, 10rem)",
+                  fontSize: "clamp(3.2rem, 8.5vw, 7.5rem)",
                   fontWeight: 300,
                   opacity: 0,
                   transform: "translateY(110%)",
@@ -285,9 +314,9 @@ const Hero: React.FC = () => {
             </div>
             <div className="overflow-hidden">
               <span
-                className="hero-n2 font-display italic block leading-[0.88] tracking-[-0.03em] text-amber"
+                className="hero-n2 font-display italic block leading-[0.88] tracking-[-0.03em] text-transparent bg-clip-text bg-gradient-to-r from-amber via-amber-glow to-amber"
                 style={{
-                  fontSize: "clamp(3.8rem, 11vw, 10rem)",
+                  fontSize: "clamp(3.2rem, 8.5vw, 7.5rem)",
                   fontWeight: 300,
                   opacity: 0,
                   transform: "translateY(110%)",
@@ -299,15 +328,15 @@ const Hero: React.FC = () => {
 
             {/* Subtitle */}
             <p
-              className="hero-sub font-body font-medium text-bark/70 tracking-[0.15em] sm:tracking-[0.18em] uppercase mt-3 sm:mt-8 text-xs sm:text-sm"
+              className="hero-sub font-body font-medium text-bark/70 tracking-[0.14em] uppercase mt-2.5 sm:mt-4 text-xs sm:text-xs"
               style={{ opacity: 0 }}
             >
-              React &nbsp;·&nbsp; Next.js &nbsp;·&nbsp; Node.js &nbsp;·&nbsp; Production-Grade
+              React 19 &nbsp;·&nbsp; Next.js 15 &nbsp;·&nbsp; Node.js &nbsp;·&nbsp; RAG AI Systems
             </p>
 
             {/* CTAs */}
             <div
-              className="hero-ctas flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 mt-7 sm:mt-10 pointer-events-auto w-full sm:w-auto max-w-xs sm:max-w-none mx-auto lg:mx-0"
+              className="hero-ctas flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 mt-7 sm:mt-9 pointer-events-auto w-full sm:w-auto max-w-xs sm:max-w-none mx-auto lg:mx-0"
               style={{ opacity: 0, transform: "translateY(16px)" }}
             >
               <MagneticBtn href="/proof/resume_16.pdf" variant="filled" target="_blank" rel="noopener noreferrer">View Resume</MagneticBtn>
@@ -315,37 +344,32 @@ const Hero: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Right Column: 3D Room element (Desktop/Laptop only: hidden on mobile, visible on lg+) */}
+          {/* Right Column: Interactive 3D Spline Room */}
           <motion.div
             style={{ background: "transparent" }}
-            className="hidden lg:flex col-span-12 lg:col-span-6 w-full lg:w-[54vw] h-screen z-20 overflow-visible absolute right-[-1.9vw] top-0 bottom-0 items-center justify-center pointer-events-auto"
+            className="hidden md:flex col-span-12 lg:col-span-6 w-full lg:w-[52vw] h-full z-20 overflow-visible absolute right-0 top-0 bottom-0 items-center justify-center pointer-events-auto"
           >
-            {/* GSAP Entrance Wrapper - Animates opacity/y on load */}
+            {/* GSAP Entrance Wrapper */}
             <div
               className="w-full h-full relative hero-room flex items-center justify-center overflow-visible"
               style={{ opacity: 0, transform: "translateY(24px)", background: "transparent" }}
             >
-              {isDesktop && !isSplineTimeout ? (
-                <SplineErrorBoundary fallback={renderStaticFallback()}>
-                  <Suspense fallback={<RoomSkeleton />}>
-                    <RoomScene onLoad={handleSplineLoad} />
-                  </Suspense>
+              <SplineErrorBoundary fallback={<RoomSkeleton />}>
+                <Suspense fallback={<RoomSkeleton />}>
+                  <RoomScene onLoad={handleSplineLoad} />
+                </Suspense>
 
-                  {/* Fade out loading skeleton once Spline load confirms */}
-                  <div
-                    className="absolute inset-0 transition-opacity duration-700 ease-out-quad pointer-events-none z-30"
-                    style={{
-                      opacity: isSplineLoaded ? 0 : 1,
-                      visibility: isSplineLoaded ? "hidden" : "visible",
-                    }}
-                  >
-                    <RoomSkeleton />
-                  </div>
-                </SplineErrorBoundary>
-              ) : (
-                // Mobile or Timeout fallback
-                renderStaticFallback()
-              )}
+                {/* Fade out loading skeleton once Spline load confirms */}
+                <div
+                  className="absolute inset-0 transition-opacity duration-700 ease-out-quad pointer-events-none z-30"
+                  style={{
+                    opacity: isSplineLoaded ? 0 : 1,
+                    visibility: isSplineLoaded ? "hidden" : "visible",
+                  }}
+                >
+                  <RoomSkeleton />
+                </div>
+              </SplineErrorBoundary>
             </div>
           </motion.div>
         </div>

@@ -7,8 +7,8 @@ interface PreloaderProps {
 
 /* ── Scramble text effect ── */
 const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&";
-function useScrambleText(finalText: string, startDelay = 200, duration = 800) {
-  const [display, setDisplay] = useState(finalText.replace(/./g, " "));
+function useScrambleText(finalText: string, startDelay = 100, duration = 600) {
+  const [display, setDisplay] = useState(finalText);
   const started = useRef(false);
 
   useEffect(() => {
@@ -44,22 +44,33 @@ function useScrambleText(finalText: string, startDelay = 200, duration = 800) {
 }
 
 const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
-  const name = useScrambleText("NIKHIL KAUNDAL", 300, 900);
+  const name = useScrambleText("NIKHIL KAUNDAL", 100, 600);
 
   useEffect(() => {
-    const tl = gsap.timeline({
-      delay: 1.8,
-      onComplete,
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        delay: 0.8,
+        onComplete: () => {
+          try {
+            sessionStorage.setItem("portfolio_v3_loaded", "true");
+          } catch (e) {
+            // Ignore storage errors
+          }
+          onComplete();
+        },
+      });
+
+      // Split curtains apart
+      tl.to(".pre-name", { opacity: 0, scale: 1.1, duration: 0.35, ease: "power2.in" })
+        .to(".pre-left",  { xPercent: -100, duration: 0.6, ease: "power3.inOut" }, "-=0.1")
+        .to(".pre-right", { xPercent: 100,  duration: 0.6, ease: "power3.inOut" }, "<");
     });
 
-    // Split curtains apart
-    tl.to(".pre-name", { opacity: 0, scale: 1.1, duration: 0.4, ease: "power2.in" })
-      .to(".pre-left",  { xPercent: -100, duration: 0.8, ease: "power3.inOut" }, "-=0.1")
-      .to(".pre-right", { xPercent: 100,  duration: 0.8, ease: "power3.inOut" }, "<");
+    return () => ctx.revert();
   }, [onComplete]);
 
   return (
-    <div id="preloader" className="fixed inset-0 z-[9500]">
+    <div id="preloader" className="fixed inset-0 z-[9500] pointer-events-none select-none">
       {/* Left curtain */}
       <div className="pre-left absolute top-0 left-0 w-1/2 h-full bg-night" />
       {/* Right curtain */}
@@ -89,3 +100,4 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
 };
 
 export default Preloader;
+

@@ -63,64 +63,64 @@
 }
 
 [data-theme="light"] {
-  /* Existing css variables */
-  --bg-secondary: #F2EDE4;
-  --border: #E5DDD0;
-  --accent: #D4600A;
-  --text-primary: #1A1613;
-  --text-muted: #6B6259;
+  /* Crisp Modern Light Theme tokens */
+  --bg-secondary: #F8FAFC;
+  --border: rgba(15, 23, 42, 0.12);
+  --accent: #EA580C;
+  --text-primary: #0F172A;
+  --text-muted: #475569;
 
   /* Opacities & spotlight settings */
-  --hero-canvas-opacity: 0.70;
-  --contact-canvas-opacity: 0.70;
-  --cursor-spotlight-opacity: 0.45;
+  --hero-canvas-opacity: 0.85;
+  --contact-canvas-opacity: 0.85;
+  --cursor-spotlight-opacity: 0.35;
 
   /* Tailwind CSS variables in RGB format */
-  --night-rgb: 250, 246, 240;          /* #FAF6F0 - warm cream */
-  --night-light-rgb: 242, 237, 228;    /* #F2EDE4 - cards/sections */
+  --night-rgb: 248, 250, 252;          /* #F8FAFC - crisp porcelain off-white */
+  --night-light-rgb: 255, 255, 255;    /* #FFFFFF - pure white card background */
   
-  --surface-rgb: 242, 237, 228;        /* #F2EDE4 - cards/sections */
-  --surface-light-rgb: 251, 232, 214;  /* #FBE8D6 - tags/highlights */
-  --surface-dark-rgb: 242, 237, 228;   /* #F2EDE4 */
+  --surface-rgb: 255, 255, 255;        /* #FFFFFF - cards/sections */
+  --surface-light-rgb: 254, 243, 235;  /* #FEF3EB - soft amber highlight */
+  --surface-dark-rgb: 241, 245, 249;   /* #F1F5F9 - elevated container */
   
-  --amber-rgb: 212, 96, 10;            /* #D4600A - brand accent */
-  --amber-dark-rgb: 179, 79, 8;        /* #B34F08 - accent-hover */
-  --amber-glow-rgb: 212, 96, 10;
-  --amber-muted-rgb: 179, 79, 8;
+  --amber-rgb: 234, 88, 12;            /* #EA580C - punchy vibrant orange */
+  --amber-dark-rgb: 194, 65, 12;        /* #C2410C - hover */
+  --amber-glow-rgb: 249, 115, 22;      /* #F97316 */
+  --amber-muted-rgb: 194, 65, 12;
   
-  --bark-rgb: 26, 22, 19;              /* #1A1613 - text primary */
-  --bark-muted-rgb: 107, 98, 89;       /* #6B6259 - text secondary */
-  --bark-dim-rgb: 107, 98, 89;         /* #6B6259 */
+  --bark-rgb: 15, 23, 42;              /* #0F172A - deep crisp text primary */
+  --bark-muted-rgb: 71, 85, 105;       /* #475569 - clear readable text secondary */
+  --bark-dim-rgb: 100, 116, 139;       /* #64748B */
   
-  --cream-rgb: 251, 232, 214;          /* #FBE8D6 */
-  --ivory-rgb: 251, 232, 214;          /* #FBE8D6 */
+  --cream-rgb: 254, 243, 235;          /* #FEF3EB */
+  --ivory-rgb: 254, 243, 235;          /* #FEF3EB */
 
   /* SkillsSection specific variables */
-  --skills-bg: #F2EDE4;
-  --skills-bg-stats: #FAF6F0;
-  --skills-border: #E5DDD0;
-  --skills-border-stats: #E5DDD0;
-  --skills-text-muted: #6B6259;
-  --skills-text-stats-label: #6B6259;
-  --skills-text-white: #1A1613;
-  --skills-accent: #D4600A;
-  --skills-accent-bg: #FBE8D6;
-  --skills-border-hover: #D4600A;
-  --skills-drag-handle: #E5DDD0;
-  --skills-private-text: #6B6259;
-  --skills-private-subtext: #6B6259;
+  --skills-bg: #F8FAFC;
+  --skills-bg-stats: #FFFFFF;
+  --skills-border: #E2E8F0;
+  --skills-border-stats: #E2E8F0;
+  --skills-text-muted: #475569;
+  --skills-text-stats-label: #64748B;
+  --skills-text-white: #0F172A;
+  --skills-accent: #EA580C;
+  --skills-accent-bg: #FEF3EB;
+  --skills-border-hover: #EA580C;
+  --skills-drag-handle: #CBD5E1;
+  --skills-private-text: #475569;
+  --skills-private-subtext: #64748B;
 
   /* Mockups specific variables */
-  --mock-bg: #FAF6F0;
-  --mock-surface: #F2EDE4;
-  --mock-surface-light: #F2EDE4;
-  --mock-surface-border: #E5DDD0;
-  --mock-border: #E5DDD0;
-  --mock-border-light: #E5DDD0;
-  --mock-border-dim: #E5DDD0;
-  --mock-accent-bg: #FBE8D6;
-  --mock-accent-text: #D4600A;
-  --mock-text: #1A1613;
+  --mock-bg: #F8FAFC;
+  --mock-surface: #FFFFFF;
+  --mock-surface-light: #F1F5F9;
+  --mock-surface-border: #E2E8F0;
+  --mock-border: #E2E8F0;
+  --mock-border-light: #CBD5E1;
+  --mock-border-dim: #E2E8F0;
+  --mock-accent-bg: #FEF3EB;
+  --mock-accent-text: #EA580C;
+  --mock-text: #0F172A;
 }
 
 /* Smooth element transitions targeting only colors/backgrounds, preserving custom transform animations */
@@ -137,6 +137,15 @@ body {
   cursor: default;
   font-family: 'DM Sans', system-ui, sans-serif;
   overflow-x: clip;
+}
+
+[data-theme="light"] body {
+  background-color: #F8FAFC;
+  background-image: 
+    radial-gradient(circle at 15% 20%, rgba(254, 215, 170, 0.45) 0%, transparent 45%),
+    radial-gradient(circle at 85% 55%, rgba(251, 146, 60, 0.25) 0%, transparent 50%),
+    radial-gradient(rgba(148, 163, 184, 0.28) 1.2px, transparent 1.2px);
+  background-size: 100% 100%, 100% 100%, 28px 28px;
 }
 
 /* ── Grain overlay ─────────────────────────────────────── */
@@ -213,6 +222,18 @@ body::before {
   border-color: rgba(192,88,0,0.25);
   box-shadow: 0 8px 40px rgba(192,88,0,0.08), inset 0 1px 0 rgba(255,255,255,0.05);
   transform: translateY(-4px);
+}
+
+[data-theme="light"] .glass-card,
+[data-theme="light"] .glow-card {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+[data-theme="light"] .glass-card:hover,
+[data-theme="light"] .glow-card:hover {
+  border-color: rgba(234, 88, 12, 0.4);
+  box-shadow: 0 8px 30px rgba(234, 88, 12, 0.12);
 }
 
 /* ── Glowing border card ───────────────────────────────── */

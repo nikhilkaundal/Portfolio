@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import Hero from "../components/sections/Hero";
 import Marquee from "../components/ui/Marquee";
 import Contact from "../components/sections/Contact";
+import TextEffect from "../components/ui/text-effect";
 import { useTheme } from "../hooks/useTheme";
 import {
   ArrowRight,
@@ -22,54 +23,63 @@ import {
 
 const FEATURED_CAPSULE_PROJECTS = [
   {
-    id: "rag-chatbot",
+    id: "celebration-cafe",
     index: "01",
+    category: "Full-Stack Real-Time Food Delivery & Cafe Management Platform",
+    title: "Celebration Food Cafe",
+    subtitle: "Next.js 16 · TypeScript · Supabase · Leaflet GPS · Tailwind CSS",
+    desc: "Enterprise-grade cafe management & delivery app featuring interactive GPS pin detection with OpenStreetMap, automated 12km geofence validation, multi-address persistence, and 3-role RBAC with Supabase RLS.",
+    metric: "12km GPS Geofence & Real-Time Orders",
+    tags: ["Next.js 16", "TypeScript", "Supabase", "Leaflet GPS", "Tailwind CSS"],
+    imageSrc: "/proof/Cafe1.png",
+    link: "/projects",
+  },
+  {
+    id: "rag-chatbot",
+    index: "02",
     category: "RAG AI Conversational System & Document Grounding",
     title: "RAG-Based PU Chatbot",
     subtitle: "Python · LlamaIndex · ChromaDB · Groq API · Flask · React",
     desc: "Context-aware AI assistant built with a Retrieval-Augmented Generation (RAG) pipeline to answer university admission queries with document grounding and ~60% faster resolution.",
     metric: "~60% Faster Query Resolution",
     tags: ["Python", "LlamaIndex", "ChromaDB", "Groq API", "Flask", "React.js"],
-    imageSrc: "/images/projects/rag-chatbot-3d.png",
+    imageSrc: "/proof/chtbot1.png",
     link: "/projects",
   },
   {
     id: "salary-manager",
-    index: "02",
+    index: "03",
     category: "Fintech Automated SMS Parsing & Expense Analytics",
     title: "Salary & Expense Tracker",
     subtitle: "Node.js · Express · PostgreSQL · Tailwind · Regex NLP",
     desc: "Automated expense manager that parses transaction SMS alerts using custom regex & NLP, automatically categorizing budgets into interactive charts without manual entry.",
     metric: "Zero Manual Data Entry Required",
     tags: ["Node.js", "Express", "PostgreSQL", "Tailwind CSS", "Regex NLP"],
-    imageSrc: "/images/projects/salary-manager-3d.png",
+    imageSrc: "/proof/SMA1.png",
     link: "/projects",
   },
   {
     id: "sp500-predictor",
-    index: "03",
+    index: "04",
     category: "Quantitative Machine Learning & LSTM Market Forecaster",
     title: "S&P 500 Trend Predictor",
     subtitle: "Python · LSTM Neural Network · Streamlit · Pandas",
     desc: "Quantitative stock market forecasting web dashboard powered by an LSTM recurrent neural network analyzing historical S&P 500 trend cycles and predicting next-day directions.",
     metric: "~80% Market Trend Accuracy",
     tags: ["Python", "LSTM", "Machine Learning", "Streamlit", "Pandas"],
-    imageSrc: "/images/projects/sp500-predictor-3d.png",
+    imageSrc: "/proof/SP500_1.png",
     link: "/projects",
   },
 ];
 
 const Home: React.FC = () => {
   const projectsRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: projectsRef,
-    offset: ["start end", "end start"],
-  });
+  const { scrollYProgress } = useScroll();
 
   const { isDark } = useTheme();
 
   // Smooth Vertical Parallax Motion — travels full height of section (top → bottom)
-  const watermarkY = useTransform(scrollYProgress, [0, 1], ["-200px", "1400px"]);
+  const watermarkY = useTransform(scrollYProgress, [0, 1], ["-100px", "800px"]);
 
   return (
     <>
@@ -95,7 +105,7 @@ const Home: React.FC = () => {
 
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-16 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-            
+
             {/* Left Column: Bio & Impact Stats */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -113,13 +123,16 @@ const Home: React.FC = () => {
                 className="font-display font-light text-bark mb-6"
                 style={{ fontSize: "clamp(2.2rem, 4.5vw, 4rem)", letterSpacing: "-0.02em", lineHeight: 1.1 }}
               >
-                Building digital products with <em className="italic text-amber">purpose &amp; precision</em>
+                <TextEffect per="word" as="span">
+                  Building digital products with
+                </TextEffect>{" "}
+                <em className="italic text-amber">purpose &amp; precision</em>
               </h2>
 
               <p className="font-body text-bark/60 text-base lg:text-[1.05rem] leading-relaxed mb-5">
                 Full-Stack Developer skilled in React.js, Node.js, Flask &amp; PostgreSQL — building end-to-end web apps that are fast, scalable, and data-driven.
               </p>
-              
+
               <p className="font-body text-bark/45 text-sm lg:text-base leading-relaxed mb-8">
                 Delivered RESTful APIs, automated data ingestion workflows &amp; KPI dashboards — cutting manual effort by ~40%. Combines full-stack dev with data engineering to drive product decisions at scale.
               </p>
@@ -179,7 +192,7 @@ const Home: React.FC = () => {
                         alt="Nikhil Kaundal"
                         className="w-full h-full object-cover object-top group-hover:scale-108 transition-transform duration-700 ease-out"
                       />
-                      
+
                       {/* Dark Vignette Gradient Overlay at Bottom */}
                       <div className="absolute inset-0 bg-gradient-to-t from-night/85 via-transparent to-transparent pointer-events-none" />
 
@@ -210,7 +223,7 @@ const Home: React.FC = () => {
                     <p className="font-mono text-[0.68rem] text-amber tracking-wider uppercase mb-3 font-semibold">
                       Full-Stack &amp; RAG AI Engineer
                     </p>
-                    
+
                     {/* Status Pills */}
                     <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
                       <div className="inline-flex items-center gap-2 bg-amber/10 border border-amber/30 px-3 py-1 rounded-full">
@@ -237,7 +250,7 @@ const Home: React.FC = () => {
                     </div>
                     <span className="text-bark font-medium">Chandigarh, IN</span>
                   </div>
-                  
+
                   <div className="flex items-center justify-between p-3 rounded-xl bg-bark/[0.04] border border-bark/10 group-hover:border-amber/20 transition-colors duration-300">
                     <div className="flex items-center gap-2 text-bark/40 uppercase">
                       <GraduationCap size={12} className="text-amber/70" />
@@ -245,7 +258,7 @@ const Home: React.FC = () => {
                     </div>
                     <span className="text-bark font-medium">Panjab University (UIET)</span>
                   </div>
-                  
+
                   <div className="flex items-center justify-between p-3 rounded-xl bg-bark/[0.04] border border-bark/10 group-hover:border-amber/20 transition-colors duration-300">
                     <div className="flex items-center gap-2 text-bark/40 uppercase">
                       <Layers size={12} className="text-amber/70" />
@@ -395,19 +408,17 @@ const Home: React.FC = () => {
                     {pillar.skills.map((s) => (
                       <div
                         key={s.name}
-                        className={`group/item flex items-center justify-between font-mono text-[0.75rem] px-3.5 py-2.5 rounded-xl border transition-all duration-300 ${
-                          s.highlight
+                        className={`group/item flex items-center justify-between font-mono text-[0.75rem] px-3.5 py-2.5 rounded-xl border transition-all duration-300 ${s.highlight
                             ? "bg-amber/10 border-amber/30 text-bark font-medium hover:border-amber hover:bg-amber/20"
                             : "bg-bark/[0.04] border-bark/10 text-bark/70 hover:border-bark/25 hover:text-bark"
-                        }`}
+                          }`}
                       >
                         <div className="flex items-center gap-3">
                           <span
-                            className={`rounded-full transition-all duration-300 ${
-                              s.highlight
+                            className={`rounded-full transition-all duration-300 ${s.highlight
                                 ? "w-2 h-2 bg-amber shadow-[0_0_10px_rgba(235,94,0,0.9)]"
                                 : "w-1.5 h-1.5 bg-bark/30 group-hover/item:bg-amber"
-                            }`}
+                              }`}
                           />
                           <span className="tracking-wide">{s.name}</span>
                         </div>
@@ -480,7 +491,8 @@ const Home: React.FC = () => {
                 className="font-display font-light text-bark"
                 style={{ fontSize: "clamp(2.2rem, 4.5vw, 4rem)", letterSpacing: "-0.02em" }}
               >
-                Where I've <em className="italic text-amber">built &amp; delivered</em>
+                <TextEffect per="word" as="span">Where I've</TextEffect>{" "}
+                <em className="italic text-amber">built &amp; delivered</em>
               </h2>
             </div>
             <Link
@@ -665,7 +677,8 @@ const Home: React.FC = () => {
                 className="font-display font-light text-bark"
                 style={{ fontSize: "clamp(2rem, 4.5vw, 4.2rem)", letterSpacing: "-0.02em" }}
               >
-                Selected <em className="italic text-amber">Works & Applications</em>
+                <TextEffect per="word" as="span">Selected</TextEffect>{" "}
+                <em className="italic text-amber">Works & Applications</em>
               </h2>
             </div>
             <Link
@@ -688,9 +701,8 @@ const Home: React.FC = () => {
                   whileInView={{ opacity: 1, x: 0, y: 0 }}
                   viewport={{ once: true, margin: "-40px" }}
                   transition={{ duration: 0.75, delay: idx * 0.06, ease: [0.16, 1, 0.3, 1] }}
-                  className={`group relative bg-night-light border border-amber/30 hover:border-amber/80 rounded-2xl p-4 sm:p-6 lg:py-5 lg:px-7 transition-all duration-700 hover:shadow-[0_0_40px_rgba(235,94,0,0.18)] flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-6 lg:gap-7 overflow-hidden w-full ${
-                    isEven ? "lg:w-[94%] lg:self-start" : "lg:w-[94%] lg:self-end lg:ml-auto"
-                  }`}
+                  className={`group relative bg-night-light border border-amber/30 hover:border-amber/80 rounded-2xl p-4 sm:p-6 lg:py-5 lg:px-7 transition-all duration-700 hover:shadow-[0_0_40px_rgba(235,94,0,0.18)] flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-6 lg:gap-7 overflow-hidden w-full ${isEven ? "lg:w-[94%] lg:self-start" : "lg:w-[94%] lg:self-end lg:ml-auto"
+                    }`}
                 >
                   {/* Subtle Amber Ambient Glow */}
                   <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-amber/10 blur-[80px] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700" />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, Component, ErrorInfo, ReactNode } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
@@ -24,14 +24,59 @@ import AssistantPage from "./pages/AssistantPage";
 import { useLenis }        from "./hooks/useLenis";
 import { useScrollReveal } from "./hooks/useScrollReveal";
 
+class AppErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
+  state = { hasError: false };
+  static getDerivedStateFromError(_: Error) {
+    return { hasError: true };
+  }
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error("App render error caught:", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-night text-bark flex flex-col items-center justify-center p-6 text-center">
+          <h1 className="font-display text-3xl mb-4 text-amber">Something went wrong</h1>
+          <p className="font-mono text-sm text-bark/60 mb-6">An unexpected UI error occurred.</p>
+          <button
+            onClick={() => {
+              sessionStorage.clear();
+              window.location.reload();
+            }}
+            className="font-mono text-xs px-6 py-3 bg-amber text-night font-bold uppercase rounded-full"
+          >
+            Reload Page
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 const App: React.FC = () => {
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(() => {
+    try {
+      return sessionStorage.getItem("portfolio_v3_loaded") === "true";
+    } catch {
+      return false;
+    }
+  });
+
   const location = useLocation();
 
   const handleLoaded = useCallback(() => setLoaded(true), []);
 
   useLenis();
   useScrollReveal("[data-reveal]", location.pathname);
+
+  // Guarantee loaded state within 1.5 seconds under all conditions
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoaded(true);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Instant clean route navigation & scroll reset
   useEffect(() => {
@@ -53,7 +98,7 @@ const App: React.FC = () => {
   const isAssistantPage = location.pathname === "/assistant" || location.pathname === "/chat";
 
   return (
-    <>
+    <AppErrorBoundary>
       <Cursor />
       {!loaded && <Preloader onComplete={handleLoaded} />}
       <div className="transition-opacity duration-500" style={{ opacity: loaded ? 1 : 0 }}>
@@ -73,8 +118,9 @@ const App: React.FC = () => {
       </div>
       <Analytics />
       <SpeedInsights />
-    </>
+    </AppErrorBoundary>
   );
 };
 
 export default App;
+

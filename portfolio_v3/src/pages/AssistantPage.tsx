@@ -1054,17 +1054,17 @@ Nikhil Kaundal is a **Full Stack Developer & Data Engineer** from UIET Panjab Un
                     <button
                       key={i}
                       onClick={() => sendMessage(s.prompt)}
-                      className="p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-bark/10 bg-surface/40 hover:bg-amber/10 hover:border-amber/40 transition-all duration-300 cursor-none group flex flex-col justify-between"
+                      className="p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-bark/15 bg-night-light shadow-sm hover:border-amber/40 hover:shadow-md transition-all duration-300 cursor-none group flex flex-col justify-between"
                     >
                       <div>
                         <span className="font-body font-semibold text-bark group-hover:text-amber text-xs sm:text-sm block mb-0.5 sm:mb-1 transition-colors">
                           {s.title}
                         </span>
-                        <span className="font-body text-[0.68rem] sm:text-xs text-bark/50 font-light block leading-snug">
+                        <span className="font-body text-[0.68rem] sm:text-xs text-bark/60 font-light block leading-snug">
                           {s.desc}
                         </span>
                       </div>
-                      <span className="font-mono text-[0.55rem] sm:text-[0.6rem] text-amber opacity-80 sm:opacity-0 group-hover:opacity-100 transition-opacity mt-1.5 sm:mt-3 block">
+                      <span className="font-mono text-[0.55rem] sm:text-[0.6rem] text-amber opacity-80 sm:opacity-0 group-hover:opacity-100 transition-opacity mt-1.5 sm:mt-3 block font-semibold">
                         Ask query →
                       </span>
                     </button>
@@ -1090,11 +1090,11 @@ Nikhil Kaundal is a **Full Stack Developer & Data Engineer** from UIET Panjab Un
 
                 <div
                   className={`
-                    group relative max-w-[92%] sm:max-w-[82%] rounded-2xl p-3.5 sm:p-5 shadow-lg transition-all duration-200
+                    group relative max-w-[92%] sm:max-w-[82%] rounded-2xl p-3.5 sm:p-5 shadow-md transition-all duration-200
                     ${
                       msg.role === "user"
                         ? "bg-amber/15 border border-amber/30 text-bark rounded-tr-none min-w-[260px] sm:min-w-[400px]"
-                        : "bg-surface/60 border border-bark/10 text-bark rounded-tl-none"
+                        : "bg-night-light border border-bark/15 text-bark rounded-tl-none"
                     }
                     ${editingMsgId === msg.id ? "w-full sm:w-[500px]" : ""}
                   `}
@@ -1257,7 +1257,7 @@ Nikhil Kaundal is a **Full Stack Developer & Data Engineer** from UIET Panjab Un
               </div>
             )}
 
-            <div className="relative flex items-center bg-surface/90 rounded-2xl border border-bark/20 shadow-2xl focus-within:border-amber/50 transition-all p-1.5 sm:p-3 backdrop-blur-xl">
+            <div className="relative flex items-center bg-night-light rounded-2xl border border-bark/20 shadow-xl focus-within:border-amber/50 transition-all p-1.5 sm:p-3 backdrop-blur-xl">
               {isListening ? (
                 /* ── SIRI / CHATGPT ULTRA-PREMIUM AI VOICE VISUALIZER BAR ── */
                 <div className="flex-1 flex items-center justify-between px-4 py-2 bg-night/90 border border-amber/40 shadow-[0_0_25px_rgba(235,94,0,0.2)] rounded-xl relative overflow-hidden backdrop-blur-2xl">

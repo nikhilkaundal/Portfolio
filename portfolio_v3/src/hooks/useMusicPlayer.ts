@@ -20,7 +20,7 @@ export const TRACKS: Track[] = [
 export function useMusicPlayer() {
   const audioRef               = useRef<HTMLAudioElement | null>(null);
   const [curIdx, setCurIdx]    = useState(0);
-  const [playing, setPlaying]  = useState(false);
+  const [playing, setPlaying]  = useState(true); // Default ON on portfolio load
   const [progress, setProgress]= useState(0);   // 0–100
   const [duration, setDuration]= useState(0);
   const [volume, setVolume]    = useState(0.7);
@@ -67,12 +67,26 @@ export function useMusicPlayer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curIdx]);
 
-  // Sync play state (run when playing state OR track changes)
+  // Sync play state & handle browser autoplay restriction on first user gesture
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
+
     if (playing) {
-      audio.play().catch(() => setPlaying(false));
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // Browser autoplay policy blocked audio. Listen for first user click/touch to resume!
+          const resumeAudioOnGesture = () => {
+            if (audioRef.current && playing) {
+              audioRef.current.play().then(() => setPlaying(true)).catch(() => {});
+            }
+          };
+          window.addEventListener("click", resumeAudioOnGesture, { once: true });
+          window.addEventListener("keydown", resumeAudioOnGesture, { once: true });
+          window.addEventListener("touchstart", resumeAudioOnGesture, { once: true });
+        });
+      }
     } else {
       audio.pause();
     }
