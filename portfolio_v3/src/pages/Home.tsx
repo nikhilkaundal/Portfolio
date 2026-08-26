@@ -7,6 +7,16 @@ import Contact from "../components/sections/Contact";
 import TextEffect from "../components/ui/text-effect";
 import { useTheme } from "../hooks/useTheme";
 import {
+  MorphingDialog,
+  MorphingDialogTrigger,
+  MorphingDialogContent,
+  MorphingDialogTitle,
+  MorphingDialogImage,
+  MorphingDialogSubtitle,
+  MorphingDialogClose,
+  MorphingDialogContainer,
+} from "../components/core/morphing-dialog";
+import {
   ArrowRight,
   Code2,
   Cpu,
@@ -183,37 +193,90 @@ const Home: React.FC = () => {
 
                 {/* Top Profile Header with Photo */}
                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 mb-7 relative z-10">
-                  {/* Photo Container with Camera Viewfinder Frame */}
-                  <div className="relative group/photo flex-shrink-0">
-                    <div className="w-24 h-28 sm:w-28 sm:h-32 rounded-2xl overflow-hidden border-2 border-amber/30 group-hover:border-amber bg-gradient-to-b from-amber/20 via-night-light to-night shadow-xl relative transition-all duration-500">
-                      {/* Photo Image */}
-                      <img
-                        src="/proof/mee.png"
-                        alt="Nikhil Kaundal"
-                        className="w-full h-full object-cover object-top group-hover:scale-108 transition-transform duration-700 ease-out"
-                      />
+                  {/* Photo Container with Morphing Dialog Integration */}
+                  <MorphingDialog
+                    transition={{
+                      type: "spring",
+                      stiffness: 200,
+                      damping: 24,
+                    }}
+                  >
+                    <MorphingDialogTrigger className="relative group/photo flex-shrink-0">
+                      <div className="w-24 h-28 sm:w-28 sm:h-32 rounded-2xl overflow-hidden border-2 border-amber/30 group-hover:border-amber bg-gradient-to-b from-amber/20 via-night-light to-night shadow-xl relative transition-all duration-500">
+                        {/* Photo Image */}
+                        <MorphingDialogImage
+                          src="/proof/mee.png"
+                          alt="Nikhil Kaundal"
+                          className="w-full h-full object-cover object-top group-hover:scale-108 transition-transform duration-700 ease-out"
+                        />
 
-                      {/* Dark Vignette Gradient Overlay at Bottom */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-night/85 via-transparent to-transparent pointer-events-none" />
+                        {/* Dark Vignette Gradient Overlay at Bottom */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-night/85 via-transparent to-transparent pointer-events-none" />
 
-                      {/* Camera Viewfinder Reticle Corners */}
-                      <div className="absolute top-1.5 left-1.5 w-2.5 h-2.5 border-t-2 border-l-2 border-amber/80 opacity-80" />
-                      <div className="absolute top-1.5 right-1.5 w-2.5 h-2.5 border-t-2 border-r-2 border-amber/80 opacity-80" />
-                      <div className="absolute bottom-1.5 left-1.5 w-2.5 h-2.5 border-b-2 border-l-2 border-amber/80 opacity-80" />
-                      <div className="absolute bottom-1.5 right-1.5 w-2.5 h-2.5 border-b-2 border-r-2 border-amber/80 opacity-80" />
+                        {/* Camera Viewfinder Reticle Corners */}
+                        <div className="absolute top-1.5 left-1.5 w-2.5 h-2.5 border-t-2 border-l-2 border-amber/80 opacity-80" />
+                        <div className="absolute top-1.5 right-1.5 w-2.5 h-2.5 border-t-2 border-r-2 border-amber/80 opacity-80" />
+                        <div className="absolute bottom-1.5 left-1.5 w-2.5 h-2.5 border-b-2 border-l-2 border-amber/80 opacity-80" />
+                        <div className="absolute bottom-1.5 right-1.5 w-2.5 h-2.5 border-b-2 border-r-2 border-amber/80 opacity-80" />
 
-                      {/* Micro Camera Tag */}
-                      <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-night/90 border border-amber/40 px-2 py-0.5 rounded-full flex items-center gap-1 opacity-0 group-hover/photo:opacity-100 transition-opacity duration-300 shadow-md">
-                        <Camera size={9} className="text-amber" />
-                        <span className="font-mono text-[0.5rem] text-amber tracking-tighter uppercase font-semibold">PORTRAIT</span>
+                        {/* Micro Camera Tag */}
+                        <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-night/90 border border-amber/40 px-2 py-0.5 rounded-full flex items-center gap-1 opacity-0 group-hover/photo:opacity-100 transition-opacity duration-300 shadow-md">
+                          <Camera size={9} className="text-amber" />
+                          <span className="font-mono text-[0.5rem] text-amber tracking-tighter uppercase font-semibold">VIEW PORTRAIT</span>
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Monogram NK Seal Badge */}
-                    <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-xl bg-amber border-2 border-night text-night flex items-center justify-center font-display font-bold text-xs shadow-lg group-hover:rotate-12 transition-transform duration-300">
-                      NK
-                    </div>
-                  </div>
+                      {/* Monogram NK Seal Badge */}
+                      <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-xl bg-amber border-2 border-night text-night flex items-center justify-center font-display font-bold text-xs shadow-lg group-hover:rotate-12 transition-transform duration-300">
+                        NK
+                      </div>
+                    </MorphingDialogTrigger>
+
+                    <MorphingDialogContainer>
+                      <MorphingDialogContent
+                        style={{ borderRadius: "24px" }}
+                        className="relative h-auto max-h-[85vh] w-[90vw] max-w-[540px] border border-amber/35 bg-night-light/98 backdrop-blur-2xl shadow-[0_25px_70px_rgba(0,0,0,0.7)] overflow-hidden flex flex-col"
+                      >
+                        {/* Inner Scroll Container (Scrollbar inset safely away from rounded corners) */}
+                        <div className="overflow-y-auto max-h-[85vh] p-6 sm:p-8 overscroll-contain [&::-webkit-scrollbar]:w-[5px] [&::-webkit-scrollbar-track]:my-6 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-amber/40 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-amber/70">
+                          {/* Expanded Image */}
+                          <div className="flex justify-center mb-6">
+                            <div className="relative rounded-2xl overflow-hidden border-2 border-amber/40 shadow-2xl w-[220px] sm:w-[260px] h-[280px] sm:h-[320px]">
+                              <MorphingDialogImage
+                                src="/proof/mee.png"
+                                alt="Nikhil Kaundal - Portrait"
+                                className="w-full h-full object-cover object-top"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-night/60 via-transparent to-transparent pointer-events-none" />
+                            </div>
+                          </div>
+
+                          <div className="text-center sm:text-left">
+                            <MorphingDialogTitle className="font-display text-2xl sm:text-3xl text-bark font-light leading-tight">
+                              Nikhil Kaundal
+                            </MorphingDialogTitle>
+                            <MorphingDialogSubtitle className="font-mono text-xs text-amber tracking-wider uppercase mt-1 mb-4 font-semibold">
+                              Full-Stack &amp; RAG AI Engineer · Visual Artist
+                            </MorphingDialogSubtitle>
+
+                            <div className="mt-4 font-body text-bark/80 text-sm leading-relaxed space-y-3.5 border-t border-bark/10 pt-4">
+                              <p>
+                                Final-year Computer Science student at Panjab University (UIET), specializing in full-stack web applications, custom RAG AI pipelines, and responsive frontend architectures.
+                              </p>
+                              <p>
+                                Winner of <strong className="text-amber font-semibold">1st Place at Spectrum</strong> (PEC Chandigarh Art &amp; Photography Festival). I believe that how you frame a photograph directly influences how you architect digital products — with purpose, precision, and visual excellence.
+                              </p>
+                              <div className="p-3.5 rounded-xl bg-amber/8 border border-amber/20 font-serif italic text-xs text-bark/90 mt-2">
+                                "I write code the way I shoot photos until every line and detail feels exactly right."
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <MorphingDialogClose className="text-bark/70 hover:text-amber" />
+                      </MorphingDialogContent>
+                    </MorphingDialogContainer>
+                  </MorphingDialog>
 
                   {/* Info Header Details */}
                   <div className="text-center sm:text-left flex-1">

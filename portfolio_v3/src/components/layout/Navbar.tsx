@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import MusicPlayer from "../ui/MusicPlayer";
+import Clock from "../ui/Clock";
 import { useTheme } from "../../hooks/useTheme";
 import { Sun, Moon } from "lucide-react";
 
@@ -175,6 +176,9 @@ const Navbar: React.FC = () => {
         <div className="flex items-center gap-2 sm:gap-3.5 relative z-10">
           {/* Music Player */}
           <MusicPlayer />
+
+          {/* Live Digital Clock */}
+          <Clock />
 
           {/* Theme Toggle Button */}
           <motion.button

@@ -77,14 +77,16 @@ const Hero: React.FC = () => {
       renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.setSize(window.innerWidth, window.innerHeight);
+      const isMobile = window.innerWidth < 768;
+      renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
       renderer.setClearColor(0x000000, 0);
 
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
       camera.position.z = 5;
 
-      /* Particles — amber glow cores on dark */
-      const COUNT = 4200;
+      /* Particles — amber glow cores on dark (optimized for mobile) */
+      const COUNT = isMobile ? 1200 : 4200;
       geo = new THREE.BufferGeometry();
       const pos = new Float32Array(COUNT * 3);
       const col = new Float32Array(COUNT * 3);
@@ -114,7 +116,7 @@ const Hero: React.FC = () => {
       geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
 
       mat = new THREE.PointsMaterial({
-        size: 0.02,
+        size: isMobile ? 0.025 : 0.02,
         vertexColors: true,
         transparent: true,
         opacity: 0.8,
@@ -125,14 +127,26 @@ const Hero: React.FC = () => {
 
       /* Orbit rings */
       const ringMat1 = new THREE.MeshBasicMaterial({ color: 0xC05800, transparent: true, opacity: 0.12 });
-      const ring1 = new THREE.Mesh(new THREE.TorusGeometry(2.8, 0.003, 2, 180), ringMat1);
+      const ring1 = new THREE.Mesh(new THREE.TorusGeometry(2.8, 0.003, 2, isMobile ? 90 : 180), ringMat1);
       ring1.rotation.x = Math.PI / 2;
       scene.add(ring1);
 
       const ringMat2 = new THREE.MeshBasicMaterial({ color: 0xFF7A1A, transparent: true, opacity: 0.06 });
-      const ring2 = new THREE.Mesh(new THREE.TorusGeometry(2.3, 0.002, 2, 180), ringMat2);
+      const ring2 = new THREE.Mesh(new THREE.TorusGeometry(2.3, 0.002, 2, isMobile ? 90 : 180), ringMat2);
       ring2.rotation.x = Math.PI / 3.5;
       scene.add(ring2);
+
+      /* IntersectionObserver — Pause WebGL loop when scrolled offscreen */
+      let isHeroVisible = true;
+      const heroObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            isHeroVisible = e.isIntersecting;
+          });
+        },
+        { threshold: 0.05 }
+      );
+      heroObserver.observe(canvas);
 
       /* Mouse parallax */
       let mx = 0, my = 0;
@@ -140,7 +154,7 @@ const Hero: React.FC = () => {
         mx = (e.clientX / window.innerWidth - 0.5) * 2;
         my = (e.clientY / window.innerHeight - 0.5) * 2;
       };
-      window.addEventListener("mousemove", onMouse);
+      if (!isMobile) window.addEventListener("mousemove", onMouse);
 
       onResize = () => {
         camera.aspect = window.innerWidth / window.innerHeight;
@@ -152,6 +166,7 @@ const Hero: React.FC = () => {
       let t0 = 0;
       const animate = () => {
         animId = requestAnimationFrame(animate);
+        if (!isHeroVisible) return;
         t0 += 0.003;
         pts.rotation.y += 0.001 + mx * 0.0015;
         pts.rotation.x += 0.0003 + my * 0.0008;
@@ -209,7 +224,7 @@ const Hero: React.FC = () => {
   }, []);
 
   // Determine section layout parameters natively in CSS classes to prevent hydration issues
-  const sectionClass = "relative min-h-[88dvh] sm:min-h-[88vh] lg:min-h-screen lg:h-screen bg-night overflow-hidden flex flex-col items-center justify-center px-5 sm:px-8 lg:px-14 pt-24 sm:pt-28 pb-12 sm:pb-20 lg:py-0 select-none";
+  const sectionClass = "relative min-h-0 lg:min-h-screen lg:h-screen bg-night overflow-hidden flex flex-col items-center justify-center px-5 sm:px-8 lg:px-14 pt-24 sm:pt-28 pb-16 sm:pb-24 lg:py-0 select-none";
 
   return (
     <section id="hero" ref={containerRef} className={sectionClass}>
@@ -328,29 +343,29 @@ const Hero: React.FC = () => {
 
         {/* Right: Byte Defender Game Launcher & Container */}
         <div
-          className="hero-game-card w-full lg:w-1/2 max-w-lg lg:max-w-none"
+          className="hero-game-card w-full lg:w-1/2 max-w-lg lg:max-w-none mb-6 lg:mb-0"
           style={{ opacity: 0, transform: "translateY(24px)" }}
         >
           {/* Mobile View (< lg): Sleek Arcade Launcher Card Button */}
           <div className="block lg:hidden w-full max-w-md mx-auto">
             <button
               onClick={() => setIsMobileGameOpen(true)}
-              className="w-full flex items-center justify-between gap-3 px-5 py-4 rounded-xl border border-amber/35 bg-surface/90 dark:bg-night/90 backdrop-blur-md shadow-lg shadow-amber/10 hover:border-amber transition-all cursor-pointer group"
+              className="w-full flex items-center justify-between gap-3 px-4 sm:px-5 py-3.5 sm:py-4 rounded-2xl border border-amber/35 bg-night-light/95 backdrop-blur-md shadow-xl shadow-amber/10 hover:border-amber transition-all cursor-pointer group select-none"
             >
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-lg bg-amber/10 border border-amber/25 text-amber group-hover:scale-105 transition-transform">
-                  <Gamepad2 className="w-6 h-6" />
+                <div className="p-2.5 rounded-xl bg-amber/15 border border-amber/30 text-amber group-hover:scale-105 transition-transform flex-shrink-0">
+                  <Gamepad2 className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
-                <div className="text-left">
-                  <p className="font-mono text-xs font-bold text-bark group-hover:text-amber transition-colors">
-                    BYTE DEFENDER <span className="text-amber">v5.5</span>
+                <div className="text-left min-w-0">
+                  <p className="font-mono text-xs sm:text-sm font-bold text-bark group-hover:text-amber transition-colors truncate">
+                    BYTE DEFENDER <span className="text-amber ml-1">v5.5</span>
                   </p>
-                  <p className="font-mono text-[0.6rem] text-bark-muted mt-0.5">
+                  <p className="font-mono text-[0.58rem] sm:text-[0.62rem] text-bark/60 mt-0.5 truncate">
                     Tap to launch arcade shooter 🎮
                   </p>
                 </div>
               </div>
-              <span className="font-mono text-[0.6rem] uppercase tracking-wider px-3.5 py-1.5 rounded-full bg-amber text-night font-bold shadow-md shadow-amber/20 group-hover:bg-amber-glow transition-colors">
+              <span className="font-mono text-[0.58rem] sm:text-[0.62rem] uppercase tracking-wider px-3.5 py-1.5 rounded-full bg-amber text-night font-bold shadow-md shadow-amber/20 group-hover:bg-amber-glow transition-colors flex-shrink-0">
                 PLAY 🎮
               </span>
             </button>

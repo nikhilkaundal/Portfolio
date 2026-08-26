@@ -48,6 +48,9 @@ interface Boss {
   fireTimer: number;
   firePattern: number;
   entered: boolean;
+  tierIndex: number;
+  tierName: string;
+  particleTimer: number;
 }
 
 interface Player {
@@ -82,15 +85,16 @@ const WAVE_CLEAR_PAUSE = 650;     // ms
 const BOSS_CLEAR_PAUSE = 1800;    // ms
 
 // Pool sizes — strict guardrails
-const POOL_PLAYER_BULLETS = 80;
-const POOL_ENEMY_BULLETS = 60;
-const POOL_PARTICLES = 140;
-const POOL_FLASHES = 20;
-const POOL_RINGS = 15;
-const POOL_POWERUPS = 8;
+const POOL_PLAYER_BULLETS = 200;
+const POOL_ENEMY_BULLETS = 100;
+const POOL_PARTICLES = 180;
+const POOL_FLASHES = 40;
+const POOL_RINGS = 20;
+const POOL_POWERUPS = 10;
 
 const POWERUP_DROP_CHANCE = 8;
 const MAX_TIER_BONUS = 50;
+const ROMAN_NUMERALS = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
 
 // Colors
 const COL_AMBER = "#C05800";
@@ -103,14 +107,115 @@ const COL_ENEMY_MAGENTA = "#ff44aa";
 const COL_WEAPON_PU = "#00e5ff";
 const COL_SHIELD_PU = "#ffea00";
 
-// Weapon tier config
+// Weapon tier config (1 to 10 max bullets with smooth symmetric spread)
 const WEAPON_TIERS: [number, number][] = [
-  [1, 0],
-  [2, 0.12],
-  [3, 0.14],
-  [4, 0.11],
-  [5, 0.10],
+  [1, 0],       // MK.I:   1 bullet
+  [2, 0.12],    // MK.II:  2 bullets
+  [3, 0.14],    // MK.III: 3 bullets
+  [4, 0.12],    // MK.IV:  4 bullets
+  [5, 0.10],    // MK.V:   5 bullets
+  [6, 0.09],    // MK.VI:  6 bullets
+  [7, 0.085],   // MK.VII: 7 bullets
+  [8, 0.08],    // MK.VIII: 8 bullets
+  [9, 0.075],   // MK.IX:  9 bullets
+  [10, 0.07],   // MK.X:   10 bullets
 ];
+
+// ── Boss Visual Archetype Configuration System ───────────
+interface BossArchetype {
+  name: string;
+  baseColor: string;
+  accentColor: string;
+  coreColor: string;
+  spikeCount: number;
+  armorLayers: number;
+  hasTrackingEye: boolean;
+  hasApertureMouth: boolean;
+  hasParticleTrail: boolean;
+  pulseSpeed: number;
+  auraColor: string;
+}
+
+const BOSS_ARCHETYPES: BossArchetype[] = [
+  // Tier 0 (Wave 5): "Scout Bug" — Octagon geometry, single-tone purple
+  {
+    name: "Scout Bug",
+    baseColor: "#6b21a8",
+    accentColor: "#a855f7",
+    coreColor: "#ff0055",
+    spikeCount: 0,
+    armorLayers: 1,
+    hasTrackingEye: false,
+    hasApertureMouth: false,
+    hasParticleTrail: false,
+    pulseSpeed: 0.002,
+    auraColor: "#7722cc",
+  },
+  // Tier 1 (Wave 10): "Sentinel" — Spiked angular crown, cyan tracking eye
+  {
+    name: "Sentinel",
+    baseColor: "#4c1d95",
+    accentColor: "#00e5ff",
+    coreColor: "#00f0ff",
+    spikeCount: 4,
+    armorLayers: 2,
+    hasTrackingEye: true,
+    hasApertureMouth: false,
+    hasParticleTrail: false,
+    pulseSpeed: 0.003,
+    auraColor: "#00e5ff",
+  },
+  // Tier 2 (Wave 15): "Harbinger" — Asymmetric crimson carapace, ambient smoke trail
+  {
+    name: "Harbinger",
+    baseColor: "#880825",
+    accentColor: "#ff2244",
+    coreColor: "#ffea00",
+    spikeCount: 6,
+    armorLayers: 3,
+    hasTrackingEye: true,
+    hasApertureMouth: false,
+    hasParticleTrail: true,
+    pulseSpeed: 0.004,
+    auraColor: "#ff1144",
+  },
+  // Tier 3 (Wave 20): "Devourer" — Blackened violet obsidian, aperture mouth core
+  {
+    name: "Devourer",
+    baseColor: "#2e1065",
+    accentColor: "#f43f5e",
+    coreColor: "#ffffff",
+    spikeCount: 8,
+    armorLayers: 3,
+    hasTrackingEye: true,
+    hasApertureMouth: true,
+    hasParticleTrail: true,
+    pulseSpeed: 0.005,
+    auraColor: "#e11d48",
+  },
+];
+
+function getBossArchetype(tierIndex: number): BossArchetype {
+  if (tierIndex < BOSS_ARCHETYPES.length) {
+    return BOSS_ARCHETYPES[tierIndex];
+  }
+  // Tier 4+ (Wave 25+): Extrapolate procedural terror archetypes!
+  const extra = tierIndex - 3;
+  const isToxic = extra % 2 === 1;
+  return {
+    name: isToxic ? `Void Leviathan Mk.${extra}` : `Overlord Mk.${extra}`,
+    baseColor: isToxic ? "#064e3b" : "#450a0a",
+    accentColor: isToxic ? "#10b981" : "#ff0033",
+    coreColor: "#ffffff",
+    spikeCount: Math.min(14, 8 + extra * 2),
+    armorLayers: 4,
+    hasTrackingEye: true,
+    hasApertureMouth: true,
+    hasParticleTrail: true,
+    pulseSpeed: 0.005 + extra * 0.001,
+    auraColor: isToxic ? "#059669" : "#dc2626",
+  };
+}
 
 // Cached Theme Configuration Object (prevents per-frame garbage)
 const THEME_DARK = {
@@ -431,14 +536,23 @@ const ByteDefender: React.FC = () => {
 
     if (isBoss) {
       g.bossVignetteTimer = 1500;
-      const bossHp = 25 + Math.floor(waveNum / 5) * 15;
+      const bossIndex = Math.max(0, Math.floor(waveNum / 5) - 1); // 0 for wave 5, 1 for wave 10, etc.
+      const archetype = getBossArchetype(bossIndex);
+      const baseHp = 25;
+      const bossHp = Math.round(baseHp * (1 + 0.45 * bossIndex));
+      const bossW = Math.min(92, 56 + bossIndex * 8);
+      const bossH = Math.min(76, 46 + bossIndex * 6);
+
       bossRef.current = {
-        x: w / 2 - 30, y: -80,
-        vx: (100 + waveNum * 4),
+        x: w / 2 - bossW / 2, y: -80,
+        vx: 100 + bossIndex * 22,
         vy: 0,
         hp: bossHp, maxHp: bossHp,
-        width: 60, height: 50,
+        width: bossW, height: bossH,
         phase: 0, fireTimer: 0, firePattern: 0, entered: false,
+        tierIndex: bossIndex,
+        tierName: archetype.name,
+        particleTimer: 0,
       };
       enemiesRef.current = [];
     } else {
@@ -488,12 +602,12 @@ const ByteDefender: React.FC = () => {
     }
   }, []);
 
-  // ── Fire Weapon ─────────────────────────────────────────
+  // ── Fire Weapon (10 Tiers, Smooth Fan Spread, Particle Budget Scaled) ──
   const fireWeapon = useCallback(() => {
     const g = gameRef.current;
     const p = playerRef.current;
-    const tier = g.weaponTier;
-    const [bulletCount, spreadAngle] = WEAPON_TIERS[tier - 1];
+    const tier = Math.min(10, Math.max(1, g.weaponTier));
+    const [bulletCount] = WEAPON_TIERS[tier - 1];
     const pool = playerBulletsRef.current;
     const cx = p.x + p.width / 2;
     const by = p.y - 4;
@@ -502,15 +616,23 @@ const ByteDefender: React.FC = () => {
       acquireBullet(pool, cx, by, 0, -BULLET_SPEED);
       acquireFlash(cx, by, 7);
     } else {
-      const totalSpread = spreadAngle * (bulletCount - 1);
-      const startAngle = -totalSpread / 2;
+      // Fan out in a smooth, balanced symmetrical spread up to max 60 degrees (1.04 rad)
+      const maxSpreadRad = Math.min(1.04, 0.12 * (bulletCount - 1));
+      const startAngle = -maxSpreadRad / 2;
+      const angleStep = maxSpreadRad / (bulletCount - 1);
+      const flashSize = bulletCount > 6 ? 4 : 5;
+
       for (let i = 0; i < bulletCount; i++) {
-        const angle = startAngle + spreadAngle * i;
-        const vx = Math.sin(angle) * BULLET_SPEED * 0.6;
+        const angle = startAngle + angleStep * i;
+        const vx = Math.sin(angle) * BULLET_SPEED * 0.65;
         const vy = -Math.cos(angle) * BULLET_SPEED;
-        const bx = cx + Math.sin(angle) * 8;
+        const bx = cx + Math.sin(angle) * 10;
         acquireBullet(pool, bx, by, vx, vy);
-        acquireFlash(bx, by, 5);
+
+        // Scaled particle budget: generate flashes on key bullets at higher tiers
+        if (bulletCount <= 5 || i === 0 || i === bulletCount - 1 || i % 2 === 0) {
+          acquireFlash(bx, by, flashSize);
+        }
       }
     }
   }, []);
@@ -616,13 +738,27 @@ const ByteDefender: React.FC = () => {
     const g = gameRef.current;
     let running = true;
 
+    const isVisibleRef = { current: true };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          isVisibleRef.current = entry.isIntersecting;
+        });
+      },
+      { threshold: 0.05 }
+    );
+    if (wrapperRef.current) {
+      observer.observe(wrapperRef.current);
+    }
+
     // Fast DPR Resize Optimization with ResizeObserver (Zero edge gaps)
     const resize = () => {
       const wrapper = wrapperRef.current;
       if (!wrapper) return;
       const rect = wrapper.getBoundingClientRect();
       if (rect.width === 0 || rect.height === 0) return;
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      const isMobile = window.innerWidth < 768;
+      const dpr = isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
       const w = Math.floor(rect.width);
       const h = Math.floor(rect.height);
       canvas.width = Math.floor(w * dpr);
@@ -833,57 +969,221 @@ const ByteDefender: React.FC = () => {
       ctx.globalAlpha = 1.0;
     };
 
-    const drawBoss = (boss: Boss, time: number) => {
+    const drawBoss = (boss: Boss, time: number, tc: typeof THEME_DARK) => {
       const cx = boss.x + boss.width / 2;
       const cy = boss.y + boss.height / 2;
-      const pulse = 0.85 + Math.sin(time * 0.002) * 0.15;
+      const player = playerRef.current;
+      const bossIndex = Math.max(0, Math.floor(g.wave / 5) - 1);
+      const archetype = getBossArchetype(bossIndex);
+      const hpRatio = clamp(boss.hp / boss.maxHp, 0, 1);
 
+      // Micro-shake & rapid pulse frequency scaling with bossIndex & hp ratio
+      const shakeAmt = hpRatio < 0.25 ? (Math.random() - 0.5) * 3 : (hpRatio < 0.5 ? (Math.random() - 0.5) * 1.5 : 0);
+      const renderCx = cx + shakeAmt;
+      const renderCy = cy + (hpRatio < 0.25 ? (Math.random() - 0.5) * 2 : 0);
+      const pulse = 0.88 + Math.sin(time * (archetype.pulseSpeed + (1 - hpRatio) * 0.003)) * 0.12;
+
+      // Spawn Warp / Teleport Warning Effect before entry complete
       if (!boss.entered) {
         ctx.globalAlpha = 0.35;
         ctx.fillStyle = "#ff0055";
-        ctx.fillRect(boss.x - 2, boss.y, boss.width, boss.height);
+        ctx.fillRect(boss.x - 3, boss.y, boss.width + 6, boss.height);
         ctx.fillStyle = "#00e5ff";
-        ctx.fillRect(boss.x + 2, boss.y, boss.width, boss.height);
+        ctx.fillRect(boss.x + 3, boss.y, boss.width - 6, boss.height);
       }
 
-      ctx.globalAlpha = pulse;
-      ctx.fillStyle = COL_BOSS_PURPLE;
+      // 1. Escalating Outer Energy Aura
+      ctx.save();
+      ctx.globalAlpha = (0.2 + Math.min(0.3, bossIndex * 0.06)) * pulse;
+      ctx.fillStyle = archetype.auraColor;
+      ctx.beginPath();
+      ctx.arc(renderCx, renderCy, (boss.width / 2) + 8 + bossIndex * 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
 
+      // 2. Outer Armor Plating / Wings (Tier 1+)
+      if (archetype.armorLayers >= 2) {
+        ctx.save();
+        ctx.globalAlpha = 0.85;
+        ctx.fillStyle = archetype.baseColor;
+        ctx.strokeStyle = archetype.accentColor;
+        ctx.lineWidth = 1.5;
+
+        // Side armor shoulders / wing carapaces
+        const wingSpan = boss.width * 0.62;
+        ctx.beginPath();
+        ctx.moveTo(renderCx - wingSpan, renderCy);
+        ctx.lineTo(renderCx - wingSpan * 0.6, renderCy - boss.height * 0.45);
+        ctx.lineTo(renderCx + wingSpan * 0.6, renderCy - boss.height * 0.45);
+        ctx.lineTo(renderCx + wingSpan, renderCy);
+        ctx.lineTo(renderCx + wingSpan * 0.5, renderCy + boss.height * 0.45);
+        ctx.lineTo(renderCx - wingSpan * 0.5, renderCy + boss.height * 0.45);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // 3. Perimeter Spikes / Crowns (Tier 1+)
+      if (archetype.spikeCount > 0) {
+        ctx.save();
+        ctx.fillStyle = archetype.accentColor;
+        ctx.globalAlpha = 0.9;
+        const spikeCount = archetype.spikeCount;
+        for (let i = 0; i < spikeCount; i++) {
+          const angle = (Math.PI * 2 / spikeCount) * i + (time * 0.001);
+          const rBase = boss.width / 2;
+          const rTip = rBase + 7 + Math.sin(time * 0.005 + i) * 2;
+          const sx = renderCx + rTip * Math.cos(angle);
+          const sy = renderCy + rTip * Math.sin(angle);
+          const bx1 = renderCx + (rBase - 3) * Math.cos(angle - 0.15);
+          const by1 = renderCy + (rBase - 3) * Math.sin(angle - 0.15);
+          const bx2 = renderCx + (rBase - 3) * Math.cos(angle + 0.15);
+          const by2 = renderCy + (rBase - 3) * Math.sin(angle + 0.15);
+
+          ctx.beginPath();
+          ctx.moveTo(bx1, by1);
+          ctx.lineTo(sx, sy);
+          ctx.lineTo(bx2, by2);
+          ctx.closePath();
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+
+      // 4. Main Body Octagon Core
+      ctx.save();
+      ctx.globalAlpha = pulse;
+      ctx.fillStyle = archetype.baseColor;
       ctx.beginPath();
       for (let i = 0; i < 8; i++) {
         const angle = (Math.PI / 4) * i - Math.PI / 8;
-        const r = boss.width / 2;
-        const px = cx + r * Math.cos(angle);
-        const py = cy + r * Math.sin(angle);
+        const r = boss.width / 2.2;
+        const px = renderCx + r * Math.cos(angle);
+        const py = renderCy + r * Math.sin(angle);
         if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
       }
       ctx.closePath();
       ctx.fill();
 
-      ctx.strokeStyle = "#bb55ff";
-      ctx.lineWidth = 1.5;
-      ctx.globalAlpha = 0.6;
-      ctx.beginPath();
-      for (let i = 0; i < 8; i++) {
-        const angle = (Math.PI / 4) * i - Math.PI / 8;
-        const r = boss.width / 3;
-        const px = cx + r * Math.cos(angle);
-        const py = cy + r * Math.sin(angle);
-        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
-      }
-      ctx.closePath();
+      // Theme-aware high contrast stroke outline
+      ctx.strokeStyle = tc.isLight ? "#0f172a" : archetype.accentColor;
+      ctx.lineWidth = tc.isLight ? 2.2 : 1.6;
       ctx.stroke();
+      ctx.restore();
 
+      // 5. Damage Fractures & Crack Overlay (< 50% and < 25% HP)
+      if (hpRatio < 0.5) {
+        ctx.save();
+        ctx.strokeStyle = hpRatio < 0.25 ? "#ffffff" : archetype.accentColor;
+        ctx.lineWidth = hpRatio < 0.25 ? 1.8 : 1.2;
+        ctx.globalAlpha = 0.8;
+        ctx.beginPath();
+        // Crack 1
+        ctx.moveTo(renderCx - 12, renderCy - 10);
+        ctx.lineTo(renderCx - 3, renderCy + 2);
+        ctx.lineTo(renderCx - 8, renderCy + 14);
+        // Crack 2
+        ctx.moveTo(renderCx + 10, renderCy - 12);
+        ctx.lineTo(renderCx + 2, renderCy - 1);
+        ctx.lineTo(renderCx + 11, renderCy + 10);
+        if (hpRatio < 0.25) {
+          // Extra spiderweb cracks
+          ctx.moveTo(renderCx - 15, renderCy + 4);
+          ctx.lineTo(renderCx + 15, renderCy - 4);
+        }
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // 6. Player Tracking Eye (Tier 1+)
+      if (archetype.hasTrackingEye) {
+        ctx.save();
+        const eyeX = renderCx;
+        const eyeY = renderCy - 4;
+        ctx.fillStyle = "rgba(0,0,0,0.6)";
+        ctx.beginPath();
+        ctx.arc(eyeX, eyeY, 8, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Calculate pupil tracking vector toward player
+        const dx = (player.x + player.width / 2) - eyeX;
+        const dy = (player.y + player.height / 2) - eyeY;
+        const dist = Math.hypot(dx, dy) || 1;
+        const trackX = eyeX + (dx / dist) * 3.5;
+        const trackY = eyeY + (dy / dist) * 3.5;
+
+        ctx.fillStyle = archetype.coreColor;
+        ctx.shadowColor = archetype.coreColor;
+        ctx.shadowBlur = 8;
+        ctx.beginPath();
+        ctx.arc(trackX, trackY, 3.8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // 7. Aperture / Mouth Core (Tier 3+) — Opens wider as HP drops
+      if (archetype.hasApertureMouth) {
+        ctx.save();
+        const mouthRadius = 5 + (1 - hpRatio) * 11;
+        ctx.fillStyle = "#000000";
+        ctx.beginPath();
+        ctx.arc(renderCx, renderCy + 6, mouthRadius, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = archetype.accentColor;
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.arc(renderCx, renderCy + 6, mouthRadius, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Glowing core singularity inside aperture
+        ctx.fillStyle = archetype.coreColor;
+        ctx.shadowColor = archetype.accentColor;
+        ctx.shadowBlur = 10;
+        ctx.beginPath();
+        ctx.arc(renderCx, renderCy + 6, mouthRadius * 0.45, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // 8. Attack Charge Warning Tell (Flashes 280ms before firing shot)
+      if (boss.fireTimer > 0 && boss.fireTimer < 280) {
+        ctx.save();
+        const chargeProgress = 1 - (boss.fireTimer / 280);
+        const flashRadius = 6 + chargeProgress * 14;
+        const muzzleY = renderCy + boss.height / 2 + 2;
+
+        ctx.fillStyle = "#ffffff";
+        ctx.shadowColor = archetype.accentColor;
+        ctx.shadowBlur = 16;
+        ctx.globalAlpha = 0.7 + Math.sin(time * 0.06) * 0.3;
+
+        ctx.beginPath();
+        ctx.arc(renderCx, muzzleY, flashRadius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // 9. Boss Health Bar & Tier Name Display
       ctx.globalAlpha = 1.0;
-      const barW = boss.width + 20;
+      const barW = boss.width + 24;
       const barH = 4;
-      const barX = cx - barW / 2;
-      const barY = boss.y - 12;
-      const fill = boss.hp / boss.maxHp;
-      ctx.fillStyle = "rgba(255,255,255,0.1)";
+      const barX = renderCx - barW / 2;
+      const barY = boss.y - 18;
+
+      // Health bar track
+      ctx.fillStyle = tc.isLight ? "rgba(15,23,42,0.18)" : "rgba(255,255,255,0.15)";
       ctx.fillRect(barX, barY, barW, barH);
-      ctx.fillStyle = fill > 0.3 ? COL_BOSS_PURPLE : COL_ENEMY_RED;
-      ctx.fillRect(barX, barY, barW * fill, barH);
+      // Health bar fill
+      ctx.fillStyle = hpRatio > 0.3 ? archetype.accentColor : COL_ENEMY_RED;
+      ctx.fillRect(barX, barY, barW * hpRatio, barH);
+
+      // Boss Tier Name & Health Numbers
+      ctx.font = "bold 8px 'Space Mono', monospace";
+      ctx.textAlign = "center";
+      ctx.fillStyle = tc.hudText;
+      ctx.fillText(`${boss.tierName} (${boss.hp}/${boss.maxHp})`, renderCx, barY - 10);
     };
 
     const drawPowerUp = (pu: PowerUp, time: number) => {
@@ -958,7 +1258,7 @@ const ByteDefender: React.FC = () => {
         ctx.font = "bold 8px 'Space Mono', monospace";
         ctx.fillStyle = COL_WEAPON_PU;
         ctx.textAlign = "center";
-        ctx.fillText(`MK.${["I", "II", "III", "IV", "V"][g.weaponTier - 1]}`, w / 2, 24);
+        ctx.fillText(`MK.${ROMAN_NUMERALS[Math.min(9, g.weaponTier - 1)]}`, w / 2, 24);
       }
     };
 
@@ -1184,6 +1484,9 @@ const ByteDefender: React.FC = () => {
       if (!running) return;
       g.animId = requestAnimationFrame(gameLoop);
 
+      // Skip rendering frame when offscreen
+      if (!isVisibleRef.current) return;
+
       // Industrial Delta-Time Spike Clamping (max 33ms / 30fps lower bound)
       const dt = g.lastTime ? Math.min(timestamp - g.lastTime, 33) : 16;
       g.lastTime = timestamp;
@@ -1257,7 +1560,7 @@ const ByteDefender: React.FC = () => {
         for (let i = 0; i < enemiesRef.current.length; i++) {
           if (enemiesRef.current[i].active) drawEnemy(enemiesRef.current[i], timestamp, tc);
         }
-        if (bossRef.current) drawBoss(bossRef.current, timestamp);
+        if (bossRef.current) drawBoss(bossRef.current, timestamp, tc);
 
         ctx.fillStyle = COL_AMBER_GLOW;
         for (let i = 0; i < playerBulletsRef.current.length; i++) {
@@ -1461,9 +1764,9 @@ const ByteDefender: React.FC = () => {
         if (aabb(player.x, player.y, player.width, player.height, pu.x - 6, pu.y - 7, 12, 14)) {
           pu.active = false;
           if (pu.type === "weapon") {
-            if (g.weaponTier < 5) {
+            if (g.weaponTier < 10) {
               g.weaponTier += 1;
-              showBanner(`MK.${["I", "II", "III", "IV", "V"][g.weaponTier - 1]}`, "⚡", "Weapon upgraded!");
+              showBanner(`MK.${ROMAN_NUMERALS[g.weaponTier - 1]}`, "⚡", "Weapon upgraded!");
             } else {
               g.score += MAX_TIER_BONUS;
               showBanner("MAX POWER", "⚡", `+${MAX_TIER_BONUS} bonus`, 1000);
@@ -1568,35 +1871,56 @@ const ByteDefender: React.FC = () => {
         if (!enemies[i].active) enemies.splice(i, 1);
       }
 
-      // ── Boss (LEVEL-BASED PROGRESSION & RAGE AI) ────────
+      // ── Boss (INFINITE PROGRESSIVE SCALING & RAGE AI) ────
       const boss = bossRef.current;
       if (boss) {
         if (!boss.entered) {
           boss.y += 80 * dt_s;
           if (boss.y >= 30) { boss.entered = true; boss.y = 30; }
         } else {
-          const waveLevel = Math.floor(g.wave / 5);
+          const bossIndex = Math.max(0, Math.floor(g.wave / 5) - 1);
+          const archetype = getBossArchetype(bossIndex);
           const hpRatio = boss.hp / boss.maxHp;
           const isRage = hpRatio < 0.5;
 
-          // Boss moves dynamically, speeding up in Rage mode!
-          const moveSpeed = (boss.vx > 0 ? 1 : -1) * (100 + waveLevel * 15 + (isRage ? 40 : 0));
+          // Ambient void particle trail for Tier 2+ bosses
+          if (archetype.hasParticleTrail) {
+            boss.particleTimer -= dt;
+            if (boss.particleTimer <= 0) {
+              boss.particleTimer = 110;
+              acquireParticle(
+                boss.x + boss.width / 2 + (Math.random() - 0.5) * (boss.width * 0.7),
+                boss.y + boss.height * 0.8,
+                (Math.random() - 0.5) * 15,
+                (Math.random() - 0.5) * 20 - 15,
+                archetype.accentColor,
+                2.2,
+                0.35
+              );
+            }
+          }
+
+          // Boss moves dynamically, speeding up with bossIndex and Rage mode!
+          const moveSpeed = (boss.vx > 0 ? 1 : -1) * (100 + bossIndex * 24 + (isRage ? 45 : 0));
           boss.x += moveSpeed * dt_s;
           if (boss.x < 10 || boss.x + boss.width > w - 10) boss.vx = -boss.vx;
 
           boss.fireTimer -= dt;
           if (boss.fireTimer <= 0) {
-            // Cooldown accelerates with wave level & rage state
-            const baseCooldown = Math.max(380, 800 - waveLevel * 60 - (isRage ? 160 : 0));
+            // Cooldown accelerates with bossIndex & rage state
+            const baseCooldown = Math.max(320, 800 - bossIndex * 90 - (isRage ? 160 : 0));
             boss.fireTimer = baseCooldown;
 
-            boss.firePattern = (boss.firePattern + 1) % (waveLevel >= 2 ? 4 : 3);
+            // Pattern availability scales with bossIndex (3 patterns at wave 5, 4 at wave 10, 5 at wave 15+)
+            const totalPatterns = Math.min(5, 3 + bossIndex);
+            boss.firePattern = (boss.firePattern + 1) % totalPatterns;
+
             const bx = boss.x + boss.width / 2;
             const by = boss.y + boss.height;
-            const bulletSpeed = ENEMY_BULLET_SPEED + 30 + waveLevel * 12;
+            const bulletSpeed = ENEMY_BULLET_SPEED + 30 + bossIndex * 15;
 
             if (boss.firePattern === 0) {
-              // Pattern 0: Direct Targeted Heavy Plasma Stream at player X
+              // Pattern 0: Direct Targeted Heavy Plasma Stream at player X/Y
               const dx = (player.x + player.width / 2) - bx;
               const dy = (player.y + player.height / 2) - by;
               const dist = Math.hypot(dx, dy) || 1;
@@ -1613,15 +1937,22 @@ const ByteDefender: React.FC = () => {
                 const a = angles[k];
                 acquireBullet(enemyBulletsRef.current, bx, by, Math.sin(a) * bulletSpeed, Math.cos(a) * bulletSpeed);
               }
-            } else {
+            } else if (boss.firePattern === 3) {
               // Pattern 3: Dual Outer Cannon Burst
               acquireBullet(enemyBulletsRef.current, bx - 22, by, -25, bulletSpeed + 20);
               acquireBullet(enemyBulletsRef.current, bx + 22, by, 25, bulletSpeed + 20);
+            } else {
+              // Pattern 4: 8-Way Circular Ring Explosion Volley (Wave 15+ / bossIndex >= 2)
+              const count = 8;
+              for (let k = 0; k < count; k++) {
+                const angle = (Math.PI * 2 / count) * k;
+                acquireBullet(enemyBulletsRef.current, bx, by, Math.cos(angle) * (bulletSpeed * 0.75), Math.sin(angle) * (bulletSpeed * 0.75));
+              }
             }
           }
         }
 
-        drawBoss(boss, timestamp);
+        drawBoss(boss, timestamp, tc);
 
         if (g.shieldTimer > 0 && aabb(player.x - 4, player.y - 4, player.width + 8, player.height + 8, boss.x, boss.y, boss.width, boss.height)) {
           boss.hp -= 0.1;
@@ -1720,6 +2051,8 @@ const ByteDefender: React.FC = () => {
       resizeObserver.disconnect();
       window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("keyup", onKeyUp);
+      observer.disconnect();
+      resizeObserver.disconnect();
       canvas.removeEventListener("pointerdown", onPointerDown);
       canvas.removeEventListener("touchstart", onTouchStart);
       canvas.removeEventListener("touchmove", onTouchMove);
@@ -1800,7 +2133,7 @@ const ByteDefender: React.FC = () => {
           </p>
           {weaponTier > 1 && (
             <p className="font-mono text-[0.6rem] mb-3 text-cyan-500 dark:text-cyan-400">
-              Final Weapon: MK.{["I", "II", "III", "IV", "V"][weaponTier - 1]}
+              Final Weapon: MK.{ROMAN_NUMERALS[Math.min(9, weaponTier - 1)]}
             </p>
           )}
           <button
