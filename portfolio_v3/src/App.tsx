@@ -23,6 +23,7 @@ import AssistantPage from "./pages/AssistantPage";
 // Hooks
 import { useLenis }        from "./hooks/useLenis";
 import { useScrollReveal } from "./hooks/useScrollReveal";
+import { playMechanicalMouseClick } from "./utils/sound";
 
 class AppErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
   state = { hasError: false };
@@ -69,6 +70,21 @@ const App: React.FC = () => {
 
   useLenis();
   useScrollReveal("[data-reveal]", location.pathname);
+
+  // Global Classic Mechanical Mouse Click Sound (skips game container so game.wav plays exclusively)
+  useEffect(() => {
+    const handleGlobalClick = (e: MouseEvent | PointerEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (target && target.closest && target.closest(".byte-defender-card, canvas")) {
+        return;
+      }
+      playMechanicalMouseClick();
+    };
+    window.addEventListener("pointerdown", handleGlobalClick, { capture: true, passive: true });
+    return () => {
+      window.removeEventListener("pointerdown", handleGlobalClick, { capture: true });
+    };
+  }, []);
 
   // Guarantee loaded state within 1.5 seconds under all conditions
   useEffect(() => {

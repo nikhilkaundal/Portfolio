@@ -553,11 +553,9 @@ const AssistantPage: React.FC = () => {
     payloadMessages: any[]
   ): Promise<string> => {
     const apiKey =
-      (import.meta as any).env?.VITE_GROQ_API_KEY ||
-      (import.meta as any).env?.REACT_APP_GROQ_API_KEY ||
       process.env.REACT_APP_GROQ_API_KEY ||
-      process.env.GROQ_API_KEY ||
       process.env.VITE_GROQ_API_KEY ||
+      process.env.GROQ_API_KEY ||
       "";
 
     const lastUserMsgObj = [...payloadMessages].reverse().find((m) => m.role === "user");

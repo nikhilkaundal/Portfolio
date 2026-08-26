@@ -60,6 +60,17 @@
   --mock-accent-bg: rgba(255, 255, 255, 0.05);
   --mock-accent-text: #FAEFD0;
   --mock-text: #E8E4DD;
+
+  /* Byte Defender game colors & theme variables */
+  --game-enemy-red: #ff3344;
+  --game-enemy-purple: #aa44ff;
+  --game-boss-purple: #7722cc;
+  --game-enemy-magenta: #ff44aa;
+
+  --game-canvas-bg-start: #12091f;
+  --game-canvas-bg-mid: #08060e;
+  --game-canvas-bg-end: #030206;
+  --game-canvas-star-opacity: 1.0;
 }
 
 [data-theme="light"] {
@@ -69,6 +80,12 @@
   --accent: #EA580C;
   --text-primary: #0F172A;
   --text-muted: #475569;
+
+  /* Byte Defender Light Mode Canvas Space Theme */
+  --game-canvas-bg-start: #241c38;
+  --game-canvas-bg-mid: #181228;
+  --game-canvas-bg-end: #0d0918;
+  --game-canvas-star-opacity: 0.65;
 
   /* Opacities & spotlight settings */
   --hero-canvas-opacity: 0.85;
@@ -121,6 +138,12 @@
   --mock-accent-bg: #FEF3EB;
   --mock-accent-text: #EA580C;
   --mock-text: #0F172A;
+
+  /* Byte Defender game colors (same — game canvas is always dark) */
+  --game-enemy-red: #ff3344;
+  --game-enemy-purple: #aa44ff;
+  --game-boss-purple: #7722cc;
+  --game-enemy-magenta: #ff44aa;
 }
 
 /* Smooth element transitions targeting only colors/backgrounds, preserving custom transform animations */
@@ -234,6 +257,19 @@ body::before {
 [data-theme="light"] .glow-card:hover {
   border-color: rgba(234, 88, 12, 0.4);
   box-shadow: 0 8px 30px rgba(234, 88, 12, 0.12);
+}
+
+/* ── Byte Defender game card ───────────────────────────── */
+.byte-defender-card {
+  animation: byteDefenderGlow 4s ease-in-out infinite;
+}
+@keyframes byteDefenderGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(192,88,0,0.04), inset 0 1px 0 rgba(255,255,255,0.02); }
+  50%      { box-shadow: 0 0 35px rgba(192,88,0,0.1), inset 0 1px 0 rgba(255,255,255,0.04); }
+}
+[data-theme="light"] .byte-defender-card {
+  background: rgba(15,23,42,0.95);
+  border-color: rgba(15,23,42,0.15);
 }
 
 /* ── Glowing border card ───────────────────────────────── */
@@ -615,26 +651,4 @@ body::before {
   scrollbar-width: none;  /* Firefox */
 }
 
-/* Ensure Spline canvas background is transparent and prevent pixelation */
-.hero-room canvas,
-.hero-room-scene canvas,
-canvas[data-engine] {
-  background: transparent !important;
-}
 
-/* Hide Spline "Built with Spline" logo watermark badge across Light DOM & Shadow DOM */
-spline-viewer::part(logo),
-a[href*="spline.design"],
-#spline-logo,
-#logo[href*="spline"],
-.spline-watermark,
-.spline-logo,
-div[class*="spline"] a,
-canvas + a,
-canvas ~ a,
-a[target="_blank"][href*="spline"] {
-  display: none !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  visibility: hidden !important;
-}
