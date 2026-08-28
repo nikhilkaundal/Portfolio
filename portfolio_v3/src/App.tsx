@@ -133,7 +133,7 @@ const App: React.FC = () => {
         {!isAssistantPage && <Footer />}
       </div>
       <Analytics />
-      <SpeedInsights />
+      <SpeedInsights route={location.pathname} />
     </AppErrorBoundary>
   );
 };
